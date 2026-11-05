@@ -1,10 +1,10 @@
 import { Html, Line } from '@react-three/drei';
 import { DoubleSide } from 'three';
-import { AXES } from '@/lib/config';
+import { AXES, THEME } from '@/lib/config';
 import { HALF, toWorld, type Vec3 } from './geometry';
 
-const GRID = '#DDE3EC';
-const EDGE = '#C5CEDB';
+const GRID = THEME.line.DEFAULT;
+const EDGE = THEME.line.strong;
 const TICKS = [0, 50, 100];
 
 function Label({ position, children, className }: { position: Vec3; children: React.ReactNode; className: string }) {
@@ -51,7 +51,7 @@ export function CubeFrame() {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -HALF - 0.01, 0]}>
         <planeGeometry args={[HALF * 2, HALF * 2]} />
-        <meshBasicMaterial color="#F5F7FB" side={DoubleSide} />
+        <meshBasicMaterial color={THEME.cube.floor} side={DoubleSide} />
       </mesh>
       <Grids />
       {dashed.map((points, i) => (
@@ -65,7 +65,7 @@ export function CubeFrame() {
       {/* Finanzsektor liegt fest auf Liquidität 50: gestrichelte Markierung am Boden */}
       <Line
         points={[toWorld(50, 0, 0), toWorld(50, 0, 100)]}
-        color="#7C8799"
+        color={THEME.cube.fallback}
         lineWidth={1.2}
         dashed
         dashSize={0.15}
@@ -84,17 +84,17 @@ export function CubeFrame() {
 
       {TICKS.map((v) => (
         <group key={v}>
-          <Label position={[(v - 50) / 10, -HALF - 0.45, HALF + 0.2]} className="font-mono text-[11px] text-[#8A96A8]">{v}</Label>
-          <Label position={[-HALF - 0.4, (v - 50) / 10, HALF]} className="font-mono text-[11px] text-[#8A96A8]">{v}</Label>
+          <Label position={[(v - 50) / 10, -HALF - 0.45, HALF + 0.2]} className="font-mono text-[11px] text-muted">{v}</Label>
+          <Label position={[-HALF - 0.4, (v - 50) / 10, HALF]} className="font-mono text-[11px] text-muted">{v}</Label>
           {v > 0 && (
-            <Label position={[-HALF - 0.4, -HALF - 0.2, -(v - 50) / 10]} className="font-mono text-[11px] text-[#8A96A8]">{v}</Label>
+            <Label position={[-HALF - 0.4, -HALF - 0.2, -(v - 50) / 10]} className="font-mono text-[11px] text-muted">{v}</Label>
           )}
         </group>
       ))}
 
       <mesh position={ideal}>
         <sphereGeometry args={[0.55, 24, 24]} />
-        <meshBasicMaterial color="#5B4BE0" transparent opacity={0.12} depthWrite={false} />
+        <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.12} depthWrite={false} />
       </mesh>
       <Label position={[ideal[0], ideal[1] + 0.85, ideal[2]]} className="text-xs font-bold text-accent">
         Ideal-Ecke 100·100·100

@@ -80,7 +80,7 @@ export function Compare() {
         </EmptyState>
       )}
       {all.length > MAX_COMPARE && (
-        <p className="rounded-[10px] bg-[#FFF4D6] px-4 py-2 text-[13px] text-[#8A5A00]">
+        <p className="rounded-[10px] bg-note px-4 py-2 text-[13px] text-note-text">
           Verglichen werden die ersten {MAX_COMPARE} von {all.length} Unternehmen. Entferne eines, um die nächsten zu sehen.
         </p>
       )}
@@ -99,7 +99,7 @@ export function Compare() {
                 <span className="text-[22px] leading-none">◆</span>
                 <div>
                   <b className="font-title">Kurzfazit</b>
-                  <p className="mt-0.5 leading-relaxed text-[#C7D0DF]">{buildFazit(companies)}</p>
+                  <p className="mt-0.5 leading-relaxed text-ink-nav">{buildFazit(companies)}</p>
                 </div>
               </div>
             </div>

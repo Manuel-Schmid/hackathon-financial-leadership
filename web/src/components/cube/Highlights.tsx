@@ -1,6 +1,6 @@
 import { Html, Line } from '@react-three/drei';
 import type { Company } from '@/data/types';
-import { AXES, AXIS_IDS, SECTORS } from '@/lib/config';
+import { AXES, AXIS_IDS, SECTORS, THEME } from '@/lib/config';
 import { formatScore } from '@/lib/format';
 import { HALF } from './geometry';
 import type { CubePoint } from './PointCloud';
@@ -10,7 +10,7 @@ export function Highlights({ points, selected }: { points: CubePoint[]; selected
   return (
     <>
       {points.map((p) => {
-        const color = SECTORS[p.company.sector]?.color ?? '#7C8799';
+        const color = SECTORS[p.company.sector]?.color ?? THEME.cube.fallback;
         const isSelected = p.company.ticker === selected;
         const [x, y, z] = p.position;
         return (
@@ -23,7 +23,7 @@ export function Highlights({ points, selected }: { points: CubePoint[]; selected
             {isSelected && (
               <mesh position={p.position}>
                 <sphereGeometry args={[p.radius + 0.14, 20, 20]} />
-                <meshBasicMaterial color="#5B4BE0" transparent opacity={0.22} depthWrite={false} />
+                <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.22} depthWrite={false} />
               </mesh>
             )}
             <Html position={[x + p.radius + 0.1, y, z]} zIndexRange={[8, 6]} className="pointer-events-none select-none" style={{ transform: 'translateY(-50%)' }}>
