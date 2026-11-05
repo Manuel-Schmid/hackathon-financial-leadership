@@ -12,13 +12,12 @@ const SECTOR_OPTIONS = Object.entries(SECTORS).sort((a, b) => a[1].de.localeComp
 interface Props {
   companies: Company[];
   filters: Filters;
-  counts: Record<Universe, number>;
   resultCount: number;
   onChange(next: Filters): void;
   onClose(): void;
 }
 
-export function FilterPanel({ companies, filters, counts, resultCount, onChange, onClose }: Props) {
+export function FilterPanel({ companies, filters, resultCount, onChange, onClose }: Props) {
   const universe = (id: Universe, label: string) => {
     const on = filters.universes.includes(id);
     return (
@@ -28,7 +27,7 @@ export function FilterPanel({ companies, filters, counts, resultCount, onChange,
         className={`pill ${on ? 'pill-on' : ''}`}
         onClick={() => onChange({ ...filters, universes: toggled(filters.universes, id) })}
       >
-        {label}, {counts[id]}
+        {label}
       </button>
     );
   };

@@ -1,19 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Company } from '@/data/types';
-import { activeFilters, type Filters, type Universe } from '@/lib/filters';
+import { activeFilters, type Filters } from '@/lib/filters';
 import { FilterPanel } from './FilterPanel';
 import { SearchBar } from './SearchBar';
 
 interface Props {
   companies: Company[];
   filters: Filters;
-  counts: Record<Universe, number>;
   resultCount: number;
   onChange(next: Filters): void;
   onPick(ticker: string): void;
 }
 
-export function FilterBar({ companies, filters, counts, resultCount, onChange, onPick }: Props) {
+export function FilterBar({ companies, filters, resultCount, onChange, onPick }: Props) {
   const [open, setOpen] = useState(false);
   const panelArea = useRef<HTMLDivElement>(null);
   const active = activeFilters(filters);
@@ -79,7 +78,6 @@ export function FilterBar({ companies, filters, counts, resultCount, onChange, o
           <FilterPanel
             companies={companies}
             filters={filters}
-            counts={counts}
             resultCount={resultCount}
             onChange={onChange}
             onClose={() => setOpen(false)}

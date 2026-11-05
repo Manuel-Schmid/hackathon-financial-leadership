@@ -31,13 +31,6 @@ export function Explorer() {
   const filtered = useMemo(() => companies.filter((c) => matchesFilters(c, filters)), [companies, filters]);
   const visible = useMemo(() => new Set(filtered.map((c) => c.ticker)), [filtered]);
   const sorted = useMemo(() => sortCompanies(filtered, sort, profile.investorProfile), [filtered, sort, profile.investorProfile]);
-  const counts = useMemo(
-    () => ({
-      SP500: companies.filter((c) => c.index === 'SP500').length,
-      SWISS: companies.filter((c) => c.index !== 'SP500').length,
-    }),
-    [companies],
-  );
   const selectedCompany = selected ? byTicker.get(selected) : undefined;
   const missingScores = filtered.filter((c) => !c.isFinancial && Object.values(c.scores).includes(null)).length;
 
@@ -46,7 +39,6 @@ export function Explorer() {
       <FilterBar
         companies={companies}
         filters={filters}
-        counts={counts}
         resultCount={filtered.length}
         onChange={setFilters}
         onPick={setSelected}
