@@ -1,6 +1,6 @@
 import type { Company, InvestorProfile } from '@/data/types';
 import { AXES, AXIS_IDS, AXIS_STYLE } from '@/lib/config';
-import { formatScore } from '@/lib/format';
+import { formatScore, tickerAndSector } from '@/lib/format';
 import { totalScore } from '@/lib/weighting';
 import { Bar, CompanyLink, FinancialNote } from '../ui/atoms';
 
@@ -28,7 +28,7 @@ export function CompareCard({ company, color, profile, onRemove }: Props) {
           <h3 className="truncate font-title text-[17px] font-semibold">
             <CompanyLink ticker={company.ticker}>{company.name}</CompanyLink>
           </h3>
-          <div className="mt-0.5 text-xs text-muted">{company.ticker} · {company.sectorDe}</div>
+          <div className="mt-0.5 text-xs text-muted">{tickerAndSector(company)}</div>
         </div>
         <div className="mt-2 text-right font-title text-[26px] font-bold leading-none">
           {formatScore(totalScore(company.scores, profile))}

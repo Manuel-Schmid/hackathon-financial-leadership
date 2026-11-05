@@ -4,7 +4,7 @@ import { KPIS, PROFILES } from './config';
 import { buildFazit } from './fazit';
 import { capBounds, capHistogram, capToPosition, positionToCap } from './capRange';
 import { activeFilters, DEFAULT_FILTERS, formatCapRange, matchesFilters, searchSuggestions, sortCompanies } from './filters';
-import { formatKpi, formatMarketCap, formatScore } from './format';
+import { formatKpi, formatMarketCap, formatScore, tickerAndSector } from './format';
 import { median, sectorMedian } from './medians';
 import { totalScore } from './weighting';
 
@@ -180,5 +180,11 @@ describe('Kurzfazit', () => {
 describe('Konfiguration', () => {
   it('hat alle 17 Kennzahlen', () => {
     expect(KPIS).toHaveLength(17);
+  });
+});
+
+describe('tickerAndSector', () => {
+  it('Ticker und Branche wie auf den Vergleichskarten', () => {
+    expect(tickerAndSector(company({ ticker: 'ADSK', sectorDe: 'Technologie' }))).toBe('ADSK · Technologie');
   });
 });
