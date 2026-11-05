@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCompanies } from '@/data/DataProvider';
 import type { Ampel, Company } from '@/data/types';
 import { AMPEL_STYLE } from '@/lib/ampel';
@@ -19,6 +19,15 @@ const SOFT: Record<string, string> = {
 const ORDER: Ampel[] = ['green', 'yellow', 'red', 'grey'];
 /** Lesbare Schrift auf dem jeweiligen Ampel-Hintergrund */
 const CELL_TEXT: Record<Ampel, string> = { green: 'text-white', yellow: 'text-ink', red: 'text-white', grey: 'text-muted' };
+/** Fadenkreuz beim Hover: nur transform/opacity, damit nichts im Layout verrutscht und es flüssig bleibt. */
+const MOTION = 'transition-[transform,opacity,box-shadow] duration-150 ease-out motion-reduce:transition-none';
+type Focus = { row: number; col: number } | null;
+function tileFx(focus: Focus, row: number, col: number): string {
+  if (!focus) return '';
+  if (focus.row === row && focus.col === col) return 'relative z-10 scale-[1.12] shadow-pop';
+  if (focus.row === row || focus.col === col) return 'scale-[1.04]';
+  return 'opacity-45';
+}
 const COUNT_LABEL: Record<Ampel, string> = { green: 'erfüllt', yellow: 'knapp daneben', red: 'deutlich daneben', grey: 'ohne Daten' };
 
 /** Alle Kennzahlen mit Richtwert als farbige Felder: Firmen × Kennzahlen, das Muster auf einen Blick. */
@@ -26,6 +35,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
   const all = useCompanies();
   const modus = compareMode(companies);
   const rows = useMemo(() => ampelMatrix(companies, modus, all), [companies, modus, all]);
+  const [focus, setFocus] = useState<Focus>(null);
   const gruppe = modus === 'branche' ? `der Branche ${companies[0]?.sectorDe ?? ''}` : 'aller Firmen';
   return (
     <section className="card overflow-x-auto px-[22px] pb-4 pt-[18px]">
@@ -57,21 +67,29 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
           </tr>
           <tr className="text-muted">
             <th />
-            {MATRIX_KPIS.map((k) => (
-              <th key={k.id} className="break-words px-0.5 pb-1 text-center align-bottom font-semibold leading-tight" title={k.label}>
+            {MATRIX_KPIS.map((k, col) => (
+              <th
+                key={k.id}
+                className={`break-words px-0.5 pb-1 text-center align-bottom font-semibold leading-tight transition-colors duration-150 ${focus?.col === col ? 'text-text' : ''}`}
+                title={k.label}
+              >
                 {SOFT[k.short] ?? k.short}
               </th>
             ))}
             <th className="pb-1 pl-3 text-left align-bottom font-semibold">Bilanz</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody onMouseLeave={() => setFocus(null)}>
           {rows.map((row, i) => (
             <tr key={row.company.ticker}>
-              <th scope="row" className="truncate pr-3 text-left text-[13.5px] font-bold" style={{ color: COMPARE_COLORS[i] }}>
+              <th
+                scope="row"
+                className={`truncate pr-3 text-left text-[13.5px] font-bold ${MOTION} ${focus && focus.row !== i ? 'opacity-45' : ''}`}
+                style={{ color: COMPARE_COLORS[i] }}
+              >
                 {row.company.name}
               </th>
-              {row.cells.map((cell) => {
+              {row.cells.map((cell, col) => {
                 // Eine Angabe pro Zeile im Tooltip; für Screenreader dieselben Angaben in einer Zeile
                 const lines = [
                   `${row.company.name} · ${cell.kpi.short}`,
@@ -85,7 +103,11 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
                     <div
                       title={lines.join('\n')}
                       aria-label={lines.join(' · ')}
-                      className={`flex h-8 items-center justify-center whitespace-nowrap rounded-md text-[11.5px] font-bold ${AMPEL_STYLE[cell.ampel].dot} ${CELL_TEXT[cell.ampel]}`}
+                      tabIndex={0}
+                      onMouseEnter={() => setFocus({ row: i, col })}
+                      onFocus={() => setFocus({ row: i, col })}
+                      onBlur={() => setFocus(null)}
+                      className={`flex h-8 items-center justify-center whitespace-nowrap rounded-md text-[11.5px] font-bold outline-none focus-visible:ring-2 focus-visible:ring-accent ${MOTION} ${AMPEL_STYLE[cell.ampel].dot} ${CELL_TEXT[cell.ampel]} ${tileFx(focus, i, col)}`}
                     >
                       {cell.rank && `Top ${cell.rank.top} %`}
                     </div>
