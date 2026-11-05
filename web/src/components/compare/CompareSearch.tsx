@@ -18,7 +18,7 @@ export function CompareSearch({ list, onAdd }: Props) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   return (
-    <div className="flex items-center gap-2 border-b border-line bg-white px-4 py-2 lg:px-7">
+    <div className="flex items-center gap-2 border-b border-line bg-white px-4 py-2 lg:px-7 print:hidden">
       <SearchBar
         companies={companies}
         value={query}

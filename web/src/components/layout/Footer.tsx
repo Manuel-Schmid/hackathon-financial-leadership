@@ -26,7 +26,7 @@ export function Footer() {
   const latest = years.length ? Math.max(...years) : null;
 
   return (
-    <footer className="mt-auto bg-ink px-4 pb-6 pt-10 text-[15px] leading-relaxed text-ink-nav lg:px-7">
+    <footer className="mt-auto print:hidden bg-ink px-4 pb-6 pt-10 text-[15px] leading-relaxed text-ink-nav lg:px-7">
       <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
         <div>
           <div className="flex items-center gap-2.5">

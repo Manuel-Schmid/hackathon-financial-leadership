@@ -4,6 +4,7 @@ import { CompareCard } from '@/components/compare/CompareCards';
 import { CompareRadar } from '@/components/compare/CompareRadar';
 import { CompareSearch } from '@/components/compare/CompareSearch';
 import { CompareTable } from '@/components/compare/CompareTable';
+import { PrintReportButton, ReportFooter, ReportHeader } from '@/components/compare/Report';
 import { ProfileButton } from '@/components/profiles/ProfilePicker';
 import { EmptyState, PageTitle } from '@/components/ui/atoms';
 import { useData } from '@/data/DataProvider';
@@ -32,14 +33,15 @@ export function Compare() {
   return (
     <>
       <CompareSearch list={active} onAdd={add} />
-      <main className="mx-auto w-full max-w-[1600px] space-y-4 px-4 pb-4 pt-3 lg:px-7 lg:pb-7 lg:pt-3">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <main className="mx-auto w-full max-w-[1600px] space-y-4 px-4 pb-4 pt-3 lg:px-7 lg:pb-7 lg:pt-3 print:max-w-none print:p-0">
+        <ReportHeader list={active} profile={profile} shown={companies.length} total={all.length} />
+        <div className="flex flex-wrap items-end justify-between gap-4 print:hidden">
           <PageTitle
             tag={`Watchlist · ${all.length} Unternehmen`}
             title={active.name}
             sub={`${active.clientName ? `Kunde: ${active.clientName}. ` : ''}Gewichtung ${profileLabel(profile.weights)}`}
           />
-          <div className="grid w-full gap-3 sm:grid-cols-2 lg:w-[440px]">
+          <div className="grid w-full items-end gap-3 sm:grid-cols-[1fr_1fr_auto] lg:w-[600px]">
             <div className="min-w-0">
               <label htmlFor="compare-list" className={FIELD_LABEL}>Watchlist</label>
               <select
@@ -55,6 +57,7 @@ export function Compare() {
               <label htmlFor="compare-profile" className={FIELD_LABEL}>Anlegerprofil</label>
               <ProfileButton field id="compare-profile" value={active.investorProfile} listName={active.name} onChange={(investorProfile) => update(active.id, { investorProfile })} />
             </div>
+            <PrintReportButton list={active} disabled={companies.length === 0} />
           </div>
         </div>
 
@@ -70,13 +73,13 @@ export function Compare() {
         )}
         {companies.length > 0 && (
           <>
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 print:grid-cols-4">
               {companies.map((c, i) => (
                 <CompareCard key={c.ticker} company={c} color={COMPARE_COLORS[i]} profile={profile.weights} onRemove={() => removeItem(active.id, c.ticker)} />
               ))}
             </div>
             <AmpelMatrix companies={companies} />
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)] print:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
               <CompareRadar companies={companies} profile={profile} />
               <div className="min-w-0 space-y-4">
                 <CompareTable companies={companies} />
@@ -91,6 +94,7 @@ export function Compare() {
             </div>
           </>
         )}
+        <ReportFooter />
       </main>
     </>
   );
