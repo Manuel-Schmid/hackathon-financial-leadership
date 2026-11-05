@@ -1,3 +1,4 @@
+import type { Company } from '@/data/types';
 import type { KpiUnit } from './config';
 
 const NA = '–';
@@ -44,4 +45,9 @@ export function formatScore(score: number | null | undefined): string {
 export function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-');
   return y && m && d ? `${d}.${m}.${y}` : iso;
+}
+
+/** «ADSK · Technologie»: Ticker und Branche, wie auf den Vergleichskarten und in der Hinzufügen-Liste. */
+export function tickerAndSector(c: Pick<Company, 'ticker' | 'sectorDe'>): string {
+  return `${c.ticker} · ${c.sectorDe}`;
 }
