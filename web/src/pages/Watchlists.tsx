@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { ProfileButton } from '@/components/profiles/ProfilePicker';
 import { CompanyLink, PageTitle, SectorDot } from '@/components/ui/atoms';
 import { useData } from '@/data/DataProvider';
+import { detailsPatch } from '@/watchlists/editWatchlist';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 import type { Watchlist } from '@/watchlists/WatchlistStore';
 
@@ -49,20 +50,42 @@ function ListCard({ list }: { list: Watchlist }) {
   const { byTicker } = useData();
   const [name, setName] = useState(list.name);
   const [client, setClient] = useState(list.clientName ?? '');
+  const [saved, setSaved] = useState(false);
+  // Neu geladen oder anderswo geändert: Felder zeigen den gespeicherten Stand
+  useEffect(() => {
+    setName(list.name);
+    setClient(list.clientName ?? '');
+  }, [list.name, list.clientName]);
+  useEffect(() => {
+    if (!saved) return;
+    const timer = setTimeout(() => setSaved(false), 2000);
+    return () => clearTimeout(timer);
+  }, [saved]);
 
+  const patch = detailsPatch(list, name, client);
+  /** Enter, Knopf «Speichern» oder Feld verlassen; ein leerer Name wird verworfen. */
   const save = () => {
-    const nextName = name.trim();
-    if (!nextName) return setName(list.name);
-    if (nextName !== list.name || client.trim() !== (list.clientName ?? '')) {
-      update(list.id, { name: nextName, clientName: client.trim() || null });
-    }
+    if (patch === 'invalid') return setName(list.name);
+    if (!patch) return;
+    update(list.id, patch);
+    setSaved(true);
   };
 
   return (
     <div className="card space-y-3 p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <input aria-label="Name der Watchlist" className="input min-w-[200px] flex-1 font-title font-semibold" value={name} onChange={(e) => setName(e.target.value)} onBlur={save} />
-        <input aria-label="Kundenname" className="input min-w-[180px] flex-1" placeholder="Kundenname" value={client} onChange={(e) => setClient(e.target.value)} onBlur={save} />
+        <form
+          className="contents"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save();
+          }}
+        >
+          <input aria-label="Name der Watchlist" className="input min-w-[200px] flex-1 font-title font-semibold" value={name} onChange={(e) => setName(e.target.value)} onBlur={save} />
+          <input aria-label="Kundenname" className="input min-w-[180px] flex-1" placeholder="Kundenname" value={client} onChange={(e) => setClient(e.target.value)} onBlur={save} />
+          {patch && patch !== 'invalid' && <button type="submit" className="btn btn-primary">Speichern</button>}
+          {saved && !patch && <span role="status" className="text-[13px] font-semibold text-good">✓ Gespeichert</span>}
+        </form>
         <ProfileButton value={list.investorProfile} listName={list.name} onChange={(investorProfile) => update(list.id, { investorProfile })} />
         <Link to={`/vergleich?liste=${encodeURIComponent(list.id)}`} className="btn">Vergleichen</Link>
         <button
