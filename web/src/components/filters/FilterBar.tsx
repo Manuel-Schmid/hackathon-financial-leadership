@@ -14,7 +14,6 @@ function toggled<T>(list: T[], item: T): T[] {
 
 interface Props {
   filters: Filters;
-  counts: Record<Universe, number>;
   onChange(next: Filters): void;
 }
 
@@ -27,7 +26,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export function FilterBar({ filters, counts, onChange }: Props) {
+export function FilterBar({ filters, onChange }: Props) {
   const universe = (id: Universe, label: string) => {
     const on = filters.universes.includes(id);
     return (
@@ -37,7 +36,7 @@ export function FilterBar({ filters, counts, onChange }: Props) {
         className={`pill ${on ? 'pill-on' : ''}`}
         onClick={() => onChange({ ...filters, universes: toggled(filters.universes, id) })}
       >
-        {label} · {counts[id]}
+        {label}
       </button>
     );
   };
