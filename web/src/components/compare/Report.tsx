@@ -83,20 +83,8 @@ export function ReportFooter() {
 export function PrintReportButton({ list, disabled }: { list: Watchlist; disabled?: boolean }) {
   const print = () => {
     const previous = document.title;
-    const title = reportTitle(list, new Date());
-    document.title = title;
-    // Kopfzeile oben Mitte im PDF: derselbe Titel (überschreibt den Standard aus index.css)
-    const pageTitle = document.createElement('style');
-    pageTitle.textContent = `@media print { @page { @top-center { content: ${JSON.stringify(title)}; } } }`;
-    document.head.appendChild(pageTitle);
-    window.addEventListener(
-      'afterprint',
-      () => {
-        document.title = previous;
-        pageTitle.remove();
-      },
-      { once: true },
-    );
+    document.title = reportTitle(list, new Date());
+    window.addEventListener('afterprint', () => (document.title = previous), { once: true });
     window.print();
   };
   return (
