@@ -96,9 +96,6 @@ export function CubeFrame() {
         <sphereGeometry args={[0.55, 24, 24]} />
         <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.12} depthWrite={false} />
       </mesh>
-      <Label position={[ideal[0], ideal[1] + 0.85, ideal[2]]} className="text-xs font-bold text-accent">
-        Ideal-Ecke 100·100·100
-      </Label>
     </group>
   );
 }

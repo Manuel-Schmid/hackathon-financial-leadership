@@ -78,7 +78,7 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
       </div>
       <div className="mt-3 flex gap-2">
         <button type="button" className="btn flex-1" onClick={onToggle}>
-          {starred ? '★ In Watchlist' : '☆ Favorit'}
+          {starred ? '★ In Watchlist' : '☆ Zur Watchlist'}
         </button>
         <Link to={`/firma/${encodeURIComponent(company.ticker)}`} className="btn btn-primary flex-1 text-center">
           Details →
