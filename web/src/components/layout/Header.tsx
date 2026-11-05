@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/auth/useAuth';
-import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
 function initials(name: string): string {
   return name.split(/\s+/).map((p) => p[0]).slice(0, 2).join('').toUpperCase();
@@ -33,18 +32,11 @@ function MobileLink({ to, end, children }: { to: string; end?: boolean; children
   );
 }
 
-function CountBadge({ count }: { count: number }) {
-  if (count === 0) return null;
-  return <span className="ml-1.5 rounded-full bg-accent px-[7px] py-px text-[11px] font-semibold text-white">{count}</span>;
-}
-
 /** Laptop: Seiten direkt links. Handy: Menü-Symbol mit Aufklappkarte. Logo immer Mitte, Konto rechts. */
 export function Header() {
   const { user, profile } = useAuth();
-  const { allTickers } = useWatchlists();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-  const count = allTickers.size;
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -53,7 +45,7 @@ export function Header() {
       <div>
         <nav aria-label="Hauptmenü" className="hidden items-center gap-5 lg:flex">
           <DesktopLink to="/" end>Explorer</DesktopLink>
-          <DesktopLink to="/vergleich">Vergleich<CountBadge count={count} /></DesktopLink>
+          <DesktopLink to="/vergleich">Vergleich</DesktopLink>
           <DesktopLink to="/watchlists">Watchlists</DesktopLink>
         </nav>
         <button
@@ -89,7 +81,7 @@ export function Header() {
       {open && (
         <nav aria-label="Menü" className="card absolute left-3 top-[80px] w-[240px] p-2 text-[15px] text-text shadow-pop lg:hidden">
           <MobileLink to="/" end>Explorer</MobileLink>
-          <MobileLink to="/vergleich">Vergleich<CountBadge count={count} /></MobileLink>
+          <MobileLink to="/vergleich">Vergleich</MobileLink>
           <MobileLink to="/watchlists">Watchlists</MobileLink>
           <div className="my-1 border-t border-line" />
           <MobileLink to="/methodik">Methodik</MobileLink>
