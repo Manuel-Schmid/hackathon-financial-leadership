@@ -131,3 +131,25 @@ export function sortCompanies(companies: Company[], key: SortKey, profile: Inves
     return y - x;
   });
 }
+
+const UNIVERSES: Universe[] = ['SP500', 'SWISS'];
+const numOrNull = (v: unknown): v is number | null => v === null || (typeof v === 'number' && Number.isFinite(v));
+
+/** Gespeicherten Filter Feld für Feld prüfen; Unbrauchbares (z. B. aus einer älteren App-Version) fällt auf den Standard. */
+export function restoreFilters(raw: unknown): Filters {
+  if (!raw || typeof raw !== 'object') return DEFAULT_FILTERS;
+  const r = raw as Record<string, unknown>;
+  const d = DEFAULT_FILTERS;
+  return {
+    universes: Array.isArray(r.universes) ? r.universes.filter((u): u is Universe => UNIVERSES.includes(u as Universe)) : d.universes,
+    sector: typeof r.sector === 'string' || r.sector === null ? r.sector : d.sector,
+    capMin: numOrNull(r.capMin) ? r.capMin : d.capMin,
+    capMax: numOrNull(r.capMax) ? r.capMax : d.capMax,
+    search: typeof r.search === 'string' ? r.search : d.search,
+    includeFinancials: typeof r.includeFinancials === 'boolean' ? r.includeFinancials : d.includeFinancials,
+  };
+}
+
+export function restoreSort(raw: unknown): SortKey {
+  return typeof raw === 'string' && raw in SORT_LABELS ? (raw as SortKey) : 'total';
+}
