@@ -139,11 +139,12 @@ export const DEFAULT_DIR: Record<SortKey, SortDir> = {
 };
 export const DEFAULT_SORT: SortState = { key: 'total', dir: 'desc' };
 
-/** Klick auf einen Spaltentitel: gleiche Spalte dreht die Richtung um, eine neue beginnt mit ihrer Startrichtung. */
-export function nextSort(current: SortState, key: SortKey): SortState {
-  if (current.key === key) return { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
-  return { key, dir: DEFAULT_DIR[key] };
+/** Richtung in Worten für den Richtungs-Knopf: Name alphabetisch, alle Zahlen nach Höhe. */
+export function sortDirLabel(key: SortKey, dir: SortDir): string {
+  if (key === 'name') return dir === 'asc' ? 'A bis Z' : 'Z bis A';
+  return dir === 'desc' ? 'höchste zuerst' : 'tiefste zuerst';
 }
+
 
 /** Sortiert nach Schlüssel und Richtung (Standard: DEFAULT_DIR); fehlende Werte immer ans Ende. */
 export function sortCompanies(companies: Company[], key: SortKey, profile: ProfileRef = 'ausgewogen', dir: SortDir = DEFAULT_DIR[key]): Company[] {
