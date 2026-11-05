@@ -3,7 +3,7 @@ import type { AxisScores, Company } from '@/data/types';
 import { KPIS, PROFILES } from './config';
 import { buildFazit } from './fazit';
 import { capBounds, capHistogram, capToPosition, positionToCap } from './capRange';
-import { activeFilters, DEFAULT_DIR, DEFAULT_FILTERS, formatCapRange, matchesFilters, nextSort, searchSuggestions, sortCompanies } from './filters';
+import { activeFilters, DEFAULT_DIR, DEFAULT_FILTERS, formatCapRange, matchesFilters, nextSort, searchSuggestions, sortCompanies, sortDirLabel } from './filters';
 import { formatKpi, formatMarketCap, formatScore, tickerAndSector } from './format';
 import { median, sectorMedian } from './medians';
 import { totalScore } from './weighting';
@@ -135,6 +135,10 @@ describe('Filter', () => {
     expect(nextSort({ key: 'total', dir: 'asc' }, 'name')).toEqual({ key: 'name', dir: 'asc' });
     expect(nextSort({ key: 'name', dir: 'asc' }, 'marketCap')).toEqual({ key: 'marketCap', dir: 'desc' });
     expect(DEFAULT_DIR.rentabilitaet).toBe('desc');
+    expect(sortDirLabel('name', 'asc')).toBe('A bis Z');
+    expect(sortDirLabel('name', 'desc')).toBe('Z bis A');
+    expect(sortDirLabel('total', 'desc')).toBe('höchste zuerst');
+    expect(sortDirLabel('marketCap', 'asc')).toBe('tiefste zuerst');
   });
 });
 
