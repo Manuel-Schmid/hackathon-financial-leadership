@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AmpelMatrix } from '@/components/compare/AmpelMatrix';
 import { CompareCard } from '@/components/compare/CompareCards';
 import { CompareRadar } from '@/components/compare/CompareRadar';
 import { CompareSearch } from '@/components/compare/CompareSearch';
@@ -95,6 +96,7 @@ export function Compare() {
                 <CompareCard key={c.ticker} company={c} color={COMPARE_COLORS[i]} profile={profile} onRemove={() => toggle(c.ticker)} />
               ))}
             </div>
+            <AmpelMatrix companies={companies} />
             <div className="grid gap-4 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
               <CompareRadar companies={companies} />
               <div className="min-w-0 space-y-4">
