@@ -46,8 +46,9 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
         <div className="mx-auto mb-1.5 h-1 w-9 rounded-full bg-line-strong" aria-hidden="true" />
         <h3 className="pr-6 font-title text-[17px] font-semibold">{company.name}</h3>
         <div className="mt-0.5 text-xs text-muted">
-          {company.ticker} · {company.sectorDe} · {company.index === 'SP500' ? 'S&P 500' : company.index} · Börsenwert{' '}
-          {formatMarketCap(company.marketCapUsd)}
+          {company.ticker} · {company.sectorDe} · {company.index === 'SP500' ? 'S&P 500' : company.index}
+          {/* Eigene Zeile: sonst bricht der Börsenwert fast immer mitten im Betrag um */}
+          <span className="block whitespace-nowrap">Börsenwert {formatMarketCap(company.marketCapUsd)}</span>
         </div>
       </div>
       {company.isFinancial && <div className="mb-2"><FinancialNote /></div>}
