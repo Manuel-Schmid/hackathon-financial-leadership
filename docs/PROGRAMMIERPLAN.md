@@ -6,15 +6,18 @@ Technische Ergänzung zu `docs/PLAN.md`: Der Plan sagt, **was** wir bauen. Diese
 
 | Schritt | Inhalt | Status |
 |---|---|---|
-| 1 | Gerüst Frontend (Vite, Tailwind, Router, Layout) | offen |
-| 2 | Datenbank (`supabase/schema.sql`) | geschrieben, noch nie gegen Supabase ausgeführt |
-| 3a | Pipeline: Ticker, Mapping, Kennzahlen, Scoring, JSON-Export | fertig, 45 Tests grün (u. a. VAT 2025, Geberit 2015) |
-| 3b | Echter Yahoo-Abruf (`fetch.py`) und `load_supabase.py` | geschrieben, noch nie gelaufen (yfinance und supabase noch nicht installiert) |
-| 4 | Explorer: Würfel, Filter, Liste, Kurzkarte, Watchlist-Leiste | offen |
-| 5 | Detailseite | offen |
-| 6 | Konto: Login, Profil, Watchlists, Gastmodus | offen |
-| 7 | Vergleich und Methodik | offen |
-| 8 | Absichern: Offline-Modus, Demo-Konten, Fehlerzustände | offen |
+| 1 | Gerüst Frontend (Vite, Tailwind, Router, Layout) | fertig |
+| 2 | Datenbank (`supabase/schema.sql`) | geschrieben, **noch nie gegen Supabase ausgeführt** |
+| 3a | Pipeline: Ticker, Mapping, Kennzahlen, Scoring, JSON-Export | fertig, Tests grün (u. a. VAT 2025, Geberit 2015) |
+| 3b | Yahoo-Abruf (`fetch.py`) | gelaufen, Ergebnis in `web/public/data/companies.json` |
+| 3c | `load_supabase.py` | geschrieben, **noch nie gelaufen** (kein Supabase-Projekt) |
+| 4 | Explorer: Würfel, Filter, Liste, Kurzkarte, Watchlist-Leiste | fertig, im Browser geprüft |
+| 5 | Detailseite | fertig, im Browser geprüft |
+| 6 | Konto: Gastmodus und Watchlists im Browser | fertig, im Browser geprüft |
+| 6b | Konto: Login, Registrieren, Profil, `SupabaseWatchlistStore` | geschrieben, **ungetestet** (kein Supabase-Projekt) |
+| 7 | Vergleich und Methodik | fertig, im Browser geprüft |
+| 8 | Offline-Modus (JSON + Gast) | läuft, weil Supabase fehlt; Rückfall bei Supabase-Ausfall ungetestet |
+| 8b | Demo-Konten, Screenshots für die Abgabe | offen |
 
 ## Grundregel: Abhängigkeiten zeigen nur in eine Richtung
 
@@ -61,10 +64,10 @@ config/*.json  ──►  data/pipeline  ──►  companies.json / Supabase  �
 | `report.py` | Plausibilität: VAT, fehlende Werte, Ausreisser |
 | `run_all.py` | alles der Reihe nach |
 
-### Frontend (`web/src/`, geplant)
+### Frontend (`web/src/`)
 | Ordner | Aufgabe |
 |---|---|
-| `lib/` | reine Funktionen ohne React: `config`, `format`, `ampel`, `weighting`, `filters`, `medians`, `fazit` (mit Vitest getestet) |
+| `lib/` | reine Funktionen ohne React: `config`, `format`, `ampel`, `weighting`, `filters`, `medians`, `fazit`, `compare`, `storage` (mit Vitest getestet) |
 | `data/` | `types`, `DataSource`, `JsonSource`, `SupabaseSource`, `index` (Auswahl + Rückfall auf JSON), `DataProvider` |
 | `auth/` | `AuthProvider`, `useAuth` |
 | `watchlists/` | `WatchlistStore`, `SupabaseWatchlistStore`, `LocalWatchlistStore`, `WatchlistProvider` |
@@ -81,9 +84,14 @@ Festgelegt beim Programmieren, damit der Score nicht in die Irre führt:
 - **Ø-Kennzahlen** (ROE, ROA, ROIC) sind leer, wenn das Vorjahr fehlt. Das älteste Jahr der Sparkline ist darum oft leer.
 - **Ampel über dem Richtwert-Band** bleibt bei „höher besser“ grün (VAT: ROE 27.7 % bei Richtwert 10–15 %), wie in den Mockups.
 - **Keine Kennzahl ohne Richtwert hat eine Ampel** (grau). Die Mockups zeigen bei der EBIT-Marge grün, das sind Beispielwerte. Massgebend ist `docs/KENNZAHLEN.md`.
+- **Gesamt-Score im Finanzsektor:** Die fehlende Liquiditäts-Achse wird nicht als 0 gezählt, ihr Gewicht verteilt sich auf die anderen Achsen.
+- **Vergleich, bester Wert beim FCF:** Keine Hervorhebung, wenn die Firmen in verschiedenen Währungen berichten. Aus demselben Grund kein Branchen-Median beim FCF.
+- **Yahoo vs. Geschäftsbericht:** siehe Abschnitt „Abweichungen“ in `docs/KENNZAHLEN.md`.
 
 ## Offene Punkte für das Team
 
-1. **SMI/SMIM-Liste prüfen** (`data/raw/smi_smim.csv`, Entwurf aus dem Gedächtnis). Sie hat 21 SMI + 28 SMIM = 49 Titel, offiziell sind es 20 + 30. Zu prüfen sind besonders Sandoz (steht unter SMIM), Baloise/Helvetia (Fusion, Ticker evtl. nicht mehr gültig) und die Titel, die fehlen.
+1. **SMI/SMIM-Liste prüfen** (`data/raw/smi_smim.csv`, Entwurf aus dem Gedächtnis). Sie hat 21 SMI + 27 SMIM = 48 Titel, sollte aber 20 + 30 haben. Zu prüfen sind besonders Sandoz (steht unter SMIM) und die fehlenden Titel. Bereits korrigiert, weil Yahoo die alten Symbole nicht mehr kennt: Roche ist `RO.SW` statt `ROG.SW`, Baloise + Helvetia sind `HBAN.SW`.
 2. **Supabase-Projekt anlegen**, `.env` ausfüllen, `supabase/schema.sql` ausführen, „Confirm email“ ausschalten.
-3. **10 Firmen gegen Geschäftsberichte prüfen**, sobald die Yahoo-Daten da sind.
+3. **10 Firmen gegen Geschäftsberichte prüfen** und die Ausreisser aus `report.py` durchgehen.
+4. **Doppelte Titel:** Alphabet (GOOG/GOOGL) und andere Aktienklassen aus der S&P-Liste sind zwei Punkte. Entscheiden, ob einer aus `data/raw/sp500.csv` raus soll.
+5. **Demo-Konten und Screenshots** für die Abgabe, sobald Supabase läuft.

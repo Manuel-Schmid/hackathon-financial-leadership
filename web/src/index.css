@@ -1,0 +1,45 @@
+@import '@fontsource/sora/600.css';
+@import '@fontsource/sora/700.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/manrope/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/600.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-paper font-sans text-sm text-text antialiased;
+}
+
+@layer components {
+  .card {
+    @apply rounded-[14px] border border-line bg-card;
+  }
+  .tag {
+    @apply text-[11px] font-bold uppercase tracking-[.06em] text-muted;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5 text-[13px] font-semibold;
+  }
+  .pill-on {
+    @apply border-ink bg-ink text-white;
+  }
+  .btn {
+    @apply rounded-[9px] border border-line bg-white px-3 py-2 text-[13px] font-bold transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply border-ink bg-ink text-white hover:bg-ink-2;
+  }
+  .input {
+    @apply rounded-[9px] border border-line bg-white px-3 py-2 text-[13px] outline-none focus:border-accent;
+  }
+}

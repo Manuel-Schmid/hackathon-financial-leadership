@@ -101,3 +101,15 @@ Feldnamen können je nach Firma fehlen oder variieren. Mapping mit Fallbacks, z.
 - Nettoumsatz: `Total Revenue`; EBIT: `EBIT` / `Operating Income`; EBITDA: `EBITDA`; Reingewinn: `Net Income`
 - Op. CF: `Operating Cash Flow`; Inv. CF: `Investing Cash Flow`; Dividende: `Cash Dividends Paid`; Zinsen: `Interest Paid Supplemental Data` / `Interest Expense`
 Fehlt ein Feld → Kennzahl `null`, nie 0.
+
+## Abweichungen Yahoo vs. Geschäftsbericht (VAT 2025, geprüft 05.11.2026)
+Bilanz und Cashflow stimmen exakt (EK-Quote 62.8 %, Current Ratio 131.4 %, FCF 43'024). Abweichungen gibt es dort, wo Yahoo Posten anders ausweist:
+
+| Kennzahl | Folien | Yahoo | Grund |
+|---|---|---|---|
+| EBIT-Marge | 25.4 % | 24.3 % | Yahoo: EBIT 260'851 (Operating Income 261'817), Bericht: 272'810 |
+| EBITDA-Marge | 30.0 % | 28.8 % | Yahoo: EBITDA 309'619, Bericht: 321'577 |
+| ROA | 17.1 % | 17.0 % | Yahoo hat nur den Zinsaufwand (3'536), die Folien bezahlte Zinsen (4'461) |
+| Zinsdeckung | 68.1 | 85.6 | dito |
+
+Die Formeln sind korrekt, das belegen die Tests mit den Folienzahlen. Die Abweichungen sind eine Grenze der Datenquelle und gehören in die Diskussion. Bei Firmen ohne ausgewiesenen Zinsaufwand (z. B. Apple) bleiben ROA und Zinsdeckung leer.

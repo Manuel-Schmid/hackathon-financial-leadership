@@ -41,6 +41,7 @@ Lies `docs/PROGRAMMIERPLAN.md`: Stand pro Schritt, Modul-Aufteilung, „Wo ände
 
 ## Bekannte Stolpersteine
 - **Repo-Wurzel ist dieser Ordner** (`Projekt/`). Alle Befehle von hier aus, Remote: `Manuel-Schmid/hackathon-financial-leadership`.
-- **iCloud:** Liegt der Ordner in iCloud-synchronisierten „Dokumente“, erzeugt iCloud Duplikate wie `Datei 2.js` in `node_modules` und zerstört den Build. Abhilfe: `node_modules` und `.venv` als `*.nosync`-Ordner anlegen und per Symlink einbinden (ist in `.gitignore` berücksichtigt).
+- **iCloud:** Liegt der Ordner in iCloud-synchronisierten „Dokumente“, erzeugt iCloud Duplikate wie `Datei 2.js` in `node_modules` und zerstört den Build. Abhilfe: `node_modules` und `.venv` als `*.nosync`-Ordner anlegen und per Symlink einbinden (ist in `.gitignore` berücksichtigt). Achtung: `npm install` ersetzt den Symlink durch einen echten Ordner; danach `rm -rf web/node_modules.nosync && mv web/node_modules web/node_modules.nosync && ln -s node_modules.nosync web/node_modules`.
+- **Browser-Selbstcheck ist nicht optional:** Build und Tests waren grün, während der Würfel wegen eines Layout-Fehlers unsichtbar war.
 - **Tests der Pipeline:** `python -m pytest data/tests` läuft auch ohne yfinance und ohne Netz. `fetch.py`, `load_supabase.py` und `export_json.py` (nur für den Wechselkurs) brauchen die Pakete aus `data/requirements.txt`.
 - **Pakete und externe Tools** nicht ungefragt installieren; die Person am Laptop zuerst fragen.

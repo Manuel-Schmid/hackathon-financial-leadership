@@ -2,7 +2,18 @@
 
 Hackathon „Finanzielle Führung“ HS26 (HSG). Web-App zum Vergleich von Unternehmen (S&P 500 + SMI/SMIM) anhand von Kennzahlen: jede Firma als Punkt in einem 3D-Würfel mit den Achsen **Liquidität, Rentabilität, Sicherheit**, dazu Filter, Detailseiten, Vergleich und Watchlists pro Kunde.
 
-> **Stand:** Konzept, Konfiguration, Datenbankschema und Berechnung (Kennzahlen, Scoring, Tests) sind im Repo. Das Frontend und der echte Yahoo-Abruf folgen. Details: `docs/PROGRAMMIERPLAN.md`.
+## Schnellstart (ohne Supabase)
+Die Daten liegen im Repo, Watchlists werden dann im Browser gespeichert:
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Danach http://localhost:5173 öffnen.
+
+> **Stand:** Explorer, Detailseite, Vergleich, Watchlists und Methodik laufen mit echten Daten. Login und Supabase sind geschrieben, aber noch ungetestet. Details: `docs/PROGRAMMIERPLAN.md`.
 
 ## Dokumentation
 - `CLAUDE.md` – Kontext und Regeln für AI-Assistenten (und alle anderen): zuerst lesen
@@ -14,15 +25,31 @@ Hackathon „Finanzielle Führung“ HS26 (HSG). Web-App zum Vergleich von Unter
 - `docs/ENTSCHEIDE.md` – Entscheide, Weg, Gelernt
 - `config/` – Kennzahlen- und Branchen-Konfiguration (eine Quelle der Wahrheit)
 
-## Tests der Berechnung
-Braucht nur `pytest`, kein Netz und kein yfinance:
-
+## Tests
 ```bash
 python3 -m pytest data/tests
 ```
 
-## Setup
+```bash
+npm --prefix web test
+```
+
+## Mit Login (Supabase)
 1. `.env.example` nach `.env` kopieren und Supabase-Werte eintragen (nie committen)
-2. `supabase/schema.sql` im Supabase SQL-Editor ausführen
-3. Daten: `python3 -m venv data/.venv && data/.venv/bin/pip install -r data/requirements.txt && data/.venv/bin/python data/pipeline/run_all.py`
-4. App (sobald vorhanden): `cd web && npm install && npm run dev` → http://localhost:5173
+2. `supabase/schema.sql` im Supabase SQL-Editor ausführen, unter Authentication „Confirm email“ ausschalten
+3. Daten laden: `data/.venv/bin/python data/pipeline/load_supabase.py`
+
+## Daten neu holen
+```bash
+python3 -m venv data/.venv
+```
+
+```bash
+data/.venv/bin/pip install -r data/requirements.txt
+```
+
+```bash
+data/.venv/bin/python data/pipeline/run_all.py
+```
+
+Bereits geholte Firmen liegen in `data/cache/` und werden übersprungen. Nur neu rechnen, ohne Abruf: `data/.venv/bin/python data/pipeline/export_json.py`

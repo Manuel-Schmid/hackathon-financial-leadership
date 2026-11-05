@@ -15,3 +15,9 @@ Laufend ergänzen (Uhrzeit · was · warum · was hat (nicht) funktioniert). Gru
 | Do | Pipeline vor dem Frontend, zuerst mit VAT- und Geberit-Zahlen getestet | Die Formeln stimmen mit den Folien überein, bevor echte Daten fliessen; 45 Tests grün |
 | Do | Negatives Eigenkapital zählt beim Verschuldungsgrad als schlechtester Rang | Sonst hätten überschuldete Firmen den besten Wert („tiefer = besser“), gefunden beim Schreiben der Scoring-Regeln |
 | Do | SMI/SMIM-Liste offen | Entwurf hat 21 + 28 statt 20 + 30 Titel, muss gegen six-group.com geprüft werden |
+| Do | Yahoo-Abruf getestet, bevor das Frontend entstand | Grösstes Risiko zuerst: lief ohne Sperre, VAT-Bilanz stimmt exakt mit den Folien |
+| Do | Yahoo-EBIT weicht vom Geschäftsbericht ab (24.3 % statt 25.4 %) | Gelernt: Datenanbieter bereinigen Posten; Formel ist korrekt, Grenze wird auf der Methodik-Seite offengelegt |
+| Do | Fehler: Würfel unsichtbar, weil die lange Liste die Rasterzeile auf 13'000 px dehnte | Nur im Browser sichtbar, Build und Tests waren grün. Gelernt: Selbstcheck im Browser ist nötig |
+| Do | Three.js-Tone-Mapping ausgeschaltet | Es verfälschte die Branding-Farben (grauer Boden) |
+| Do | Voller Yahoo-Abruf: alle 551 Titel, rund 12 Minuten statt der geplanten 30–45 | Drei Symbole aus der Handliste waren ungültig (Roche, Baloise, Helvetia), korrigiert. Keine Drosselung |
+| Do | Georg Fischer mit Verschuldungsgrad −397 geprüft | Kein Fehler: Yahoo weist negatives Eigenkapital aus; 32 Firmen sind so, die Regel „schlechtester Rang“ greift |
