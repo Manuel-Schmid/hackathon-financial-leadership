@@ -1,7 +1,7 @@
-import { memo, useEffect, useRef, type ReactNode } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import type { Company } from '@/data/types';
 import { AXIS_IDS, AXIS_STYLE } from '@/lib/config';
-import { DEFAULT_DIR, nextSort, SORT_LABELS, type SortKey, type SortState } from '@/lib/filters';
+import { DEFAULT_DIR, SORT_LABELS, sortDirLabel, type SortKey, type SortState } from '@/lib/filters';
 import { formatScore } from '@/lib/format';
 import { totalScore, type ProfileRef } from '@/lib/weighting';
 import { Bar, FinancialNote, SectorDot } from '../ui/atoms';
@@ -72,28 +72,33 @@ const Row = memo(function Row({ company, total, selected, starred, onSelect, onT
   );
 });
 
-/** Spaltentitel zum Sortieren: Klick wählt die Spalte bzw. dreht die Richtung; Pfeil zeigt die aktive Sortierung. */
-function SortHeader({ sortKey, sort, onSort, label, children, className = '' }: {
-  sortKey: SortKey;
-  sort: SortState;
-  onSort(next: SortState): void;
-  label: string;
-  children: ReactNode;
-  className?: string;
-}) {
-  const active = sort.key === sortKey;
-  const richtung = sort.dir === 'asc' ? 'aufsteigend' : 'absteigend';
+/** Knopf neben dem Dropdown: zeigt die aktuelle Richtung, ein Klick dreht sie um. */
+function DirButton({ sort, onSort }: { sort: SortState; onSort(next: SortState): void }) {
+  const label = sortDirLabel(sort.key, sort.dir);
+  const flipped = sort.dir === 'asc' ? 'desc' : 'asc';
   return (
     <button
       type="button"
-      onClick={() => onSort(nextSort(sort, sortKey))}
-      aria-label={`Nach ${label} sortieren${active ? `, jetzt ${richtung}` : ''}`}
-      title={`Nach ${label} sortieren`}
-      className={`inline-flex items-center gap-0.5 hover:text-text ${active ? 'text-text' : ''} ${className}`}
+      onClick={() => onSort({ key: sort.key, dir: flipped })}
+      aria-label={`Richtung: ${label}. Umdrehen auf ${sortDirLabel(sort.key, flipped)}`}
+      title={`${label} (Klick dreht um)`}
+      className="pill cursor-pointer px-2 hover:bg-paper"
     >
-      {children}
-      <span aria-hidden="true" className={`w-2.5 text-[10px] ${active ? '' : 'invisible'}`}>{sort.dir === 'asc' ? '▲' : '▼'}</span>
+      <SortIcon dir={sort.dir} />
     </button>
+  );
+}
+
+/** Sortier-Symbol: Pfeil nach unten mit kürzer werdenden Balken (höchste zuerst) bzw. umgekehrt. */
+function SortIcon({ dir }: { dir: SortState['dir'] }) {
+  const bars = dir === 'desc' ? [10, 7, 4] : [4, 7, 10];
+  return (
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d={dir === 'desc' ? 'M3 2.5v11M1 11.5l2 2 2-2' : 'M3 13.5v-11M1 4.5l2-2 2 2'} />
+      {bars.map((w, i) => (
+        <path key={i} d={`M7.5 ${4 + i * 4}h${w * 0.75}`} />
+      ))}
+    </svg>
   );
 }
 
@@ -113,32 +118,35 @@ export function CompanyList({ companies, profile, sort, selected, starred, onSor
     <div className="card flex min-h-0 flex-col overflow-hidden">
       <div className="flex items-end justify-between gap-2 px-5 pb-3 pt-4">
         <h2 className="font-title text-lg font-semibold">{companies.length} Unternehmen</h2>
-        <select
-          aria-label="Sortieren"
-          className="pill cursor-pointer"
-          value={sort.key}
-          onChange={(e) => {
-            const key = e.target.value as SortKey;
-            onSort({ key, dir: DEFAULT_DIR[key] });
-          }}
-        >
-          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-            <option key={key} value={key}>
-              {SORT_LABELS[key]}
-            </option>
-          ))}
-        </select>
+        <div className="flex items-center gap-1.5">
+          <select
+            aria-label="Sortieren nach"
+            className="pill cursor-pointer"
+            value={sort.key}
+            onChange={(e) => {
+              const key = e.target.value as SortKey;
+              onSort({ key, dir: DEFAULT_DIR[key] });
+            }}
+          >
+            {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
+              <option key={key} value={key}>
+                {SORT_LABELS[key]}
+              </option>
+            ))}
+          </select>
+          <DirButton sort={sort} onSort={onSort} />
+        </div>
       </div>
       <div className={`grid ${COLUMNS} gap-2 border-t border-line px-5 py-2 text-xs font-semibold text-muted`}>
-        <SortHeader sortKey="name" sort={sort} onSort={onSort} label="Name">Unternehmen</SortHeader>
-        <span className="flex gap-1">
+        <span>Unternehmen</span>
+        <span className="flex gap-1.5">
           {AXIS_IDS.map((axis) => (
-            <SortHeader key={axis} sortKey={axis} sort={sort} onSort={onSort} label={SORT_LABELS[axis]} className={AXIS_STYLE[axis].text}>
+            <span key={axis} className={AXIS_STYLE[axis].text} title={SORT_LABELS[axis]}>
               {AXIS_STYLE[axis].short}
-            </SortHeader>
+            </span>
           ))}
         </span>
-        <SortHeader sortKey="total" sort={sort} onSort={onSort} label="Gesamt-Score" className="justify-end">Gesamt</SortHeader>
+        <span className="text-right">Gesamt</span>
       </div>
       <div className="min-h-[320px] flex-1 overflow-y-auto lg:min-h-0">
         {companies.map((c) => (
