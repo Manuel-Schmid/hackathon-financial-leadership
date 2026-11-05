@@ -62,8 +62,9 @@ export function CompanyDetail() {
         ))}
       </div>
       <p className="text-xs text-muted">
-        Ampel: grün = Richtwert erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben, grau = kein Richtwert oder keine Daten.
-        Richtwerte sind exemplarisch (Buch S. 293).
+        Ampel je Richtwert: grün = erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben, grau = kein Richtwert oder keine Daten.
+        «Allgemein» = Richtwerte aus dem Buch (S. 292–293), exemplarisch. «Branche» = Richtwert für {company.sectorDe}, nur wo die
+        Branche einen eigenen Wert hat (Herleitung unter Methodik).
       </p>
     </main>
   );

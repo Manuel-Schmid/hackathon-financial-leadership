@@ -24,3 +24,6 @@ __pycache__/
 
 # JetBrains IDE (WebStorm, PyCharm, IntelliJ)
 .idea/
+
+# Rohdaten der Branchen-Richtwerte (BACH ~195 MB, Damodaran)
+data/research/cache/

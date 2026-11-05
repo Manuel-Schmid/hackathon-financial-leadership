@@ -7,6 +7,7 @@ import type { AxisId, InvestorProfile } from '@/data/types';
 export const THEME = themeConfig;
 
 export type KpiUnit = 'pct' | 'currency' | 'years' | 'factor';
+export type Richtwert = { min?: number; max?: number; label: string };
 
 export interface KpiDef {
   id: string;
@@ -16,7 +17,9 @@ export interface KpiDef {
   formula: string;
   direction: 'higher' | 'lower';
   inScore: boolean | string;
-  richtwert: { min?: number; max?: number; label: string } | null;
+  richtwert: Richtwert | null;
+  /** Branchen-Richtwerte (docs/BRANCHEN_RICHTWERTE.md), Schlüssel = Sektor englisch */
+  richtwertBranche?: { quelle: string; werte: Record<string, Richtwert> };
   unit: KpiUnit;
   source: string;
 }

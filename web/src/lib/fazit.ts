@@ -1,5 +1,6 @@
 import type { AxisId, Company } from '@/data/types';
 import { KPIS } from './config';
+import { ampelFor, compareMode, type RichtwertModus } from './richtwert';
 
 const AXIS_SENTENCE: Record<AxisId, string> = {
   sicherheit: 'am sichersten',
@@ -8,7 +9,7 @@ const AXIS_SENTENCE: Record<AxisId, string> = {
 };
 
 /** Regelbasiertes Kurzfazit: beste Firma pro Achse, dann wer wo unter den Richtwerten liegt. */
-export function buildFazit(companies: Company[]): string {
+export function buildFazit(companies: Company[], modus: RichtwertModus = compareMode(companies)): string {
   if (companies.length < 2) return 'Für ein Fazit braucht es mindestens zwei Unternehmen.';
   const parts: string[] = [];
 
@@ -21,7 +22,7 @@ export function buildFazit(companies: Company[]): string {
 
   const redCounts = companies.map((c) => ({
     company: c,
-    red: KPIS.filter((k) => c.kpis[k.id]?.ampel === 'red').map((k) => k.short),
+    red: KPIS.filter((k) => ampelFor(c.kpis[k.id], modus) === 'red').map((k) => k.short),
   }));
   const worst = redCounts.reduce((a, b) => (b.red.length > a.red.length ? b : a));
   if (worst.red.length) {

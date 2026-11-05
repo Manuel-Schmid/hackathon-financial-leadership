@@ -150,7 +150,7 @@ describe('Median', () => {
     expect(median([])).toBeNull();
   });
   it('rechnet nur innerhalb der Branche und ignoriert null', () => {
-    const kpi = (value: number | null) => ({ roe: { value, ampel: 'grey' as const, history: [] } });
+    const kpi = (value: number | null) => ({ roe: { value, ampel: 'grey' as const, ampelBranche: 'grey' as const, history: [] } });
     const list = [
       company({ kpis: kpi(0.1) }),
       company({ kpis: kpi(0.3) }),
@@ -163,7 +163,7 @@ describe('Median', () => {
 
 describe('Kurzfazit', () => {
   it('nennt die Beste pro Achse und Richtwert-Verfehlungen', () => {
-    const red = { value: 0.1, ampel: 'red' as const, history: [] };
+    const red = { value: 0.1, ampel: 'red' as const, ampelBranche: 'red' as const, history: [] };
     const text = buildFazit([
       company({ name: 'A', scores: { liquiditaet: 10, rentabilitaet: 90, sicherheit: 20 }, kpis: { cash_ratio: red } }),
       company({ name: 'B', scores: { liquiditaet: 80, rentabilitaet: 30, sicherheit: 95 } }),
