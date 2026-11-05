@@ -18,6 +18,7 @@ Technische Ergänzung zu `docs/PLAN.md`: Der Plan sagt, **was** wir bauen. Diese
 | 7 | Vergleich und Methodik | fertig, im Browser geprüft |
 | 8 | Offline-Modus (JSON + Gast) | getestet: bei fehlenden Tabellen und bei unerreichbarem Supabase; ohne Netz dauert der Start rund 8 s. Mit `VITE_DATA_MODE=json` startet die App sofort aus der Datei |
 | 8b | Demo-Konten, Screenshots für die Abgabe | offen |
+| 9 | Branchen-Richtwerte (`richtwertBranche`, `ampelBranche`), Branch `branchenangepasste_kennzahlen` | fertig, im Browser geprüft (JSON-Modus); Supabase braucht die Spalte `ampel_branche` |
 
 ## Grundregel: Abhängigkeiten zeigen nur in eine Richtung
 
@@ -39,6 +40,7 @@ config/*.json  ──►  data/pipeline  ──►  companies.json / Supabase  �
 | Anlegerprofil oder Gewichtung ändern | `profile` in `config/kpis.json` | nichts |
 | Gelb-Toleranz der Ampel | `ampel.gelbToleranz` in `config/kpis.json` | `export_json.py` |
 | Yahoo-Feld hat anderen Namen | `data/pipeline/mapping.py` | `export_json.py` |
+| Branchen-Richtwerte neu erheben | `data/research/branchen_richtwerte.py` (Quellen in `docs/BRANCHEN_RICHTWERTE.md`) | `refresh_from_json.py` oder `export_json.py`, dann `load_supabase.py` |
 | Scoring-Methode | `data/pipeline/scoring.py` (Regeln in `docs/KENNZAHLEN.md`) | `export_json.py` |
 | Firmen im Universum | `data/raw/*.csv` | `run_all.py` |
 | Branchenname oder -farbe | `config/sectors.json` | `export_json.py` |

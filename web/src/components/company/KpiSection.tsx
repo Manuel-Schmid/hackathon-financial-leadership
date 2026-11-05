@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import type { AxisId, Company } from '@/data/types';
+import type { Ampel, AxisId, Company } from '@/data/types';
 import { axisTicks, companyYears, formatAxisTick, historyForYears } from '@/lib/chartAxis';
 import { AXES, AXIS_STYLE, KPIS, THEME, type KpiDef } from '@/lib/config';
 import { formatKpi, formatScore } from '@/lib/format';
 import { sectorMedian } from '@/lib/medians';
+import { ampelFor, eigenerBranchenwert } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
 const AXIS_TEXT = { fontSize: 11, fill: THEME.muted };
@@ -67,21 +68,46 @@ function usage(def: KpiDef): string {
   return '';
 }
 
+function RichtwertLine({ label, value, ampel, title }: { label: string; value: string; ampel: Ampel; title: string }) {
+  return (
+    <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-snug text-muted" title={title}>
+      {/* Kurzform für die schmale Spalte: «J.» wie in der Median-Zeile, ohne Klammerzusatz («(RONOA)»); voll im Tooltip */}
+      <span>
+        {label} {value.replace(' Jahre', ' J.').replace(/ \(.*\)$/, '')}
+      </span>
+      <AmpelDot ampel={ampel} />
+    </p>
+  );
+}
+
 function KpiRow({ def, company, all, years }: { def: KpiDef; company: Company; all: Company[]; years: number[] }) {
   const kpi = company.kpis[def.id];
   // Beträge in verschiedenen Währungen haben keinen sinnvollen Median
   const median = def.unit === 'currency' ? null : sectorMedian(all, company.sector, def.id);
+  // Branchen-Zeile nur, wenn die Branche einen eigenen, vom allgemeinen abweichenden Richtwert hat
+  const branche = eigenerBranchenwert(def, company.sector, kpi);
   return (
     <div className="grid grid-cols-[132px_minmax(0,1fr)] items-center gap-2 border-t border-line-soft py-2.5">
       <div className="min-w-0">
         <h3 className="text-[13.5px] font-bold leading-tight" title={`${def.label}: ${def.formula} (${def.source}).${usage(def)}`}>
           {def.short}
         </h3>
-        <p className="mt-0.5 flex items-center gap-1.5 whitespace-nowrap font-mono text-[15px] font-semibold leading-snug">
+        <p className="mt-0.5 whitespace-nowrap font-mono text-[15px] font-semibold leading-snug">
           {formatKpi(kpi?.value, def.unit, company.currency)}
-          <AmpelDot ampel={kpi?.ampel ?? 'grey'} />
         </p>
-        <p className="mt-0.5 text-xs leading-snug text-muted">Richtwert {def.richtwert?.label ?? 'keiner'}</p>
+        {def.richtwert ? (
+          <RichtwertLine label="Allgemein" value={def.richtwert.label} ampel={kpi?.ampel ?? 'grey'} title={`Allgemeiner Richtwert ${def.richtwert.label} (Buch S. 292–293)`} />
+        ) : (
+          <p className="mt-0.5 text-xs leading-snug text-muted">Kein Richtwert</p>
+        )}
+        {branche && (
+          <RichtwertLine
+            label="Branche"
+            value={branche.label}
+            ampel={ampelFor(kpi, 'branche')}
+            title={`Richtwert ${company.sectorDe}: ${def.richtwertBranche?.quelle ?? ''}`}
+          />
+        )}
         {median !== null && <p className="text-xs leading-snug text-muted">Median {formatKpi(median, def.unit)}</p>}
       </div>
       <TimeChart company={company} def={def} years={years} />

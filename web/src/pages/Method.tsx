@@ -1,3 +1,4 @@
+import { BranchenRichtwerte } from '@/components/method/BranchenRichtwerte';
 import { PageTitle } from '@/components/ui/atoms';
 import { useData } from '@/data/DataProvider';
 import { AXES, AXIS_IDS, AXIS_STYLE, KPIS, PROFILE_IDS } from '@/lib/config';
@@ -76,6 +77,8 @@ export function Method() {
           ))}
         </table>
       </section>
+
+      <BranchenRichtwerte />
 
       <section className="card space-y-2 p-5">
         <h2 className="font-title text-[17px] font-semibold">Datenquelle und Grenzen</h2>

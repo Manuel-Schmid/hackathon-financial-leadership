@@ -55,6 +55,8 @@ Kreuz = Kennzahl ist für diese Branche besonders relevant.
 
 Buch: „Die Richtwerte sind exemplarische Erwartungswerte und müssen der aktuellen Anwendung, insbesondere der spezifischen Unternehmenssituation, der wirtschaftlichen Lage und den Besonderheiten der Branche angepasst werden.“
 
+**Umsetzung in KUBUS:** Branchen-Richtwerte für 9 Kennzahlen (Buch-Richtwert × Branchenfaktor aus BACH und Damodaran) in `richtwertBranche` von `config/kpis.json`; Herleitung und Quellen in `docs/BRANCHEN_RICHTWERTE.md`.
+
 ## Scoring (festgelegt)
 1. Kennzahlen pro Unternehmen für das **letzte Geschäftsjahr** berechnen (Ø-Werte aus Vorjahr und aktuellem Jahr).
 2. Jede Kennzahl mit „Im Score = ja“ in einen Teilscore 0–100 umrechnen: **Perzentil-Rang** innerhalb aller nicht-finanziellen Unternehmen der Datenbank (bestes = 100). Bei „tiefer besser“ umgekehrt.

@@ -33,6 +33,9 @@ create table if not exists public.kpis (
   primary key (ticker, year, kpi_id)
 );
 
+-- Branchen-Ampel (docs/BRANCHEN_RICHTWERTE.md); idempotent, auch für bestehende Datenbanken
+alter table public.kpis add column if not exists ampel_branche text check (ampel_branche in ('green', 'yellow', 'red', 'grey'));
+
 create table if not exists public.scores (
   ticker text references public.companies on delete cascade,
   year int,

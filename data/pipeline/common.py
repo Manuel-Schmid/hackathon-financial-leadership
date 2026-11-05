@@ -21,6 +21,11 @@ def load_sectors() -> dict:
     return json.loads((CONFIG_DIR / "sectors.json").read_text(encoding="utf-8"))
 
 
+def branchen_richtwert(kpi: dict, sector: str) -> dict | None:
+    """Richtwert der Branche (docs/BRANCHEN_RICHTWERTE.md) oder None, dann gilt das Buch."""
+    return kpi.get("richtwertBranche", {}).get("werte", {}).get(sector)
+
+
 def size_class(market_cap_usd: float | None) -> str | None:
     """Large > 10 Mrd., Mid 2–10 Mrd., Small < 2 Mrd. USD (docs/PLAN.md)."""
     if market_cap_usd is None:

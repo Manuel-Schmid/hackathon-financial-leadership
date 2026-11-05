@@ -15,3 +15,36 @@ def test_one_share_class_per_company():
     assert not {"GOOG", "FOX", "NWS"} & tickers
     bases = [r["name"].split(" (Class")[0] for r in build_rows()]
     assert len(bases) == len(set(bases))
+
+
+class _Query:
+    def __init__(self, fail):
+        self.fail = fail
+
+    def select(self, *_):
+        return self
+
+    def limit(self, *_):
+        return self
+
+    def execute(self):
+        if self.fail:
+            raise RuntimeError("column kpis.ampel_branche does not exist")
+        return self
+
+
+class _Client:
+    def __init__(self, fail):
+        self.fail = fail
+
+    def table(self, _):
+        return _Query(self.fail)
+
+
+def test_schema_check_bricht_vor_dem_laden_ab_wenn_spalte_fehlt():
+    import pytest
+    from load_supabase import check_schema
+
+    with pytest.raises(SystemExit, match="alter table public.kpis add column"):
+        check_schema(_Client(fail=True))
+    check_schema(_Client(fail=False))  # Spalte vorhanden: kein Abbruch
