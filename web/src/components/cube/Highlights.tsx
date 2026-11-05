@@ -1,4 +1,4 @@
-import { Html, Line } from '@react-three/drei';
+import { Billboard, Html, Line } from '@react-three/drei';
 import type { Company } from '@/data/types';
 import { AXES, AXIS_IDS, SECTORS, THEME } from '@/lib/config';
 import { formatScore } from '@/lib/format';
@@ -21,10 +21,25 @@ export function Highlights({ points, selected }: { points: CubePoint[]; selected
               <meshBasicMaterial color={color} transparent opacity={0.6} />
             </mesh>
             {isSelected && (
-              <mesh position={p.position}>
-                <sphereGeometry args={[p.radius + 0.14, 20, 20]} />
-                <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.22} depthWrite={false} />
-              </mesh>
+              // depthTest aus: Die Auswahl liegt immer obenauf und verschwindet nie hinter grauen Punkten.
+              <group position={p.position}>
+                <mesh renderOrder={10}>
+                  <sphereGeometry args={[p.radius + 0.14, 20, 20]} />
+                  <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.22} depthTest={false} depthWrite={false} />
+                </mesh>
+                <mesh renderOrder={11} scale={p.radius}>
+                  <sphereGeometry args={[1, 20, 20]} />
+                  <meshBasicMaterial color={p.company.isFinancial ? '#FFFFFF' : color} depthTest={false} transparent />
+                </mesh>
+                {p.company.isFinancial && (
+                  <Billboard renderOrder={12}>
+                    <mesh renderOrder={12} scale={p.radius * 1.05}>
+                      <torusGeometry args={[1, 0.2, 8, 28]} />
+                      <meshBasicMaterial color={color} depthTest={false} transparent />
+                    </mesh>
+                  </Billboard>
+                )}
+              </group>
             )}
             <Html position={[x + p.radius + 0.1, y, z]} zIndexRange={[8, 6]} className="pointer-events-none select-none" style={{ transform: 'translateY(-50%)' }}>
               <span

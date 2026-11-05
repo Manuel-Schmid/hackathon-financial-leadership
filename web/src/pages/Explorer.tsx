@@ -46,14 +46,16 @@ export function Explorer() {
       <main className="grid flex-1 gap-4 p-4 lg:h-[calc(100vh-146px)] lg:flex-none lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_420px] lg:grid-rows-[minmax(0,1fr)] lg:px-7">
         <div className="flex min-h-0 flex-col gap-4">
           <section className="card relative min-h-[520px] flex-1 overflow-hidden">
-            <div className="pointer-events-none absolute left-6 top-4 z-10">
+            {/* Textflächen lassen die Maus durch: Darunter dreht, zoomt und klickt man wie überall im Würfel. */}
+            <div className="pointer-events-none absolute left-3 top-3 z-10 max-w-[380px] rounded-[10px] bg-white/90 px-4 py-2.5">
               <h2 className="font-title text-xl font-semibold">Zieldreieck als Würfel</h2>
-              <p className="mt-1 max-w-[520px] text-[13px] text-muted">
+              <p className="mt-0.5 text-[13px] text-muted">
                 Jeder Punkt ist ein Unternehmen. Oben rechts hinten liegen die liquiden, rentablen und sicheren.
                 {missingScores > 0 && ` ${missingScores} ohne vollständige Scores fehlen im Würfel.`}
               </p>
             </div>
-            <div className="absolute inset-0">
+            {/* isolate: Firmennamen im Würfel bleiben unter den Textflächen und der Kurzkarte. */}
+            <div className="absolute inset-0 isolate">
               <ErrorBoundary fallback={CUBE_FALLBACK}>
                 <Suspense fallback={<div className="grid h-full place-items-center text-muted">Würfel wird geladen …</div>}>
                   <CubeCanvas
@@ -62,6 +64,7 @@ export function Explorer() {
                     selected={selected}
                     highlighted={activeTickers}
                     onSelect={setSelected}
+                    onDeselect={() => setSelected(null)}
                   />
                 </Suspense>
               </ErrorBoundary>

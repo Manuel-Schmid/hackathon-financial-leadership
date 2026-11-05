@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { Company } from '@/data/types';
 import { QUICK_KPIS } from '@/lib/compare';
 import { KPI_BY_ID } from '@/lib/config';
 import { formatKpi, formatMarketCap } from '@/lib/format';
+import { useDragOffset } from '@/lib/useDragOffset';
 import { AmpelDot, FinancialNote, ScoreTiles } from '../ui/atoms';
 
 interface Props {
@@ -13,15 +15,39 @@ interface Props {
 }
 
 export function QuickCard({ company, starred, onToggle, onClose }: Props) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { offset, handleProps } = useDragOffset(cardRef);
+
   return (
-    <div className="card absolute right-4 top-4 z-10 w-[310px] max-w-[calc(100%-2rem)] px-[18px] py-4 shadow-pop">
-      <button type="button" aria-label="Schliessen" className="absolute right-3 top-2 text-lg text-muted hover:text-text" onClick={onClose}>
+    <div
+      ref={cardRef}
+      className="card absolute right-4 top-4 z-20 w-[310px] max-w-[calc(100%-2rem)] px-[18px] pb-4 shadow-pop"
+      style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+    >
+      <button
+        type="button"
+        aria-label="Kurzkarte schliessen"
+        title="Schliessen"
+        className="absolute right-1.5 top-1.5 z-10 grid h-8 w-8 place-items-center rounded-full text-[24px] leading-none text-text hover:bg-line-soft hover:text-bad"
+        onClick={onClose}
+      >
         ×
       </button>
-      <h3 className="pr-5 font-title text-[17px] font-semibold">{company.name}</h3>
-      <div className="mb-3 mt-0.5 text-xs text-muted">
-        {company.ticker} · {company.sectorDe} · {company.index === 'SP500' ? 'S&P 500' : company.index} · Börsenwert{' '}
-        {formatMarketCap(company.marketCapUsd)}
+      {/* Griff: Der ganze Kopf verschiebt die Karte, die Knöpfe darunter bleiben normal klickbar. */}
+      <div
+        {...handleProps}
+        role="button"
+        tabIndex={0}
+        aria-label="Kurzkarte verschieben, auch mit den Pfeiltasten"
+        title="Zum Verschieben ziehen"
+        className="-mx-[18px] cursor-grab touch-none select-none rounded-t-[14px] px-[18px] pb-3 pt-2 hover:bg-paper active:cursor-grabbing"
+      >
+        <div className="mx-auto mb-1.5 h-1 w-9 rounded-full bg-line-strong" aria-hidden="true" />
+        <h3 className="pr-6 font-title text-[17px] font-semibold">{company.name}</h3>
+        <div className="mt-0.5 text-xs text-muted">
+          {company.ticker} · {company.sectorDe} · {company.index === 'SP500' ? 'S&P 500' : company.index} · Börsenwert{' '}
+          {formatMarketCap(company.marketCapUsd)}
+        </div>
       </div>
       {company.isFinancial && <div className="mb-2"><FinancialNote /></div>}
       <ScoreTiles scores={company.scores} />

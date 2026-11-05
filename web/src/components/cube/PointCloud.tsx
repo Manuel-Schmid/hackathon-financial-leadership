@@ -14,15 +14,27 @@ export interface CubePoint {
   position: Vec3;
   radius: number;
   visible: boolean;
+  /** Eine andere Firma ist ausgewählt: grau, bleibt aber anklickbar. */
+  dimmed: boolean;
 }
 
-export function buildPoints(companies: Company[], visible: Set<string>): CubePoint[] {
+export function buildPoints(companies: Company[], visible: Set<string>, selected: string | null): CubePoint[] {
   const points: CubePoint[] = [];
   for (const company of companies) {
     const position = companyPosition(company);
     if (position) {
-      points.push({ company, position, radius: pointRadius(company.marketCapUsd), visible: visible.has(company.ticker) });
+      points.push({
+        company,
+        position,
+        radius: pointRadius(company.marketCapUsd),
+        visible: visible.has(company.ticker),
+        dimmed: false,
+      });
     }
+  }
+  // Nur ausgrauen, wenn die ausgewählte Firma im Würfel liegt; sonst wäre alles grau ohne sichtbaren Grund.
+  if (points.some((p) => p.company.ticker === selected)) {
+    for (const p of points) p.dimmed = p.company.ticker !== selected;
   }
   return points;
 }
@@ -46,7 +58,7 @@ export function PointCloud({ points, onHover, onSelect }: Props) {
       dummy.scale.setScalar(p.visible ? p.radius : p.radius * 0.5);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
-      const color = !p.visible
+      const color = !p.visible || p.dimmed
         ? DIMMED
         : p.company.isFinancial
           ? WHITE
@@ -95,7 +107,7 @@ export function PointCloud({ points, onHover, onSelect }: Props) {
 /** Ringe um den Finanzsektor (hohle Punkte); drehen sich immer zur Kamera. */
 export function FinancialRings({ points }: { points: CubePoint[] }) {
   const ref = useRef<InstancedMesh>(null);
-  const rings = useMemo(() => points.filter((p) => p.company.isFinancial && p.visible), [points]);
+  const rings = useMemo(() => points.filter((p) => p.company.isFinancial && p.visible && !p.dimmed), [points]);
   const color = SECTORS.Financials?.color ?? THEME.cube.fallback;
 
   useFrame(({ camera }) => {

@@ -73,13 +73,13 @@ export function CubeFrame() {
       />
 
       <Label position={[0, -HALF - 1, HALF + 0.3]} className="font-title text-sm font-bold text-L">
-        LIQUIDITÄT →
+        LIQUIDITÄT
       </Label>
       <Label position={[-HALF - 1.2, 0, HALF]} className="font-title text-sm font-bold text-R-text">
-        RENTABILITÄT ↑
+        RENTABILITÄT
       </Label>
       <Label position={[-HALF - 1, -HALF - 0.5, 0]} className="font-title text-sm font-bold text-S">
-        SICHERHEIT ↗
+        SICHERHEIT
       </Label>
 
       {TICKS.map((v) => (

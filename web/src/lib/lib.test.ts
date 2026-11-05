@@ -60,8 +60,14 @@ describe('Filter', () => {
     expect(matchesFilters(company(), { ...DEFAULT_FILTERS, search: 'vat g' })).toBe(true);
     expect(matchesFilters(company(), { ...DEFAULT_FILTERS, search: 'apple' })).toBe(false);
   });
-  it('Finanzsektor lässt sich ausblenden', () => {
-    expect(matchesFilters(company({ isFinancial: true }), { ...DEFAULT_FILTERS, includeFinancials: false })).toBe(false);
+  it('Finanzsektor ist beim Start aus und lässt sich einschalten', () => {
+    expect(matchesFilters(company({ isFinancial: true }), DEFAULT_FILTERS)).toBe(false);
+    expect(matchesFilters(company({ isFinancial: true }), { ...DEFAULT_FILTERS, includeFinancials: true })).toBe(true);
+  });
+  it('Suche findet Banken auch bei ausgeschaltetem Finanzsektor', () => {
+    const bank = company({ isFinancial: true, name: 'UBS', ticker: 'UBSG.SW' });
+    expect(matchesFilters(bank, { ...DEFAULT_FILTERS, search: 'ubs' })).toBe(true);
+    expect(matchesFilters(bank, { ...DEFAULT_FILTERS, search: 'nestle' })).toBe(false);
   });
   it('Börsenwert-Bereich und Branche wirken', () => {
     expect(matchesFilters(company(), { ...DEFAULT_FILTERS, capMin: 25e9 })).toBe(false);
@@ -87,9 +93,9 @@ describe('Filter', () => {
     expect(formatCapRange(null, 620e9)).toBe('Bis 620 Mrd. USD');
   });
   it('gesetzte Filter werden als Chips gezählt und einzeln entfernt', () => {
-    const filters = { ...DEFAULT_FILTERS, sector: 'Energy', capMin: 10e9, universes: ['SP500' as const], includeFinancials: false };
+    const filters = { ...DEFAULT_FILTERS, sector: 'Energy', capMin: 10e9, universes: ['SP500' as const], includeFinancials: true };
     const chips = activeFilters(filters);
-    expect(chips.map((c) => c.label)).toEqual(['Nur S&P 500', 'Energie', 'Ab 10 Mrd. USD', 'Ohne Finanzsektor']);
+    expect(chips.map((c) => c.label)).toEqual(['Nur S&P 500', 'Energie', 'Ab 10 Mrd. USD', 'Mit Finanzsektor']);
     expect(activeFilters(chips[1].clear(filters))).toHaveLength(3);
     expect(activeFilters(DEFAULT_FILTERS)).toEqual([]);
   });
