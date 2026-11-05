@@ -54,6 +54,19 @@ def test_negative_equity_ranks_worst_not_best():
     assert ranks["neg"] == 0.0 and ranks["low"] == 100.0
 
 
+def test_adg2_with_negative_equity_is_red_and_worst_rank():
+    assert ampel(1.5, KPI["adg2"], TOL, equity_positive=False) == "red"
+    assert ampel(1.5, KPI["adg2"], TOL, equity_positive=True) == "green"
+    companies = [
+        {"ticker": "NEG_EQ", "isFinancial": False, "kpis": {"equity_ratio": -0.5, "debt_equity": -2.0, "adg2": 1.8}},
+        {"ticker": "MID", "isFinancial": False, "kpis": {"equity_ratio": 0.3, "debt_equity": 1.5, "adg2": 1.1}},
+        {"ticker": "GOOD", "isFinancial": False, "kpis": {"equity_ratio": 0.6, "debt_equity": 0.5, "adg2": 1.4}},
+    ]
+    scores = score_companies(companies, CONFIG)
+    assert scores["NEG_EQ"]["sicherheit"] == 0.0
+    assert scores["GOOD"]["sicherheit"] == 100.0
+
+
 def test_financials_ranked_separately_without_liquidity():
     companies = [
         {"ticker": "A", "isFinancial": False, "kpis": {"current_ratio": 1.0, "roe": 0.1}},

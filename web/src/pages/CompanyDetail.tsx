@@ -3,7 +3,7 @@ import { useAuth } from '@/auth/useAuth';
 import { KpiSection } from '@/components/company/KpiSection';
 import { EmptyState, PageTitle, ScoreTiles } from '@/components/ui/atoms';
 import { useCompanies, useData } from '@/data/DataProvider';
-import { AXIS_IDS, FINANCIAL } from '@/lib/config';
+import { AXIS_IDS, FINANCIAL, REAL_ESTATE } from '@/lib/config';
 import { formatMarketCap, formatScore } from '@/lib/format';
 import { totalScore } from '@/lib/weighting';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
@@ -54,6 +54,13 @@ export function CompanyDetail() {
           <b>{FINANCIAL.note}.</b> Liquiditätsgrade sind bei Banken und Versicherungen nicht sinnvoll: kein Liquiditäts-Score,
           im Würfel in der Mitte (50). Rentabilität und Sicherheit stammen nur aus ROE, ROA, EK-Quote und Verschuldungsgrad und
           sind nur innerhalb des Finanzsektors gerankt.
+        </div>
+      )}
+      {company.sector === 'Real Estate' && (
+        <div className="rounded-[10px] bg-[#FFF4D6] px-4 py-3 text-[13px] text-[#8A5A00]">
+          <b>{REAL_ESTATE.note}.</b> Bei Immobilienunternehmen und REITs fliessen Portfolio-Neubewertungen (Fair Value) oft direkt
+          in EBIT und Reingewinn ein, wodurch EBIT-Marge und Umsatzrendite über 100 % liegen können. Zudem führt die langfristige
+          Hypothekarfinanzierung strukturell zu tiefen Liquiditätsgraden und einer hohen Tilgungsdauer.
         </div>
       )}
       {AXIS_IDS.map((axis) => (

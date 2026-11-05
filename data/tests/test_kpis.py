@@ -100,10 +100,32 @@ def test_no_previous_year_gives_no_average_kpis():
 def test_negative_equity_gives_no_roe():
     current = {**VAT_2025, "equity": -100, "net_income": -50}
     assert compute_kpis(current, {**EMPTY, "equity": -100, "total_assets": 1})["roe"] is None
+    # Auch beim Übergang ins negative EK (Durchschnitt noch positiv) müssen ROE und Gearing None sein:
+    transition = compute_kpis({**VAT_2025, "equity": -10}, {**VAT_2024, "equity": 100})
+    assert transition["roe"] is None
+    assert transition["gearing"] is None
+
+
+def test_tiny_equity_ratio_gives_no_roe():
+    # EK-Quote < 2 % (z. B. 0.5 % durch Aktienrückkäufe) verzerrt ROE extrem -> None
+    tiny_eq = {**VAT_2025, "equity": 5_000, "total_assets": 1_000_000}
+    assert compute_kpis(tiny_eq, VAT_2024)["roe"] is None
 
 
 def test_tilgungsdauer_needs_positive_fcf():
     assert compute_kpis({**VAT_2025, "op_cf": 0}, VAT_2024)["tilgungsdauer"] is None
+
+
+def test_tilgungsdauer_net_cash_is_zero():
+    net_cash = {**VAT_2025, "cash": 500_000, "total_debt": 100_000}
+    assert compute_kpis(net_cash, VAT_2024)["tilgungsdauer"] == 0.0
+
+
+def test_roa_without_interest_defaults_interest_to_zero():
+    no_int = {**VAT_2025, "interest": None}
+    k = compute_kpis(no_int, VAT_2024)
+    assert k["roa"] == pytest.approx(214_280 / ((1_262_878 + 1_294_746) / 2), abs=0.0005)
+    assert k["interest_cover"] is None
 
 
 def test_mapping_fallbacks_and_signs():

@@ -31,6 +31,7 @@ export const AXES = kpiConfig.axes as Record<AxisId, { label: string; color: str
 export const PROFILES = kpiConfig.profile as Record<InvestorProfile, Record<AxisId, number>>;
 export const PROFILE_IDS = Object.keys(PROFILES) as InvestorProfile[];
 export const FINANCIAL = kpiConfig.financialSector;
+export const REAL_ESTATE = kpiConfig.realEstateSector;
 
 /** Tailwind-Klassen je Achse an einem Ort, damit jede Achse überall gleich aussieht. */
 export const AXIS_STYLE: Record<AxisId, { text: string; bg: string; soft: string; short: string }> = {

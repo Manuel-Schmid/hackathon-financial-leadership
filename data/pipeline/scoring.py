@@ -4,12 +4,12 @@ from __future__ import annotations
 import math
 
 
-def ampel(value: float | None, kpi: dict, tolerance: float) -> str:
+def ampel(value: float | None, kpi: dict, tolerance: float, equity_positive: bool = True) -> str:
     """Absolut gegen den Richtwert. Über dem Band bleibt bei 'höher besser' grün."""
     rw = kpi.get("richtwert")
     if value is None or not rw:
         return "grey"
-    if kpi.get("negativeIsWorst") and value < 0:
+    if (kpi.get("negativeIsWorst") and value < 0) or (kpi.get("requiresPositiveEquity") and not equity_positive):
         return "red"
     if kpi["direction"] == "lower":
         limit = rw.get("max", rw.get("min"))
@@ -25,17 +25,21 @@ def ampel(value: float | None, kpi: dict, tolerance: float) -> str:
     return "yellow" if value >= limit * (1 - tolerance) else "red"
 
 
-def percentile_ranks(values: dict[str, float | None], kpi: dict) -> dict[str, float]:
+def percentile_ranks(
+    values: dict[str, float | None],
+    kpi: dict,
+    worst_tickers: set[str] | None = None,
+) -> dict[str, float]:
     """{ticker: wert} -> {ticker: 0..100}, bestes = 100. Gleiche Werte teilen den mittleren Rang."""
     lower = kpi["direction"] == "lower"
 
-    def goodness(v: float) -> float:
-        # Negativer Verschuldungsgrad = negatives Eigenkapital. Das wäre sonst "am wenigsten verschuldet".
-        if kpi.get("negativeIsWorst") and v < 0:
+    def goodness(t: str, v: float) -> float:
+        # Negatives Eigenkapital darf weder beim Verschuldungsgrad noch beim ADG II als "gut" zählen.
+        if (kpi.get("negativeIsWorst") and v < 0) or (worst_tickers and t in worst_tickers):
             return -math.inf
         return -v if lower else v
 
-    items = sorted(((goodness(v), t) for t, v in values.items() if v is not None), key=lambda x: x[0])
+    items = sorted(((goodness(t, v), t) for t, v in values.items() if v is not None), key=lambda x: x[0])
     n = len(items)
     if n == 0:
         return {}
@@ -73,8 +77,18 @@ def score_companies(companies: list[dict], config: dict) -> dict[str, dict[str, 
     result: dict[str, dict[str, float | None]] = {}
     for is_fin, spec in ((False, regular), (True, financial)):
         group = [c for c in companies if bool(c["isFinancial"]) == is_fin]
+        neg_equity = {
+            c["ticker"]
+            for c in group
+            if (c["kpis"].get("equity_ratio") is not None and c["kpis"]["equity_ratio"] <= 0)
+            or (c["kpis"].get("debt_equity") is not None and c["kpis"]["debt_equity"] < 0)
+        }
         ranks = {
-            kpi_id: percentile_ranks({c["ticker"]: c["kpis"].get(kpi_id) for c in group}, kpis_by_id[kpi_id])
+            kpi_id: percentile_ranks(
+                {c["ticker"]: c["kpis"].get(kpi_id) for c in group},
+                kpis_by_id[kpi_id],
+                worst_tickers=neg_equity if kpis_by_id[kpi_id].get("requiresPositiveEquity") else None,
+            )
             for ids in spec.values()
             for kpi_id in ids
         }

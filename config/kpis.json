@@ -130,6 +130,7 @@
       "axis": "rentabilitaet",
       "formula": "Jahresgewinn / Ø Eigenkapital",
       "direction": "higher",
+      "minEquityRatio": 0.02,
       "inScore": true,
       "richtwert": {
         "min": 0.1,
@@ -249,6 +250,8 @@
       "axis": "sicherheit",
       "formula": "(Eigenkapital + langfristiges FK) / Anlagevermögen",
       "direction": "higher",
+      "negativeIsWorst": true,
+      "requiresPositiveEquity": true,
       "inScore": true,
       "richtwert": {
         "min": 1.0,
@@ -284,6 +287,10 @@
   ],
   "financialSector": {
     "note": "Banken und Versicherungen: eingeschränkt vergleichbar",
+    "extraTickers": [
+      "ELV",
+      "HUM"
+    ],
     "scoreKpis": {
       "rentabilitaet": [
         "roe",
@@ -296,10 +303,13 @@
     },
     "liquiditaetDefault": 50
   },
+  "realEstateSector": {
+    "note": "Immobilien / REITs: eingeschränkt vergleichbar"
+  },
   "notes": [
     "inScore: true = zählt im Achsen-Score; 'ampel' = nur Ampel/Anzeige; 'detail' = nur Detailseite",
     "richtwert.min/max: Bandbreite; nur min = Untergrenze (bzw. Obergrenze bei direction lower: max)",
     "Werte als Dezimalzahl (0.628 = 62.8 %)",
-    "negativeIsWorst: negativer Wert = negatives Eigenkapital, zählt als schlechtester Rang und rote Ampel"
+    "negativeIsWorst / requiresPositiveEquity: negatives Eigenkapital zählt als schlechtester Rang und rote Ampel"
   ]
 }
