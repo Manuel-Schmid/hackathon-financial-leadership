@@ -3,6 +3,7 @@ import type { AxisId, Company } from '@/data/types';
 import { AXES, AXIS_STYLE, KPIS, type KpiDef } from '@/lib/config';
 import { formatKpi } from '@/lib/format';
 import { sectorMedian } from '@/lib/medians';
+import { richtwertFor } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
 function Sparkline({ company, def }: { company: Company; def: KpiDef }) {
@@ -38,12 +39,13 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
   return (
     <section className="card overflow-x-auto">
       <h2 className={`px-5 pt-4 font-title text-[17px] font-semibold ${AXIS_STYLE[axis].text}`}>{AXES[axis].label}</h2>
-      <table className="mt-2 w-full min-w-[720px] border-collapse text-[13.5px]">
+      <table className="mt-2 w-full min-w-[860px] border-collapse text-[13.5px]">
         <thead>
           <tr className="tag text-right">
             <th className="py-2 pl-5 text-left font-bold">Kennzahl</th>
             <th className="px-3 py-2 font-bold">Wert</th>
-            <th className="px-3 py-2 font-bold">Richtwert</th>
+            <th className="px-3 py-2 font-bold">Richtwert Buch</th>
+            <th className="px-3 py-2 font-bold">Richtwert {company.sectorDe}</th>
             <th className="px-3 py-2 font-bold">Branchen-Median</th>
             <th className="py-2 pl-3 pr-5 font-bold">Verlauf</th>
           </tr>
@@ -52,6 +54,7 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
           {kpis.map((def) => {
             const kpi = company.kpis[def.id];
             const med = sectorMedian(all, company.sector, def.id);
+            const branche = richtwertFor(def, company.sector, 'branche');
             // Beträge in verschiedenen Währungen haben keinen sinnvollen Median
             const showMedian = def.unit !== 'currency';
             return (
@@ -62,12 +65,20 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
                   {usage(def) && <small className="block font-medium text-muted">{usage(def)}</small>}
                 </td>
                 <td className="whitespace-nowrap px-3 py-2 text-right font-mono font-semibold">
+                  {formatKpi(kpi?.value, def.unit, company.currency)}
+                </td>
+                <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted">
                   <span className="inline-flex items-center gap-2">
-                    {formatKpi(kpi?.value, def.unit, company.currency)}
+                    {def.richtwert?.label ?? '–'}
                     <AmpelDot ampel={kpi?.ampel ?? 'grey'} />
                   </span>
                 </td>
-                <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted">{def.richtwert?.label ?? '–'}</td>
+                <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted" title={def.richtwertBranche?.quelle}>
+                  <span className="inline-flex items-center gap-2">
+                    {branche ? (branche.source === 'buch' ? 'wie Buch' : branche.label) : '–'}
+                    <AmpelDot ampel={kpi?.ampelBranche ?? 'grey'} />
+                  </span>
+                </td>
                 <td className="whitespace-nowrap px-3 py-2 text-right font-mono text-muted">
                   {showMedian ? formatKpi(med, def.unit) : '–'}
                 </td>
