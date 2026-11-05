@@ -5,9 +5,11 @@ import { AuthProvider } from '@/auth/AuthProvider';
 import { Layout } from '@/components/layout/Layout';
 import { EmptyState } from '@/components/ui/atoms';
 import { DataProvider } from '@/data/DataProvider';
+import { About } from '@/pages/About';
 import { Compare } from '@/pages/Compare';
 import { CompanyDetail } from '@/pages/CompanyDetail';
 import { Explorer } from '@/pages/Explorer';
+import { Imprint } from '@/pages/Imprint';
 import { Login } from '@/pages/Login';
 import { Method } from '@/pages/Method';
 import { Profile } from '@/pages/Profile';
@@ -28,6 +30,8 @@ createRoot(document.getElementById('root')!).render(
                 <Route path="firma/:ticker" element={<CompanyDetail />} />
                 <Route path="watchlists" element={<Watchlists />} />
                 <Route path="methodik" element={<Method />} />
+                <Route path="ueber-uns" element={<About />} />
+                <Route path="impressum" element={<Imprint />} />
                 <Route path="login" element={<Login />} />
                 <Route path="profil" element={<Profile />} />
                 <Route path="*" element={<EmptyState title="Seite nicht gefunden" />} />

@@ -39,6 +39,7 @@ def company_rows(data: dict) -> tuple[list[dict], list[dict], list[dict]]:
                         "value": point["value"],
                         # Ampel gilt für das letzte Geschäftsjahr, so wie im Frontend-Modell
                         "ampel": kpi["ampel"] if point["year"] == c["fiscalYear"] else None,
+                        "ampel_branche": kpi["ampelBranche"] if point["year"] == c["fiscalYear"] else None,
                     }
                 )
     return companies, kpis, scores
@@ -48,6 +49,20 @@ def stale_tickers(existing: list[str], data: dict) -> list[str]:
     """Ticker in Supabase, die nicht mehr in companies.json stehen (z. B. entfernte Aktienklassen)."""
     current = {c["ticker"] for c in data["companies"]}
     return sorted(set(existing) - current)
+
+
+MIGRATION = (
+    "alter table public.kpis add column if not exists ampel_branche text "
+    "check (ampel_branche in ('green', 'yellow', 'red', 'grey'));"
+)
+
+
+def check_schema(client) -> None:
+    """Vor dem Laden prüfen, ob kpis.ampel_branche existiert; sonst bräche der Upsert nach companies/scores ab."""
+    try:
+        client.table("kpis").select("ampel_branche").limit(1).execute()
+    except Exception as exc:  # PostgREST meldet unbekannte Spalten als Fehler
+        raise SystemExit(f"Spalte kpis.ampel_branche fehlt ({exc}). Einmal im Supabase SQL-Editor ausführen:\n{MIGRATION}") from exc
 
 
 def _load_env(path) -> None:
@@ -84,6 +99,10 @@ def main() -> None:
     _load_env(ROOT / ".env")
     url = os.environ["VITE_SUPABASE_URL"]
     key = os.environ["SUPABASE_SECRET_KEY"]
+    try:
+        _rest_request(url, key, "GET", "kpis?select=ampel_branche&limit=1")
+    except Exception as exc:
+        raise SystemExit(f"Spalte kpis.ampel_branche fehlt ({exc}). Einmal im Supabase SQL-Editor ausführen:\n{MIGRATION}") from exc
     data = json.loads(WEB_JSON.read_text(encoding="utf-8"))
     companies, kpis, scores = company_rows(data)
     for table, rows in (("companies", companies), ("scores", scores), ("kpis", kpis)):

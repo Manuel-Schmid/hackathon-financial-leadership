@@ -1,0 +1,18 @@
+{
+  "L": { "DEFAULT": "#2F6FDE", "soft": "#E2EBFB" },
+  "R": { "DEFAULT": "#D99A1C", "soft": "#FAF0D6", "text": "#96690B" },
+  "S": { "DEFAULT": "#1C8C66", "soft": "#DDF1E8" },
+  "accent": { "DEFAULT": "#5A2A82", "soft": "#EEE5F5" },
+  "ink": { "DEFAULT": "#0B1D3A", "2": "#1B3158", "line": "#2B4168", "muted": "#9FB0C9", "nav": "#BFCBDD" },
+  "text": "#0B1D3A",
+  "paper": "#F7F4EC",
+  "card": "#FFFFFF",
+  "line": { "DEFAULT": "#E4DECF", "soft": "#F0EBDF", "strong": "#CFC8B6" },
+  "muted": "#5F6B7E",
+  "good": "#1C8C66",
+  "warn": "#E0A100",
+  "bad": "#D9443B",
+  "note": { "DEFAULT": "#FAF0D6", "text": "#7A5508" },
+  "cube": { "floor": "#FBF9F3", "dimmed": "#EBE6DA", "fallback": "#7C8799" },
+  "compare": ["#1F4E9E", "#0FA3A3", "#8C2F55", "#D9822B"]
+}

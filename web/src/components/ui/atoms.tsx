@@ -2,7 +2,7 @@ import { Component, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { Ampel, AxisScores, Company } from '@/data/types';
 import { AMPEL_STYLE } from '@/lib/ampel';
-import { AXES, AXIS_IDS, AXIS_STYLE, SECTORS } from '@/lib/config';
+import { AXES, AXIS_IDS, AXIS_STYLE, SECTORS, THEME } from '@/lib/config';
 import { formatScore } from '@/lib/format';
 
 export function AmpelDot({ ampel }: { ampel: Ampel }) {
@@ -11,7 +11,7 @@ export function AmpelDot({ ampel }: { ampel: Ampel }) {
 }
 
 export function SectorDot({ company }: { company: Pick<Company, 'sector' | 'isFinancial'> }) {
-  const color = SECTORS[company.sector]?.color ?? '#7C8799';
+  const color = SECTORS[company.sector]?.color ?? THEME.cube.fallback;
   return company.isFinancial ? (
     <i className="inline-block h-2.5 w-2.5 shrink-0 rounded-full border-2 bg-white" style={{ borderColor: color }} />
   ) : (
@@ -44,8 +44,8 @@ export function ScoreTiles({ scores }: { scores: AxisScores }) {
 
 export function FinancialNote() {
   return (
-    <span className="rounded-md bg-[#FFF4D6] px-1.5 py-px text-[11px] font-semibold text-[#8A5A00]">
-      ⓘ eingeschränkt vergleichbar
+    <span className="whitespace-nowrap rounded-md bg-note px-1.5 py-px text-[11px] font-semibold text-note-text">
+      Eingeschränkt vergleichbar
     </span>
   );
 }

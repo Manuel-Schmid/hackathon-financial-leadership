@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import math
 
+from common import branchen_richtwert
+
 
 def ampel(value: float | None, kpi: dict, tolerance: float, equity_positive: bool = True) -> str:
     """Absolut gegen den Richtwert. Über dem Band bleibt bei 'höher besser' grün."""
@@ -23,6 +25,18 @@ def ampel(value: float | None, kpi: dict, tolerance: float, equity_positive: boo
     if value >= limit:
         return "green"
     return "yellow" if value >= limit * (1 - tolerance) else "red"
+
+
+def ampel_branche(
+    value: float | None,
+    kpi: dict,
+    sector: str,
+    tolerance: float,
+    equity_positive: bool = True,
+) -> str:
+    """Wie ampel(), aber gegen den Branchen-Richtwert; ohne Branchen-Richtwert gilt das Buch."""
+    rw = branchen_richtwert(kpi, sector)
+    return ampel(value, {**kpi, "richtwert": rw} if rw else kpi, tolerance, equity_positive=equity_positive)
 
 
 def percentile_ranks(

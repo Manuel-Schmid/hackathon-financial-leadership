@@ -2,10 +2,10 @@ import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, Object3D, type InstancedMesh } from 'three';
 import type { Company } from '@/data/types';
-import { SECTORS } from '@/lib/config';
+import { SECTORS, THEME } from '@/lib/config';
 import { companyPosition, pointRadius, type Vec3 } from './geometry';
 
-const DIMMED = new Color('#E3E8EF');
+const DIMMED = new Color(THEME.cube.dimmed);
 const WHITE = new Color('#FFFFFF');
 const dummy = new Object3D();
 
@@ -50,7 +50,7 @@ export function PointCloud({ points, onHover, onSelect }: Props) {
         ? DIMMED
         : p.company.isFinancial
           ? WHITE
-          : new Color(SECTORS[p.company.sector]?.color ?? '#7C8799');
+          : new Color(SECTORS[p.company.sector]?.color ?? THEME.cube.fallback);
       mesh.setColorAt(i, color);
     });
     mesh.instanceMatrix.needsUpdate = true;
@@ -96,7 +96,7 @@ export function PointCloud({ points, onHover, onSelect }: Props) {
 export function FinancialRings({ points }: { points: CubePoint[] }) {
   const ref = useRef<InstancedMesh>(null);
   const rings = useMemo(() => points.filter((p) => p.company.isFinancial && p.visible), [points]);
-  const color = SECTORS.Financials?.color ?? '#7C8799';
+  const color = SECTORS.Financials?.color ?? THEME.cube.fallback;
 
   useFrame(({ camera }) => {
     const mesh = ref.current;

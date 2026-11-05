@@ -11,10 +11,9 @@ export function WatchlistBar() {
 
   return (
     <div className="card flex flex-wrap items-center gap-3 px-5 py-3">
-      <span className="tag">Watchlist</span>
       <Link to="/watchlists" className="font-title font-semibold hover:underline">
         {active.name}
-        {active.investorProfile !== 'ausgewogen' && ` · ${active.investorProfile}`}
+        {active.investorProfile !== 'ausgewogen' && `, ${active.investorProfile}`}
       </Link>
       <div className="flex min-w-0 flex-1 flex-wrap gap-2">
         {items.map((c) => (
@@ -30,7 +29,7 @@ export function WatchlistBar() {
       </div>
       {items.length > 0 && (
         <Link to="/vergleich" className="btn btn-primary whitespace-nowrap px-[18px]">
-          Vergleichen ({items.length}) →
+          {items.length} vergleichen
         </Link>
       )}
     </div>

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { AxisScores, Company } from '@/data/types';
 import { KPIS, PROFILES } from './config';
 import { buildFazit } from './fazit';
-import { DEFAULT_FILTERS, matchesFilters, sortCompanies } from './filters';
+import { capBounds, capHistogram, capToPosition, positionToCap } from './capRange';
+import { activeFilters, DEFAULT_FILTERS, formatCapRange, matchesFilters, searchSuggestions, sortCompanies } from './filters';
 import { formatKpi, formatMarketCap, formatScore } from './format';
 import { median, sectorMedian } from './medians';
 import { totalScore } from './weighting';
@@ -62,14 +63,62 @@ describe('Filter', () => {
   it('Finanzsektor lässt sich ausblenden', () => {
     expect(matchesFilters(company({ isFinancial: true }), { ...DEFAULT_FILTERS, includeFinancials: false })).toBe(false);
   });
-  it('Grösse und Branche wirken', () => {
-    expect(matchesFilters(company(), { ...DEFAULT_FILTERS, sizes: ['Mid'] })).toBe(false);
+  it('Börsenwert-Bereich und Branche wirken', () => {
+    expect(matchesFilters(company(), { ...DEFAULT_FILTERS, capMin: 25e9 })).toBe(false);
+    expect(matchesFilters(company(), { ...DEFAULT_FILTERS, capMax: 15e9 })).toBe(false);
+    expect(matchesFilters(company(), { ...DEFAULT_FILTERS, capMin: 10e9, capMax: 25e9 })).toBe(true);
     expect(matchesFilters(company(), { ...DEFAULT_FILTERS, sector: 'Energy' })).toBe(false);
+  });
+  it('Firma ohne Börsenwert bleibt beim Grössen-Filter sichtbar', () => {
+    expect(matchesFilters(company({ marketCapUsd: null, sizeClass: null }), { ...DEFAULT_FILTERS, capMin: 25e9 })).toBe(true);
+  });
+  it('Vorschläge: Wortanfang vor Treffer im Wort, dann nach Grösse', () => {
+    const list = [
+      company({ ticker: 'A', name: 'Innovat', marketCapUsd: 900e9 }),
+      company({ ticker: 'B', name: 'Vat Klein', marketCapUsd: 1e9 }),
+      company({ ticker: 'C', name: 'Vat Gross', marketCapUsd: 50e9 }),
+    ];
+    expect(searchSuggestions(list, 'vat').map((c) => c.ticker)).toEqual(['C', 'B', 'A']);
+    expect(searchSuggestions(list, '  ')).toEqual([]);
+  });
+  it('Börsenwert-Bereich liest sich kurz', () => {
+    expect(formatCapRange(32e9, 620e9)).toBe('32 bis 620 Mrd. USD');
+    expect(formatCapRange(32e9, 1.2e12)).toBe('32 Mrd. bis 1.2 Bio. USD');
+    expect(formatCapRange(null, 620e9)).toBe('Bis 620 Mrd. USD');
+  });
+  it('gesetzte Filter werden als Chips gezählt und einzeln entfernt', () => {
+    const filters = { ...DEFAULT_FILTERS, sector: 'Energy', capMin: 10e9, universes: ['SP500' as const], includeFinancials: false };
+    const chips = activeFilters(filters);
+    expect(chips.map((c) => c.label)).toEqual(['Nur S&P 500', 'Energie', 'Ab 10 Mrd. USD', 'Ohne Finanzsektor']);
+    expect(activeFilters(chips[1].clear(filters))).toHaveLength(3);
+    expect(activeFilters(DEFAULT_FILTERS)).toEqual([]);
   });
   it('sortiert fehlende Werte ans Ende', () => {
     const a = company({ ticker: 'A', scores: { liquiditaet: null, rentabilitaet: null, sicherheit: null } });
     const b = company({ ticker: 'B' });
     expect(sortCompanies([a, b], 'total').map((c) => c.ticker)).toEqual(['B', 'A']);
+  });
+});
+
+describe('Börsenwert-Regler', () => {
+  const list = [1e9, 10e9, 100e9, 1000e9].map((marketCapUsd, i) => company({ ticker: String(i), marketCapUsd }));
+  const bounds = capBounds(list)!;
+
+  it('ist logarithmisch: jede Zehnerstufe gleich breit', () => {
+    expect(capToPosition(10e9, bounds)).toBeCloseTo(1 / 3);
+    expect(capToPosition(100e9, bounds)).toBeCloseTo(2 / 3);
+  });
+  it('rundet Positionen auf zwei Stellen', () => {
+    expect(positionToCap(1 / 3, bounds)).toBe(10e9);
+    expect(positionToCap(0.5, bounds)).toBe(32e9);
+  });
+  it('Histogramm zählt jede Firma genau einmal, auch die grösste', () => {
+    const bars = capHistogram(list, bounds, 3);
+    expect(bars.reduce((a, b) => a + b, 0)).toBe(4);
+    expect(bars[2]).toBe(2);
+  });
+  it('ignoriert fehlende Börsenwerte', () => {
+    expect(capBounds([company({ marketCapUsd: null })])).toBeNull();
   });
 });
 
@@ -95,7 +144,7 @@ describe('Median', () => {
     expect(median([])).toBeNull();
   });
   it('rechnet nur innerhalb der Branche und ignoriert null', () => {
-    const kpi = (value: number | null) => ({ roe: { value, ampel: 'grey' as const, history: [] } });
+    const kpi = (value: number | null) => ({ roe: { value, ampel: 'grey' as const, ampelBranche: 'grey' as const, history: [] } });
     const list = [
       company({ kpis: kpi(0.1) }),
       company({ kpis: kpi(0.3) }),
@@ -108,7 +157,7 @@ describe('Median', () => {
 
 describe('Kurzfazit', () => {
   it('nennt die Beste pro Achse und Richtwert-Verfehlungen', () => {
-    const red = { value: 0.1, ampel: 'red' as const, history: [] };
+    const red = { value: 0.1, ampel: 'red' as const, ampelBranche: 'red' as const, history: [] };
     const text = buildFazit([
       company({ name: 'A', scores: { liquiditaet: 10, rentabilitaet: 90, sicherheit: 20 }, kpis: { cash_ratio: red } }),
       company({ name: 'B', scores: { liquiditaet: 80, rentabilitaet: 30, sicherheit: 95 } }),

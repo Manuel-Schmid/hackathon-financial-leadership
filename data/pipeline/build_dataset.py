@@ -9,7 +9,7 @@ from pathlib import Path
 from common import CACHE_DIR, TICKERS_CSV, load_kpi_config, load_sectors, size_class
 from kpis import compute_kpis
 from mapping import available_years, map_year
-from scoring import ampel, score_companies
+from scoring import ampel, ampel_branche, score_companies
 
 # Nur Rückfallwert, wenn kein Kurs abrufbar ist: USD pro Einheit der Kurswährung.
 FX_FALLBACK = {"USD": 1.0, "CHF": 1.25, "EUR": 1.1, "GBP": 1.3}
@@ -52,6 +52,7 @@ def company_from_cache(row: dict, raw: dict, config: dict, sectors: dict, fx: di
         kpis[kpi["id"]] = {
             "value": value,
             "ampel": ampel(value, kpi, tolerance, equity_positive=eq_pos),
+            "ampelBranche": ampel_branche(value, kpi, row["sector"], tolerance, equity_positive=eq_pos),
             "history": [{"year": y, "value": per_year[y][kpi["id"]]} for y in valid_years],
         }
     info = raw.get("info", {})

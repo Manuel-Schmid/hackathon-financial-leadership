@@ -2,16 +2,13 @@
   "version": 1,
   "axes": {
     "liquiditaet": {
-      "label": "Liquidität",
-      "color": "#2F80ED"
+      "label": "Liquidität"
     },
     "rentabilitaet": {
-      "label": "Rentabilität",
-      "color": "#E8A317"
+      "label": "Rentabilität"
     },
     "sicherheit": {
-      "label": "Sicherheit",
-      "color": "#1E9E6A"
+      "label": "Sicherheit"
     }
   },
   "ampel": {
@@ -78,7 +75,52 @@
         "label": "150 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: Current Ratio (r17), Median; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 1.6,
+            "label": "≥ 160 %"
+          },
+          "Health Care": {
+            "min": 1.85,
+            "label": "≥ 185 %"
+          },
+          "Industrials": {
+            "min": 1.35,
+            "label": "≥ 135 %"
+          },
+          "Consumer Discretionary": {
+            "min": 1.4,
+            "label": "≥ 140 %"
+          },
+          "Consumer Staples": {
+            "min": 1.6,
+            "label": "≥ 160 %"
+          },
+          "Energy": {
+            "min": 1.35,
+            "label": "≥ 135 %"
+          },
+          "Utilities": {
+            "min": 1.4,
+            "label": "≥ 140 %"
+          },
+          "Materials": {
+            "min": 1.75,
+            "label": "≥ 175 %"
+          },
+          "Communication Services": {
+            "min": 1.25,
+            "label": "≥ 125 %"
+          },
+          "Real Estate": {
+            "min": 1.3,
+            "label": "≥ 130 %"
+          }
+        }
+      }
     },
     {
       "id": "cashflow_ratio",
@@ -121,7 +163,67 @@
         "label": "2–5 Jahre"
       },
       "unit": "years",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "Damodaran (NYU Stern), US, 01/2026: Debt to EBITDA; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 1.5,
+            "max": 3.5,
+            "label": "1.5–3.5 Jahre"
+          },
+          "Health Care": {
+            "min": 2.0,
+            "max": 5.0,
+            "label": "2–5 Jahre"
+          },
+          "Industrials": {
+            "min": 1.5,
+            "max": 4.0,
+            "label": "1.5–4 Jahre"
+          },
+          "Consumer Discretionary": {
+            "min": 2.0,
+            "max": 5.0,
+            "label": "2–5 Jahre"
+          },
+          "Consumer Staples": {
+            "min": 2.0,
+            "max": 4.5,
+            "label": "2–4.5 Jahre"
+          },
+          "Energy": {
+            "min": 1.0,
+            "max": 2.5,
+            "label": "1–2.5 Jahre"
+          },
+          "Utilities": {
+            "min": 3.5,
+            "max": 9.5,
+            "label": "3.5–9.5 Jahre"
+          },
+          "Materials": {
+            "min": 1.5,
+            "max": 3.5,
+            "label": "1.5–3.5 Jahre"
+          },
+          "Communication Services": {
+            "min": 2.0,
+            "max": 5.5,
+            "label": "2–5.5 Jahre"
+          },
+          "Real Estate": {
+            "min": 4.5,
+            "max": 11.0,
+            "label": "4.5–11 Jahre"
+          },
+          "Financials": {
+            "min": 3.0,
+            "max": 7.5,
+            "label": "3–7.5 Jahre"
+          }
+        }
+      }
     },
     {
       "id": "roe",
@@ -138,7 +240,67 @@
         "label": "10–15 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "Damodaran (NYU Stern), US, 01/2026: ROE; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 0.13,
+            "max": 0.2,
+            "label": "13–20 %"
+          },
+          "Health Care": {
+            "min": 0.08,
+            "max": 0.13,
+            "label": "8–13 %"
+          },
+          "Industrials": {
+            "min": 0.13,
+            "max": 0.19,
+            "label": "13–19 %"
+          },
+          "Consumer Discretionary": {
+            "min": 0.1,
+            "max": 0.15,
+            "label": "10–15 %"
+          },
+          "Consumer Staples": {
+            "min": 0.1,
+            "max": 0.15,
+            "label": "10–15 %"
+          },
+          "Energy": {
+            "min": 0.08,
+            "max": 0.12,
+            "label": "8–12 %"
+          },
+          "Utilities": {
+            "min": 0.08,
+            "max": 0.12,
+            "label": "8–12 %"
+          },
+          "Materials": {
+            "min": 0.06,
+            "max": 0.08,
+            "label": "6–8 %"
+          },
+          "Communication Services": {
+            "min": 0.1,
+            "max": 0.15,
+            "label": "10–15 %"
+          },
+          "Real Estate": {
+            "min": 0.04,
+            "max": 0.06,
+            "label": "4–6 %"
+          },
+          "Financials": {
+            "min": 0.13,
+            "max": 0.19,
+            "label": "13–19 %"
+          }
+        }
+      }
     },
     {
       "id": "roa",
@@ -153,7 +315,52 @@
         "label": "> 7 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: (Jahresgewinn + Zinsen) / Bilanzsumme; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Health Care": {
+            "min": 0.06,
+            "label": "≥ 6 %"
+          },
+          "Industrials": {
+            "min": 0.06,
+            "label": "≥ 6 %"
+          },
+          "Consumer Discretionary": {
+            "min": 0.07,
+            "label": "≥ 7 %"
+          },
+          "Consumer Staples": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Energy": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Utilities": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Materials": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Communication Services": {
+            "min": 0.03,
+            "label": "≥ 3 %"
+          },
+          "Real Estate": {
+            "min": 0.04,
+            "label": "≥ 4 %"
+          }
+        }
+      }
     },
     {
       "id": "ebit_margin",
@@ -181,7 +388,67 @@
         "label": "1–10 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "Damodaran (NYU Stern), US, 01/2026: Net Margin; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 0.015,
+            "max": 0.16,
+            "label": "1.5–16 %"
+          },
+          "Health Care": {
+            "min": 0.01,
+            "max": 0.09,
+            "label": "1–9 %"
+          },
+          "Industrials": {
+            "min": 0.01,
+            "max": 0.1,
+            "label": "1–10 %"
+          },
+          "Consumer Discretionary": {
+            "min": 0.005,
+            "max": 0.07,
+            "label": "0.5–7 %"
+          },
+          "Consumer Staples": {
+            "min": 0.005,
+            "max": 0.05,
+            "label": "0.5–5 %"
+          },
+          "Energy": {
+            "min": 0.01,
+            "max": 0.11,
+            "label": "1–11 %"
+          },
+          "Utilities": {
+            "min": 0.02,
+            "max": 0.19,
+            "label": "2–19 %"
+          },
+          "Materials": {
+            "min": 0.005,
+            "max": 0.05,
+            "label": "0.5–5 %"
+          },
+          "Communication Services": {
+            "min": 0.01,
+            "max": 0.11,
+            "label": "1–11 %"
+          },
+          "Real Estate": {
+            "min": 0.02,
+            "max": 0.18,
+            "label": "2–18 %"
+          },
+          "Financials": {
+            "min": 0.02,
+            "max": 0.2,
+            "label": "2–20 %"
+          }
+        }
+      }
     },
     {
       "id": "ebitda_margin",
@@ -208,7 +475,56 @@
         "label": "10 % (RONOA)"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "Damodaran (NYU Stern), US, 01/2026: ROIC; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 0.18,
+            "label": "≥ 18 %"
+          },
+          "Health Care": {
+            "min": 0.12,
+            "label": "≥ 12 %"
+          },
+          "Industrials": {
+            "min": 0.11,
+            "label": "≥ 11 %"
+          },
+          "Consumer Discretionary": {
+            "min": 0.1,
+            "label": "≥ 10 %"
+          },
+          "Consumer Staples": {
+            "min": 0.12,
+            "label": "≥ 12 %"
+          },
+          "Energy": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Utilities": {
+            "min": 0.04,
+            "label": "≥ 4 %"
+          },
+          "Materials": {
+            "min": 0.08,
+            "label": "≥ 8 %"
+          },
+          "Communication Services": {
+            "min": 0.09,
+            "label": "≥ 9 %"
+          },
+          "Real Estate": {
+            "min": 0.04,
+            "label": "≥ 4 %"
+          },
+          "Financials": {
+            "min": 0.1,
+            "label": "≥ 10 %"
+          }
+        }
+      }
     },
     {
       "id": "equity_ratio",
@@ -224,7 +540,62 @@
         "label": "25–50 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: Eigenkapital / Bilanzsumme (1/r11), Median; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 0.25,
+            "max": 0.45,
+            "label": "25–45 %"
+          },
+          "Health Care": {
+            "min": 0.35,
+            "max": 0.75,
+            "label": "35–75 %"
+          },
+          "Industrials": {
+            "min": 0.25,
+            "max": 0.45,
+            "label": "25–45 %"
+          },
+          "Consumer Discretionary": {
+            "min": 0.2,
+            "max": 0.45,
+            "label": "20–45 %"
+          },
+          "Consumer Staples": {
+            "min": 0.3,
+            "max": 0.6,
+            "label": "30–60 %"
+          },
+          "Energy": {
+            "min": 0.25,
+            "max": 0.5,
+            "label": "25–50 %"
+          },
+          "Utilities": {
+            "min": 0.25,
+            "max": 0.5,
+            "label": "25–50 %"
+          },
+          "Materials": {
+            "min": 0.35,
+            "max": 0.65,
+            "label": "35–65 %"
+          },
+          "Communication Services": {
+            "min": 0.25,
+            "max": 0.5,
+            "label": "25–50 %"
+          },
+          "Real Estate": {
+            "min": 0.2,
+            "max": 0.45,
+            "label": "20–45 %"
+          }
+        }
+      }
     },
     {
       "id": "debt_equity",
@@ -241,7 +612,62 @@
         "label": "100–230 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: Fremdkapital / Eigenkapital (r12), Median; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 1.15,
+            "max": 2.6,
+            "label": "115–260 %"
+          },
+          "Health Care": {
+            "min": 0.5,
+            "max": 1.15,
+            "label": "50–115 %"
+          },
+          "Industrials": {
+            "min": 1.1,
+            "max": 2.5,
+            "label": "110–250 %"
+          },
+          "Consumer Discretionary": {
+            "min": 1.2,
+            "max": 2.75,
+            "label": "120–275 %"
+          },
+          "Consumer Staples": {
+            "min": 0.75,
+            "max": 1.7,
+            "label": "75–170 %"
+          },
+          "Energy": {
+            "min": 1.0,
+            "max": 2.25,
+            "label": "100–225 %"
+          },
+          "Utilities": {
+            "min": 1.05,
+            "max": 2.4,
+            "label": "105–240 %"
+          },
+          "Materials": {
+            "min": 0.6,
+            "max": 1.4,
+            "label": "60–140 %"
+          },
+          "Communication Services": {
+            "min": 1.0,
+            "max": 2.3,
+            "label": "100–230 %"
+          },
+          "Real Estate": {
+            "min": 1.2,
+            "max": 2.75,
+            "label": "120–275 %"
+          }
+        }
+      }
     },
     {
       "id": "adg2",
@@ -258,7 +684,52 @@
         "label": "> 100 %"
       },
       "unit": "pct",
-      "source": "Buch S. 292-293"
+      "source": "Buch S. 292-293",
+      "richtwertBranche": {
+        "quelle": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: (Bilanzsumme − kurzfristiges FK) / Anlagevermögen; allgemeiner Richtwert × Branchenfaktor",
+        "werte": {
+          "Information Technology": {
+            "min": 1.05,
+            "label": "≥ 105 %"
+          },
+          "Health Care": {
+            "min": 1.05,
+            "label": "≥ 105 %"
+          },
+          "Industrials": {
+            "min": 0.9,
+            "label": "≥ 90 %"
+          },
+          "Consumer Discretionary": {
+            "min": 1.0,
+            "label": "≥ 100 %"
+          },
+          "Consumer Staples": {
+            "min": 1.2,
+            "label": "≥ 120 %"
+          },
+          "Energy": {
+            "min": 0.9,
+            "label": "≥ 90 %"
+          },
+          "Utilities": {
+            "min": 0.95,
+            "label": "≥ 95 %"
+          },
+          "Materials": {
+            "min": 1.1,
+            "label": "≥ 110 %"
+          },
+          "Communication Services": {
+            "min": 0.85,
+            "label": "≥ 85 %"
+          },
+          "Real Estate": {
+            "min": 0.9,
+            "label": "≥ 90 %"
+          }
+        }
+      }
     },
     {
       "id": "gearing",
