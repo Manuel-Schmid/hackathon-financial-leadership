@@ -21,4 +21,5 @@ Laufend ergänzen (Uhrzeit · was · warum · was hat (nicht) funktioniert). Gru
 | Do | Three.js-Tone-Mapping ausgeschaltet | Es verfälschte die Branding-Farben (grauer Boden) |
 | Do | Voller Yahoo-Abruf: alle 551 Titel, rund 12 Minuten statt der geplanten 30–45 | Drei Symbole aus der Handliste waren ungültig (Roche, Baloise, Helvetia), korrigiert. Keine Drosselung |
 | Do | Supabase gefüllt und gegen die JSON-Datei verglichen | 45'407 Kennzahl-Zeilen, 0 Abweichungen. Beim Prüfen gefunden: seitenweises Laden braucht eine eindeutige Sortierung, sonst fehlen Zeilen an den Seitengrenzen |
+| Do | Design-Überarbeitung Schritt für Schritt auf Branch `Frontend-Design` | Farbwelt Nachtblau und Gold, Akzent Pflaume, Logo «Offene Ecke», Suche mit Filter-Karte und Börsenwert-Regler, Detailseite in drei Spalten. Gelernt: Fehler wie der Absturz durch `scrollTo` zeigten sich nur im Browser, nicht in Build und Tests |
 | Do | Georg Fischer mit Verschuldungsgrad −397 geprüft | Kein Fehler: Yahoo weist negatives Eigenkapital aus; 32 Firmen sind so, die Regel „schlechtester Rang“ greift |

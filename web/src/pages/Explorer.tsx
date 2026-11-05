@@ -43,15 +43,22 @@ export function Explorer() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <FilterBar filters={filters} counts={counts} onChange={setFilters} />
-      <main className="grid flex-1 gap-4 p-4 lg:h-[calc(100vh-150px)] lg:flex-none lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-[minmax(0,1fr)] lg:px-7">
+      <FilterBar
+        companies={companies}
+        filters={filters}
+        counts={counts}
+        resultCount={filtered.length}
+        onChange={setFilters}
+        onPick={setSelected}
+      />
+      <main className="grid flex-1 gap-4 p-4 lg:h-[calc(100vh-146px)] lg:flex-none lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_420px] lg:grid-rows-[minmax(0,1fr)] lg:px-7">
         <div className="flex min-h-0 flex-col gap-4">
           <section className="card relative min-h-[520px] flex-1 overflow-hidden">
             <div className="pointer-events-none absolute left-6 top-4 z-10">
               <h2 className="font-title text-xl font-semibold">Zieldreieck als Würfel</h2>
               <p className="mt-1 max-w-[520px] text-[13px] text-muted">
-                Jeder Punkt ist ein Unternehmen · Scores 0–100 · oben rechts hinten = liquide, rentabel und sicher
-                {missingScores > 0 && ` · ${missingScores} ohne vollständige Scores nicht im Würfel`}
+                Jeder Punkt ist ein Unternehmen. Oben rechts hinten liegen die liquiden, rentablen und sicheren.
+                {missingScores > 0 && ` ${missingScores} ohne vollständige Scores fehlen im Würfel.`}
               </p>
             </div>
             <div className="absolute inset-0">
@@ -81,6 +88,7 @@ export function Explorer() {
         </div>
         <CompanyList
           companies={sorted}
+          profile={profile.investorProfile}
           sort={sort}
           selected={selected}
           starred={activeTickers}

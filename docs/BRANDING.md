@@ -4,21 +4,26 @@
 Alternativen (falls umbenannt wird): Trilemma, Triax, Dreiklang, CubeScore, Fundamentum.
 
 ## Logo
-`docs/brand/logo.svg`: isometrischer Würfel, die drei sichtbaren Flächen = die drei Achsen
-(oben Rentabilität gold, links Liquidität blau, rechts Sicherheit grün).
+«Offene Ecke»: Würfel als Linie, an der Ideal-Ecke offen, dort steht nur der goldene Punkt (#D99A1C). Die Ecke ist das Ziel.
 
-## Farben (als Tailwind-Tokens anlegen)
+- `web/public/logo.svg`: weisse Linien, für nachtblaue Flächen (Kopf- und Fusszeile); Kopie in `docs/brand/logo.svg`
+- `web/public/favicon.svg`: Browser-Tab, Linien wechseln mit hellem und dunklem Modus
+- Auf hellen Flächen nachtblaue Linien verwenden (siehe `favicon.svg`)
+
+## Farben: Farbwelt A «Nachtblau und Gold»
+Die Werte stehen nur in `config/theme.json` (Tailwind und Würfel lesen daraus). Dort ändern, nicht in Komponenten.
+
 | Token | Rolle | Hex |
 |---|---|---|
-| L | Liquidität | #2F80ED (soft #E6F0FD) |
-| R | Rentabilität | #E8A317 (soft #FDF3DC, Text auf hell #B07A00) |
-| S | Sicherheit | #1E9E6A (soft #E2F4EC) |
-| accent | Auswahl, Ideal-Ecke, Badges | #5B4BE0 |
-| ink | Kopfzeile, Text | #0E1726 / Text #152033 |
-| paper | Hintergrund | #F4F6F9 |
-| card | Karten | #FFFFFF, Rand #E1E6EE |
-| muted | Sekundärtext | #66748A |
-| good / warn / bad | Ampel | #1E9E6A / #E0A100 / #D9443B |
+| L | Liquidität | #2F6FDE (soft #E2EBFB) |
+| R | Rentabilität | #D99A1C (soft #FAF0D6, Text auf hell #96690B) |
+| S | Sicherheit | #1C8C66 (soft #DDF1E8) |
+| accent | Auswahl, Ideal-Ecke, Badges | #5A2A82 Pflaume (soft #EEE5F5) |
+| ink / text | Kopfzeile, Text | #0B1D3A |
+| paper | Hintergrund | #F7F4EC |
+| card | Karten | #FFFFFF, Rand #E4DECF |
+| muted | Sekundärtext | #5F6B7E |
+| good / warn / bad | Ampel | #1C8C66 / #E0A100 / #D9443B |
 Branchenfarben: `config/sectors.json`.
 
 Regeln: Jede Achse hat überall dieselbe Farbe (Würfel, Balken, Radar, Tabellen). Ampelfarben nur für Richtwert-Vergleich.
@@ -29,4 +34,6 @@ Regeln: Jede Achse hat überall dieselbe Farbe (Würfel, Balken, Radar, Tabellen
 - **JetBrains Mono** 400/600: Zahlen (gleich breite Ziffern)
 
 ## Vorlagen
+Die Mockups zeigen noch die alten Farben von vor Farbwelt A.
+
 `docs/mockups/explorer.png`, `docs/mockups/compare.png` (+ HTML-Quellen; Fonts darin verweisen auf node_modules und laden ohne Installation nicht). `docs/brand/brand-mockup.css` enthält die Tokens als CSS-Variablen.

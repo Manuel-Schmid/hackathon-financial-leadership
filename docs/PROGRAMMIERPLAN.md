@@ -42,7 +42,8 @@ config/*.json  ──►  data/pipeline  ──►  companies.json / Supabase  �
 | Scoring-Methode | `data/pipeline/scoring.py` (Regeln in `docs/KENNZAHLEN.md`) | `export_json.py` |
 | Firmen im Universum | `data/raw/*.csv` | `run_all.py` |
 | Branchenname oder -farbe | `config/sectors.json` | `export_json.py` |
-| Farben, Schriften | Tailwind-Tokens in `web/tailwind.config.js` | nichts |
+| Farben | `config/theme.json` | Dev-Server neu starten |
+| Schriften | `web/tailwind.config.js` | nichts |
 | Andere Datenquelle | neue Klasse, die `DataSource` erfüllt | Auswahl in `web/src/data/index.ts` |
 
 `export_json.py` braucht keinen neuen Abruf bei Yahoo, es rechnet aus `data/cache/` neu.
@@ -67,7 +68,7 @@ config/*.json  ──►  data/pipeline  ──►  companies.json / Supabase  �
 ### Frontend (`web/src/`)
 | Ordner | Aufgabe |
 |---|---|
-| `lib/` | reine Funktionen ohne React: `config`, `format`, `ampel`, `weighting`, `filters`, `medians`, `fazit`, `compare`, `storage` (mit Vitest getestet) |
+| `lib/` | reine Funktionen ohne React: `config`, `format`, `ampel`, `weighting`, `filters`, `medians`, `fazit`, `compare`, `storage`, `capRange` (mit Vitest getestet) |
 | `data/` | `types`, `DataSource`, `JsonSource`, `SupabaseSource`, `index` (Auswahl + Rückfall auf JSON), `DataProvider` |
 | `auth/` | `AuthProvider`, `useAuth` |
 | `watchlists/` | `WatchlistStore`, `SupabaseWatchlistStore`, `LocalWatchlistStore`, `WatchlistProvider` |

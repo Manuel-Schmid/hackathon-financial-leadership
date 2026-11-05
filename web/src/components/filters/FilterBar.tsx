@@ -1,115 +1,91 @@
-import type { SizeClass } from '@/data/types';
-import { SECTORS } from '@/lib/config';
-import { DEFAULT_FILTERS, type Filters, type Universe } from '@/lib/filters';
-
-const SIZES: { id: SizeClass; label: string }[] = [
-  { id: 'Large', label: 'Large >10 Mrd.' },
-  { id: 'Mid', label: 'Mid 2–10' },
-  { id: 'Small', label: 'Small <2' },
-];
-
-function toggled<T>(list: T[], item: T): T[] {
-  return list.includes(item) ? list.filter((x) => x !== item) : [...list, item];
-}
+import { useEffect, useRef, useState } from 'react';
+import type { Company } from '@/data/types';
+import { activeFilters, type Filters, type Universe } from '@/lib/filters';
+import { FilterPanel } from './FilterPanel';
+import { SearchBar } from './SearchBar';
 
 interface Props {
+  companies: Company[];
   filters: Filters;
   counts: Record<Universe, number>;
+  resultCount: number;
   onChange(next: Filters): void;
+  onPick(ticker: string): void;
 }
 
-function Group({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <span className="tag">{label}</span>
-      <div className="flex h-[34px] items-center gap-1.5">{children}</div>
-    </div>
-  );
-}
+export function FilterBar({ companies, filters, counts, resultCount, onChange, onPick }: Props) {
+  const [open, setOpen] = useState(false);
+  const panelArea = useRef<HTMLDivElement>(null);
+  const active = activeFilters(filters);
 
-export function FilterBar({ filters, counts, onChange }: Props) {
-  const universe = (id: Universe, label: string) => {
-    const on = filters.universes.includes(id);
-    return (
-      <button
-        type="button"
-        aria-pressed={on}
-        className={`pill ${on ? 'pill-on' : ''}`}
-        onClick={() => onChange({ ...filters, universes: toggled(filters.universes, id) })}
-      >
-        {label} · {counts[id]}
-      </button>
-    );
-  };
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!panelArea.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
 
   return (
-    <div className="flex flex-wrap items-start gap-x-6 gap-y-2 border-b border-line bg-white px-4 py-2.5 lg:px-7">
-      <Group label="Datenbank">
-        {universe('SP500', 'S&P 500')}
-        {universe('SWISS', 'SMI / SMIM')}
-      </Group>
-      <Group label="Branche">
-        <select
-          aria-label="Branche"
-          className="pill cursor-pointer"
-          value={filters.sector ?? ''}
-          onChange={(e) => onChange({ ...filters, sector: e.target.value || null })}
+    <div className="flex items-center gap-2 border-b border-line bg-white px-4 py-2 lg:px-7">
+      <SearchBar
+        companies={companies}
+        value={filters.search}
+        onChange={(search) => onChange({ ...filters, search })}
+        onPick={onPick}
+      />
+      {active.map((chip) => (
+        <button
+          key={chip.id}
+          type="button"
+          aria-label={`Filter entfernen: ${chip.label}`}
+          className="whitespace-nowrap rounded-full bg-accent-soft px-3 py-1.5 text-[13px] font-semibold text-accent hover:bg-note"
+          onClick={() => onChange(chip.clear(filters))}
         >
-          <option value="">Alle Branchen</option>
-          {Object.entries(SECTORS)
-            .sort((a, b) => a[1].de.localeCompare(b[1].de, 'de'))
-            .map(([id, sector]) => (
-              <option key={id} value={id}>
-                {sector.de}
-              </option>
-            ))}
-        </select>
-      </Group>
-      <Group label="Grösse (Börsenwert in USD)">
-        <div className="flex overflow-hidden rounded-[9px] border border-line">
-          {SIZES.map(({ id, label }) => {
-            const on = filters.sizes.includes(id);
-            return (
-              <button
-                key={id}
-                type="button"
-                aria-pressed={on}
-                className={`border-r border-line px-3 py-1.5 text-[13px] font-semibold last:border-r-0 ${on ? 'bg-ink text-white' : 'bg-white'}`}
-                onClick={() => onChange({ ...filters, sizes: toggled(filters.sizes, id) })}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-      </Group>
-      <Group label="Suche">
-        <input
-          type="search"
-          className="input h-[34px] w-[230px] py-0"
-          placeholder="Name oder Ticker, z.B. VACN"
-          value={filters.search}
-          onChange={(e) => onChange({ ...filters, search: e.target.value })}
-        />
-      </Group>
-      <Group label="Finanzsektor">
-        <label
-          className="flex cursor-pointer items-center gap-2 text-[13px] font-semibold"
-          title="Banken und Versicherungen: Liquiditätsgrade sind nicht sinnvoll, deshalb nur eingeschränkt vergleichbar."
+          {chip.label} ×
+        </button>
+      ))}
+      <div ref={panelArea} className="relative shrink-0">
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-haspopup="dialog"
+          className={`btn flex h-11 items-center gap-2 px-5 text-[15px] ${open || active.length ? 'btn-primary' : ''}`}
+          onClick={() => setOpen(!open)}
         >
-          <input
-            type="checkbox"
-            className="h-4 w-4 accent-S"
-            checked={filters.includeFinancials}
-            onChange={(e) => onChange({ ...filters, includeFinancials: e.target.checked })}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-[18px] w-[18px]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 5h16l-6.5 7.5V19l-3 1.5v-8Z" />
+          </svg>
+          Filter{active.length > 0 && ` (${active.length})`}
+        </button>
+        {open && (
+          <FilterPanel
+            companies={companies}
+            filters={filters}
+            counts={counts}
+            resultCount={resultCount}
+            onChange={onChange}
+            onClose={() => setOpen(false)}
           />
-          Banken &amp; Versicherungen ⓘ
-        </label>
-      </Group>
-      <div className="flex-1" />
-      <button type="button" className="pill mt-[22px]" onClick={() => onChange(DEFAULT_FILTERS)}>
-        ↺ Zurücksetzen
-      </button>
+        )}
+      </div>
     </div>
   );
 }

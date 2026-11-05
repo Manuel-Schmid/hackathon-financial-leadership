@@ -1,12 +1,12 @@
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer } from 'recharts';
 import type { AxisId, Company } from '@/data/types';
-import { AXES } from '@/lib/config';
+import { AXES, THEME } from '@/lib/config';
 import { COMPARE_COLORS } from '@/lib/compare';
 
 // Rentabilität oben, wie im Mockup
 const ORDER: AxisId[] = ['rentabilitaet', 'sicherheit', 'liquiditaet'];
 const TEXT_COLOR: Record<AxisId, string> = {
-  rentabilitaet: '#B07A00',
+  rentabilitaet: THEME.R.text,
   sicherheit: AXES.sicherheit.color,
   liquiditaet: AXES.liquiditaet.color,
 };
@@ -41,7 +41,7 @@ export function CompareRadar({ companies }: { companies: Company[] }) {
       <div className="h-[380px]">
         <ResponsiveContainer>
           <RadarChart data={data} outerRadius="72%">
-            <PolarGrid stroke="#E1E6EE" />
+            <PolarGrid stroke={THEME.line.DEFAULT} />
             <PolarAngleAxis dataKey="axis" tick={(props: TickProps) => <AxisTick {...props} />} />
             <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
             {companies.map((c, i) => (
