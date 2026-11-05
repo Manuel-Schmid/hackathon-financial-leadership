@@ -17,13 +17,13 @@ export function CompareTable({ companies }: { companies: Company[] }) {
       <p className="px-[22px] text-[12.5px] text-muted">
         {modus === 'branche'
           ? `Richtwerte der Branche ${companies[0]?.sectorDe ?? ''} (Quellen: Methodik)`
-          : 'Firmen aus verschiedenen Branchen: Richtwerte aus dem Buch'}
+          : 'Firmen aus verschiedenen Branchen: allgemeine Richtwerte'}
       </p>
       <table className="mt-2.5 w-full min-w-[640px] border-collapse text-[13.5px]">
         <thead>
           <tr className="tag border-b border-line text-right">
             <th className="py-2 pl-[22px] text-left font-bold">Kennzahl</th>
-            <th className="px-3 py-2 font-bold">{modus === 'branche' ? `Richtwert ${companies[0]?.sectorDe ?? ''}` : 'Richtwert'}</th>
+            <th className="px-3 py-2 font-bold">{modus === 'branche' ? `Richtwert ${companies[0]?.sectorDe ?? ''}` : 'Richtwert allgemein'}</th>
             {companies.map((c, i) => (
               <th key={c.ticker} className="px-3 py-2 font-bold" style={{ color: COMPARE_COLORS[i] }}>
                 {c.name}
@@ -48,7 +48,7 @@ export function CompareTable({ companies }: { companies: Company[] }) {
                       {def.short}
                       <small className="block text-[11.5px] font-medium text-muted">{def.formula}</small>
                     </td>
-                    <td className="whitespace-nowrap px-3 text-right text-[12.5px] text-muted">{rw ? `${rw.label}${modus === 'branche' && rw.source === 'buch' ? ' (Buch)' : ''}` : '–'}</td>
+                    <td className="whitespace-nowrap px-3 text-right text-[12.5px] text-muted">{rw ? `${rw.label}${modus === 'branche' && rw.source === 'buch' ? ' (allgemein)' : ''}` : '–'}</td>
                     {companies.map((c, i) => (
                       <td key={c.ticker} className={`whitespace-nowrap px-3 text-right font-mono ${i === best ? 'bg-accent-soft font-semibold' : ''}`}>
                         <span className="inline-flex items-center gap-2">

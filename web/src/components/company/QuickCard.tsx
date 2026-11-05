@@ -38,7 +38,7 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
                 {def.short}
                 {rw && (
                   <em className="block text-[11.5px] not-italic text-muted">
-                    Richtwert {rw.source === 'branche' ? 'Branche' : 'Buch'} {rw.label}
+                    Richtwert {rw.source === 'branche' ? 'Branche' : 'allgemein'} {rw.label}
                   </em>
                 )}
               </span>

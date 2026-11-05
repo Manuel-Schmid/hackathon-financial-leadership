@@ -44,7 +44,7 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
           <tr className="tag text-right">
             <th className="py-2 pl-5 text-left font-bold">Kennzahl</th>
             <th className="px-3 py-2 font-bold">Wert</th>
-            <th className="px-3 py-2 font-bold">Richtwert Buch</th>
+            <th className="px-3 py-2 font-bold">Richtwert allgemein</th>
             <th className="px-3 py-2 font-bold">Richtwert {company.sectorDe}</th>
             <th className="px-3 py-2 font-bold">Branchen-Median</th>
             <th className="py-2 pl-3 pr-5 font-bold">Verlauf</th>
@@ -73,9 +73,12 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
                     <AmpelDot ampel={kpi?.ampel ?? 'grey'} />
                   </span>
                 </td>
-                <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted" title={def.richtwertBranche?.quelle}>
+                <td
+                  className={`whitespace-nowrap px-3 py-2 text-right text-[12.5px] ${branche?.source === 'branche' ? 'text-muted' : 'text-muted/50'}`}
+                  title={branche?.source === 'branche' ? def.richtwertBranche?.quelle : 'kein Branchenwert, allgemeiner Richtwert'}
+                >
                   <span className="inline-flex items-center gap-2">
-                    {branche ? (branche.source === 'buch' ? 'wie Buch' : branche.label) : '–'}
+                    {branche?.label ?? '–'}
                     <AmpelDot ampel={ampelFor(kpi, 'branche')} />
                   </span>
                 </td>

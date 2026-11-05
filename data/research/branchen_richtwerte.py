@@ -21,8 +21,8 @@ from common import CONFIG_DIR, WEB_JSON, load_kpi_config  # noqa: E402
 from scoring import ampel  # noqa: E402
 
 QUELLE = {
-    "bach": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: {m}; Buch-Richtwert × Branchenfaktor",
-    "damodaran": "Damodaran (NYU Stern), US, 01/2026: {m}; Buch-Richtwert × Branchenfaktor",
+    "bach": "BACH (ECCBSO), grosse Unternehmen, Daten 2024: {m}; allgemeiner Richtwert × Branchenfaktor",
+    "damodaran": "Damodaran (NYU Stern), US, 01/2026: {m}; allgemeiner Richtwert × Branchenfaktor",
 }
 KPI_SOURCE = {
     "current_ratio": ("bach", "Current Ratio (r17), Median"),
