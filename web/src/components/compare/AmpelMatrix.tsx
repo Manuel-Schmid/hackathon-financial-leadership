@@ -19,14 +19,11 @@ const SOFT: Record<string, string> = {
 const ORDER: Ampel[] = ['green', 'yellow', 'red', 'grey'];
 /** Lesbare Schrift auf dem jeweiligen Ampel-Hintergrund */
 const CELL_TEXT: Record<Ampel, string> = { green: 'text-white', yellow: 'text-ink', red: 'text-white', grey: 'text-muted' };
-/** Fadenkreuz beim Hover: nur transform/opacity, damit nichts im Layout verrutscht und es flüssig bleibt. */
-const MOTION = 'transition-[transform,opacity,box-shadow] duration-150 ease-out motion-reduce:transition-none';
+/** Fadenkreuz beim Hover: Zeile und Spalte bleiben, alles andere blasst ab (nur opacity, kein Layout-Sprung). */
+const MOTION = 'transition-opacity duration-150 ease-out motion-reduce:transition-none';
 type Focus = { row: number; col: number } | null;
 function tileFx(focus: Focus, row: number, col: number): string {
-  if (!focus) return '';
-  if (focus.row === row && focus.col === col) return 'relative z-10 scale-[1.12] shadow-pop';
-  if (focus.row === row || focus.col === col) return 'scale-[1.04]';
-  return 'opacity-45';
+  return focus && focus.row !== row && focus.col !== col ? 'opacity-45' : '';
 }
 const COUNT_LABEL: Record<Ampel, string> = { green: 'erfüllt', yellow: 'knapp daneben', red: 'deutlich daneben', grey: 'ohne Daten' };
 
@@ -44,7 +41,8 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
         Farbe = Richtwert ({modus === 'branche' ? `Branche ${companies[0]?.sectorDe ?? ''}` : 'allgemein, verschiedene Branchen'}) · Zahl = Platzierung
         unter {modus === 'branche' ? 'allen Firmen dieser Branche' : 'allen Firmen'}
       </p>
-      <table className="mt-3 w-full min-w-[1100px] table-fixed border-separate border-spacing-1 text-[12px]">
+      {/* cursor-default: über Text sonst Textauswahl-Zeiger; die Matrix soll sich wie eine Grafik anfühlen */}
+      <table className="mt-3 w-full min-w-[1100px] cursor-default table-fixed border-separate border-spacing-1 text-[12px]">
         <colgroup>
           <col className="w-[150px]" />
           {MATRIX_KPIS.map((k) => <col key={k.id} />)}
