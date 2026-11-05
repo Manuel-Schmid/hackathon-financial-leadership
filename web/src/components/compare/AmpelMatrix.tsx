@@ -34,7 +34,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
         Farbe = Richtwert ({modus === 'branche' ? `Branche ${companies[0]?.sectorDe ?? ''}` : 'allgemein, verschiedene Branchen'}) · Zahl = Platzierung
         unter {modus === 'branche' ? 'allen Firmen dieser Branche' : 'allen Firmen'}
       </p>
-      <table className="mt-3 w-full min-w-[900px] table-fixed border-separate border-spacing-1 text-[12px]">
+      <table className="mt-3 w-full min-w-[1100px] table-fixed border-separate border-spacing-1 text-[12px]">
         <colgroup>
           <col className="w-[150px]" />
           {MATRIX_KPIS.map((k) => <col key={k.id} />)}
@@ -72,14 +72,20 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
                 {row.company.name}
               </th>
               {row.cells.map((cell) => {
-                const platz = cell.rank ? ` · Platz ${cell.rank.rank} von ${cell.rank.n} ${gruppe} (Top ${cell.rank.top} %)` : '';
-                const text = `${row.company.name}, ${cell.kpi.short}: ${formatKpi(cell.value, cell.kpi.unit, row.company.currency)} · Richtwert ${cell.richtwert ?? '–'} · ${AMPEL_STYLE[cell.ampel].label}${platz}`;
+                // Eine Angabe pro Zeile im Tooltip; für Screenreader dieselben Angaben in einer Zeile
+                const lines = [
+                  `${row.company.name} · ${cell.kpi.short}`,
+                  `Wert: ${formatKpi(cell.value, cell.kpi.unit, row.company.currency)}`,
+                  `Richtwert: ${cell.richtwert ?? '–'}`,
+                  `Ampel: ${AMPEL_STYLE[cell.ampel].label}`,
+                  ...(cell.rank ? [`Platz ${cell.rank.rank} von ${cell.rank.n} ${gruppe} (Top ${cell.rank.top} %)`] : []),
+                ];
                 return (
                   <td key={cell.kpi.id} className="p-0">
                     <div
-                      title={text}
-                      aria-label={text}
-                      className={`flex h-8 items-center justify-center rounded-md text-[11.5px] font-bold ${AMPEL_STYLE[cell.ampel].dot} ${CELL_TEXT[cell.ampel]}`}
+                      title={lines.join('\n')}
+                      aria-label={lines.join(' · ')}
+                      className={`flex h-8 items-center justify-center whitespace-nowrap rounded-md text-[11.5px] font-bold ${AMPEL_STYLE[cell.ampel].dot} ${CELL_TEXT[cell.ampel]}`}
                     >
                       {cell.rank && `Top ${cell.rank.top} %`}
                     </div>
