@@ -39,6 +39,7 @@ def company_rows(data: dict) -> tuple[list[dict], list[dict], list[dict]]:
                         "value": point["value"],
                         # Ampel gilt für das letzte Geschäftsjahr, so wie im Frontend-Modell
                         "ampel": kpi["ampel"] if point["year"] == c["fiscalYear"] else None,
+                        "ampel_branche": kpi["ampelBranche"] if point["year"] == c["fiscalYear"] else None,
                     }
                 )
     return companies, kpis, scores
