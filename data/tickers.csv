@@ -18,7 +18,7 @@ ALGN,Align Technology,Health Care,SP500,US
 ALLE,Allegion,Industrials,SP500,US
 LNT,Alliant Energy,Utilities,SP500,US
 ALL,Allstate,Financials,SP500,US
-GOOGL,Alphabet Inc. (Class A),Communication Services,SP500,US
+GOOGL,Alphabet Inc.,Communication Services,SP500,US
 MO,Altria,Consumer Staples,SP500,US
 AMZN,Amazon,Consumer Discretionary,SP500,US
 AMCR,Amcor,Materials,SP500,US
@@ -201,7 +201,7 @@ FLEX,Flex Ltd.,Information Technology,SP500,US
 F,Ford Motor Company,Consumer Discretionary,SP500,US
 FTNT,Fortinet,Information Technology,SP500,US
 FTV,Fortive,Industrials,SP500,US
-FOXA,Fox Corporation (Class A),Communication Services,SP500,US
+FOXA,Fox Corporation,Communication Services,SP500,US
 BEN,Franklin Resources,Financials,SP500,US
 FCX,Freeport-McMoRan,Materials,SP500,US
 GRMN,Garmin,Consumer Discretionary,SP500,US
@@ -326,7 +326,7 @@ NDAQ,"Nasdaq, Inc.",Financials,SP500,US
 NTAP,NetApp,Information Technology,SP500,US
 NFLX,Netflix,Communication Services,SP500,US
 NEM,Newmont,Materials,SP500,US
-NWSA,News Corp (Class A),Communication Services,SP500,US
+NWSA,News Corp,Communication Services,SP500,US
 NEE,NextEra Energy,Utilities,SP500,US
 NKE,"Nike, Inc.",Consumer Discretionary,SP500,US
 NI,NiSource,Utilities,SP500,US
