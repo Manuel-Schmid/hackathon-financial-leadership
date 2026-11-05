@@ -12,7 +12,7 @@ LONN.SW,Lonza,Health Care,SMI
 NESN.SW,Nestlé,Consumer Staples,SMI
 NOVN.SW,Novartis,Health Care,SMI
 PGHN.SW,Partners Group,Financials,SMI
-ROG.SW,Roche,Health Care,SMI
+RO.SW,Roche,Health Care,SMI
 SCMN.SW,Swisscom,Communication Services,SMI
 SIKA.SW,Sika,Materials,SMI
 SLHN.SW,Swiss Life,Financials,SMI
@@ -24,7 +24,6 @@ ACLN.SW,Accelleron,Industrials,SMIM
 ADEN.SW,Adecco,Industrials,SMIM
 AVOL.SW,Avolta,Consumer Discretionary,SMIM
 BAER.SW,Julius Bär,Financials,SMIM
-BALN.SW,Baloise,Financials,SMIM
 BANB.SW,Bachem,Health Care,SMIM
 BARN.SW,Barry Callebaut,Consumer Staples,SMIM
 BEAN.SW,Belimo,Industrials,SMIM
@@ -34,7 +33,7 @@ EMSN.SW,EMS-Chemie,Materials,SMIM
 FHZN.SW,Flughafen Zürich,Industrials,SMIM
 GALD.SW,Galderma,Health Care,SMIM
 GF.SW,Georg Fischer,Industrials,SMIM
-HELN.SW,Helvetia,Financials,SMIM
+HBAN.SW,Helvetia Baloise,Financials,SMIM
 LISN.SW,Lindt & Sprüngli,Consumer Staples,SMIM
 PSPN.SW,PSP Swiss Property,Real Estate,SMIM
 SCHP.SW,Schindler,Industrials,SMIM
