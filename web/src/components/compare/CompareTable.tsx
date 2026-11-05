@@ -12,14 +12,14 @@ export function CompareTable({ companies }: { companies: Company[] }) {
   const modus = compareMode(companies);
   const sector = companies[0]?.sector ?? '';
   return (
-    <div className="card overflow-x-auto pb-2 pt-[18px]">
+    <div className="card overflow-x-auto pb-2 pt-[18px] print:overflow-visible">
       <h2 className="px-[22px] font-title text-[17px] font-semibold">Wichtigste Kennzahlen</h2>
       <p className="px-[22px] text-[12.5px] text-muted">
         {modus === 'branche'
           ? `Richtwerte der Branche ${companies[0]?.sectorDe ?? ''} (Quellen: Methodik)`
           : 'Firmen aus verschiedenen Branchen: allgemeine Richtwerte'}
       </p>
-      <table className="mt-2.5 w-full min-w-[640px] border-collapse text-[13.5px]">
+      <table className="mt-2.5 w-full min-w-[640px] print:min-w-0 print:text-[12px] border-collapse text-[13.5px]">
         <thead>
           <tr className="tag border-b border-line text-right">
             <th className="py-2 pl-[22px] text-left font-bold">Kennzahl</th>

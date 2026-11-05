@@ -98,3 +98,35 @@ body {
     @apply rounded-[9px] border border-line bg-white px-3 py-2 text-[13px] outline-none focus:border-accent;
   }
 }
+
+/* Kundenreport (Vergleich → «Als Report drucken»): Querformat, weiss, Farben wie am Bildschirm */
+@media print {
+  /* Eigene Randfelder ersetzen Chromes Kopf-/Fusszeile (Datum/Uhrzeit, Titel, Adresse). Chrome ab 131.
+     Oben bleibt leer: ein unsichtbares Leerzeichen hält den Rand in unserer Hand, sonst druckt Chrome dort wieder.
+     Unten rechts: Seitenzahl. */
+  @page {
+    size: A4 landscape;
+    margin: 12mm 10mm;
+    @top-center {
+      content: '\00a0';
+    }
+    @bottom-right {
+      content: 'Seite ' counter(page) ' von ' counter(pages);
+      font-family: Manrope, sans-serif;
+      font-size: 9px;
+      color: #66748a;
+    }
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .card {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}

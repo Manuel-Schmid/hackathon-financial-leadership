@@ -18,7 +18,7 @@ export function CompareCard({ company, color, profile, onRemove }: Props) {
         type="button"
         aria-label={`${company.name} entfernen`}
         title={`${company.name} entfernen`}
-        className="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full text-[24px] leading-none text-text hover:bg-paper hover:text-bad"
+        className="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center print:hidden rounded-full text-[24px] leading-none text-text hover:bg-paper hover:text-bad"
         onClick={onRemove}
       >
         ×

@@ -43,7 +43,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
         unter {modus === 'branche' ? 'allen Firmen dieser Branche' : 'allen Firmen'}
       </p>
       {/* cursor-default: über Text sonst Textauswahl-Zeiger; die Matrix soll sich wie eine Grafik anfühlen */}
-      <table className="mt-3 w-full min-w-[1100px] cursor-default table-fixed border-separate border-spacing-1 text-[12px]">
+      <table className="mt-3 w-full min-w-[1100px] cursor-default print:min-w-0 table-fixed border-separate border-spacing-1 text-[12px]">
         <colgroup>
           <col className="w-[150px]" />
           {MATRIX_KPIS.map((k) => <col key={k.id} />)}
@@ -134,7 +134,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
             {AMPEL_STYLE[a].label}
           </span>
         ))}
-        <span>· Mit der Maus auf ein Feld zeigen für Wert, Richtwert und genauen Platz</span>
+        <span className="print:hidden">· Mit der Maus auf ein Feld zeigen für Wert, Richtwert und genauen Platz</span>
       </p>
     </section>
   );

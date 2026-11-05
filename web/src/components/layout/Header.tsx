@@ -49,7 +49,7 @@ export function Header() {
   useEffect(() => setOpen(false), [pathname]);
 
   return (
-    <header className="relative z-50 grid h-[85px] shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 bg-ink px-4 text-white lg:px-7">
+    <header className="relative z-50 grid print:hidden h-[85px] shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 bg-ink px-4 text-white lg:px-7">
       <div>
         <nav aria-label="Hauptmenü" className="hidden items-center gap-5 lg:flex">
           <DesktopLink to="/" end>Explorer</DesktopLink>
