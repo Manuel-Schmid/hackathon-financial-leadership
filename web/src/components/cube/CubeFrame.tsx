@@ -6,6 +6,8 @@ import { HALF, toWorld, type Vec3 } from './geometry';
 const GRID = THEME.line.DEFAULT;
 const EDGE = THEME.line.strong;
 const TICKS = [0, 50, 100];
+/** Endpunkte des Winkels an der Ideal-Ecke: je 20 Punkte entlang der drei Kanten. */
+const IDEAL_ARMS: [number, number, number][] = [[80, 100, 100], [100, 80, 100], [100, 100, 80]];
 
 function Label({ position, children, className }: { position: Vec3; children: React.ReactNode; className: string }) {
   return (
@@ -92,11 +94,10 @@ export function CubeFrame() {
         </group>
       ))}
 
-      {/* Ideal-Ecke 100·100·100: dezente Markierung ohne Text (Radius 65 % der früheren 0.55) */}
-      <mesh position={ideal}>
-        <sphereGeometry args={[0.36, 24, 24]} />
-        <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.12} depthWrite={false} />
-      </mesh>
+      {/* Ideal-Ecke 100·100·100: feiner goldener Winkel auf den drei Kanten, keine Kugel (sähe aus wie eine Firma) */}
+      {IDEAL_ARMS.map((end, i) => (
+        <Line key={i} points={[ideal, toWorld(...end)]} color={THEME.R.DEFAULT} lineWidth={1.6} />
+      ))}
     </group>
   );
 }
