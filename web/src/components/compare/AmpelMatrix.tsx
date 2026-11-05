@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { useCompanies } from '@/data/DataProvider';
 import type { Ampel, Company } from '@/data/types';
 import { AMPEL_STYLE } from '@/lib/ampel';
 import { ampelMatrix, MATRIX_KPIS } from '@/lib/ampelMatrix';
@@ -15,18 +17,22 @@ const SOFT: Record<string, string> = {
   'Anlagedeckung II': `Anlage${SHY}deckung II`,
 };
 const ORDER: Ampel[] = ['green', 'yellow', 'red', 'grey'];
+/** Lesbare Schrift auf dem jeweiligen Ampel-Hintergrund */
+const CELL_TEXT: Record<Ampel, string> = { green: 'text-white', yellow: 'text-ink', red: 'text-white', grey: 'text-muted' };
 const COUNT_LABEL: Record<Ampel, string> = { green: 'erfüllt', yellow: 'knapp daneben', red: 'deutlich daneben', grey: 'ohne Daten' };
 
 /** Alle Kennzahlen mit Richtwert als farbige Felder: Firmen × Kennzahlen, das Muster auf einen Blick. */
 export function AmpelMatrix({ companies }: { companies: Company[] }) {
+  const all = useCompanies();
   const modus = compareMode(companies);
-  const rows = ampelMatrix(companies, modus);
+  const rows = useMemo(() => ampelMatrix(companies, modus, all), [companies, modus, all]);
+  const gruppe = modus === 'branche' ? `der Branche ${companies[0]?.sectorDe ?? ''}` : 'aller Firmen';
   return (
     <section className="card overflow-x-auto px-[22px] pb-4 pt-[18px]">
       <h2 className="font-title text-[17px] font-semibold">Ampel-Matrix</h2>
       <p className="text-[12.5px] text-muted">
-        Alle Kennzahlen mit Richtwert auf einen Blick ·{' '}
-        {modus === 'branche' ? `Richtwerte der Branche ${companies[0]?.sectorDe ?? ''}` : 'allgemeine Richtwerte (verschiedene Branchen)'}
+        Farbe = Richtwert ({modus === 'branche' ? `Branche ${companies[0]?.sectorDe ?? ''}` : 'allgemein, verschiedene Branchen'}) · Zahl = Platzierung
+        unter {modus === 'branche' ? 'allen Firmen dieser Branche' : 'allen Firmen'}
       </p>
       <table className="mt-3 w-full min-w-[900px] table-fixed border-separate border-spacing-1 text-[12px]">
         <colgroup>
@@ -66,10 +72,17 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
                 {row.company.name}
               </th>
               {row.cells.map((cell) => {
-                const text = `${row.company.name}, ${cell.kpi.short}: ${formatKpi(cell.value, cell.kpi.unit, row.company.currency)} · Richtwert ${cell.richtwert ?? '–'} · ${AMPEL_STYLE[cell.ampel].label}`;
+                const platz = cell.rank ? ` · Platz ${cell.rank.rank} von ${cell.rank.n} ${gruppe} (Top ${cell.rank.top} %)` : '';
+                const text = `${row.company.name}, ${cell.kpi.short}: ${formatKpi(cell.value, cell.kpi.unit, row.company.currency)} · Richtwert ${cell.richtwert ?? '–'} · ${AMPEL_STYLE[cell.ampel].label}${platz}`;
                 return (
                   <td key={cell.kpi.id} className="p-0">
-                    <div title={text} aria-label={text} className={`h-8 rounded-md ${AMPEL_STYLE[cell.ampel].dot}`} />
+                    <div
+                      title={text}
+                      aria-label={text}
+                      className={`flex h-8 items-center justify-center rounded-md text-[11.5px] font-bold ${AMPEL_STYLE[cell.ampel].dot} ${CELL_TEXT[cell.ampel]}`}
+                    >
+                      {cell.rank && `Top ${cell.rank.top} %`}
+                    </div>
                   </td>
                 );
               })}
@@ -94,7 +107,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
             {AMPEL_STYLE[a].label}
           </span>
         ))}
-        <span>· Mit der Maus auf ein Feld zeigen für Wert und Richtwert</span>
+        <span>· Mit der Maus auf ein Feld zeigen für Wert, Richtwert und genauen Platz</span>
       </p>
     </section>
   );
