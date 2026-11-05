@@ -145,11 +145,6 @@ export function sortDirLabel(key: SortKey, dir: SortDir): string {
   return dir === 'desc' ? 'höchste zuerst' : 'tiefste zuerst';
 }
 
-/** Klick auf einen Spaltentitel: gleiche Spalte dreht die Richtung um, eine neue beginnt mit ihrer Startrichtung. */
-export function nextSort(current: SortState, key: SortKey): SortState {
-  if (current.key === key) return { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
-  return { key, dir: DEFAULT_DIR[key] };
-}
 
 /** Sortiert nach Schlüssel und Richtung (Standard: DEFAULT_DIR); fehlende Werte immer ans Ende. */
 export function sortCompanies(companies: Company[], key: SortKey, profile: ProfileRef = 'ausgewogen', dir: SortDir = DEFAULT_DIR[key]): Company[] {
