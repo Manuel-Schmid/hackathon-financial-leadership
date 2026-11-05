@@ -66,7 +66,7 @@ export function Compare() {
   return (
     <>
       <CompareSearch />
-      <main className="mx-auto w-full max-w-[1600px] space-y-4 p-4 lg:p-7">
+      <main className="mx-auto w-full max-w-[1600px] space-y-4 px-4 pb-4 pt-3 lg:px-7 lg:pb-7 lg:pt-3">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <PageTitle
             tag={`Watchlist · ${all.length} Unternehmen`}
