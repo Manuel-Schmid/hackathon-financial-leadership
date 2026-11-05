@@ -76,12 +76,15 @@ export function Header() {
         </div>
       </Link>
 
-      <Link to={user ? '/profil' : '/login'} className="flex items-center justify-end gap-2.5 font-semibold">
-        <span className="hidden truncate sm:inline">{user ? profile.displayName : 'Anmelden'}</span>
-        <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-accent font-title text-[13px]">
-          {user ? initials(profile.displayName) : '?'}
-        </span>
-      </Link>
+      {/* Nur der sichtbare Knopf ist klickbar, nicht die ganze Spalte bis zum Logo */}
+      <div className="flex min-w-0 justify-end">
+        <Link to={user ? '/profil' : '/login'} className="flex min-w-0 items-center gap-2.5 font-semibold">
+          <span className="hidden truncate sm:inline">{user ? profile.displayName : 'Anmelden'}</span>
+          <span className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-accent font-title text-[13px]">
+            {user ? initials(profile.displayName) : '?'}
+          </span>
+        </Link>
+      </div>
 
       {open && (
         <nav aria-label="Menü" className="card absolute left-3 top-[80px] w-[240px] p-2 text-[15px] text-text shadow-pop lg:hidden">

@@ -7,7 +7,7 @@ import { WatchlistBar } from '@/components/list/WatchlistBar';
 import { ErrorBoundary } from '@/components/ui/atoms';
 import { WatchlistPicker } from '@/components/watchlists/WatchlistPicker';
 import { useCompanies, useData } from '@/data/DataProvider';
-import { EXPLORER_FILTERS_KEY, matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { DEFAULT_SORT, EXPLORER_FILTERS_KEY, matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortState } from '@/lib/filters';
 import { useSessionState } from '@/lib/useSessionState';
 import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
@@ -37,7 +37,7 @@ export function Explorer() {
   const { all: profiles, select: selectProfile } = useProfiles();
   // Filter und Sortierung bleiben beim Seitenwechsel erhalten, bis das Browserfenster geschlossen wird
   const [filters, setFilters] = useSessionState<Filters>(EXPLORER_FILTERS_KEY, restoreFilters);
-  const [sort, setSort] = useSessionState<SortKey>('kubus.explorerSort', restoreSort);
+  const [sort, setSort] = useSessionState<SortState>('kubus.explorerSort', restoreSort);
   const [selected, setSelected] = useState<string | null>(null);
   const profile = useMemo(
     () => profiles.find((p) => p.id === filters.investorProfile)?.weights ?? 'ausgewogen',
@@ -46,14 +46,14 @@ export function Explorer() {
 
   const changeFilters = (next: Filters) => {
     // Wer ein Profil wählt, will sehen, welche Firmen am besten dazu passen.
-    if (next.investorProfile && next.investorProfile !== filters.investorProfile) setSort('total');
+    if (next.investorProfile && next.investorProfile !== filters.investorProfile) setSort(DEFAULT_SORT);
     selectProfile(next.investorProfile);
     setFilters(next);
   };
 
   const filtered = useMemo(() => companies.filter((c) => matchesFilters(c, filters)), [companies, filters]);
   const visible = useMemo(() => new Set(filtered.map((c) => c.ticker)), [filtered]);
-  const sorted = useMemo(() => sortCompanies(filtered, sort, profile), [filtered, sort, profile]);
+  const sorted = useMemo(() => sortCompanies(filtered, sort.key, profile, sort.dir), [filtered, sort, profile]);
   const selectedCompany = selected ? byTicker.get(selected) : undefined;
   const missingScores = filtered.filter((c) => !c.isFinancial && Object.values(c.scores).includes(null)).length;
 

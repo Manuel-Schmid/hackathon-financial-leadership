@@ -57,9 +57,14 @@ describe('restoreFilters', () => {
 });
 
 describe('restoreSort', () => {
-  it('nur bekannte Sortierungen, sonst Gesamt-Score', () => {
-    expect(restoreSort('name')).toBe('name');
-    expect(restoreSort('quatsch')).toBe('total');
-    expect(restoreSort(null)).toBe('total');
+  it('Schlüssel und Richtung; Unbekanntes fällt auf Gesamt-Score absteigend', () => {
+    expect(restoreSort({ key: 'name', dir: 'desc' })).toEqual({ key: 'name', dir: 'desc' });
+    expect(restoreSort({ key: 'quatsch', dir: 'asc' })).toEqual({ key: 'total', dir: 'desc' });
+    expect(restoreSort({ key: 'marketCap', dir: 'seitwärts' })).toEqual({ key: 'marketCap', dir: 'desc' });
+    expect(restoreSort(null)).toEqual({ key: 'total', dir: 'desc' });
+  });
+  it('versteht den gespeicherten Wert der letzten Version (nur Schlüssel)', () => {
+    expect(restoreSort('name')).toEqual({ key: 'name', dir: 'asc' });
+    expect(restoreSort('sicherheit')).toEqual({ key: 'sicherheit', dir: 'desc' });
   });
 });
