@@ -93,5 +93,5 @@ Festgelegt beim Programmieren, damit der Score nicht in die Irre führt:
 1. **SMI/SMIM-Liste prüfen** (`data/raw/smi_smim.csv`, Entwurf aus dem Gedächtnis). Sie hat 21 SMI + 27 SMIM = 48 Titel, sollte aber 20 + 30 haben. Zu prüfen sind besonders Sandoz (steht unter SMIM) und die fehlenden Titel. Bereits korrigiert, weil Yahoo die alten Symbole nicht mehr kennt: Roche ist `RO.SW` statt `ROG.SW`, Baloise + Helvetia sind `HBAN.SW`.
 2. **Supabase-Projekt anlegen**, `.env` ausfüllen, `supabase/schema.sql` ausführen, „Confirm email“ ausschalten.
 3. **10 Firmen gegen Geschäftsberichte prüfen** und die Ausreisser aus `report.py` durchgehen.
-4. **Doppelte Titel:** Alphabet (GOOG/GOOGL) und andere Aktienklassen aus der S&P-Liste sind zwei Punkte. Entscheiden, ob einer aus `data/raw/sp500.csv` raus soll.
+4. ~~**Doppelte Titel**~~ erledigt: GOOG, FOX, NWS aus `data/raw/sp500.csv` entfernt, je eine Aktienklasse bleibt (GOOGL, FOXA, NWSA), 548 Firmen, Namen ohne „(Class A)“. Supabase ist nachgeführt (548 Firmen, 0 Abweichungen zu `companies.json`).
 5. **Demo-Konten und Screenshots** für die Abgabe, sobald Supabase läuft.

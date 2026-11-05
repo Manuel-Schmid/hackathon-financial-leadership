@@ -44,6 +44,12 @@ def company_rows(data: dict) -> tuple[list[dict], list[dict], list[dict]]:
     return companies, kpis, scores
 
 
+def stale_tickers(existing: list[str], data: dict) -> list[str]:
+    """Ticker in Supabase, die nicht mehr in companies.json stehen (z. B. entfernte Aktienklassen)."""
+    current = {c["ticker"] for c in data["companies"]}
+    return sorted(set(existing) - current)
+
+
 def main() -> None:
     from dotenv import load_dotenv
     from supabase import create_client
@@ -56,6 +62,14 @@ def main() -> None:
         for start in range(0, len(rows), BATCH):
             client.table(table).upsert(rows[start : start + BATCH]).execute()
         print(f"{table}: {len(rows)} Zeilen")
+
+    # Upsert löscht nichts: Firmen, die nicht mehr im Universum sind, explizit entfernen.
+    # kpis, scores und watchlist_items folgen per "on delete cascade".
+    existing = [r["ticker"] for r in client.table("companies").select("ticker").execute().data]
+    stale = stale_tickers(existing, data)
+    if stale:
+        client.table("companies").delete().in_("ticker", stale).execute()
+    print(f"entfernt: {len(stale)} Firmen {stale}")
 
 
 if __name__ == "__main__":
