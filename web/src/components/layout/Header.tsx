@@ -41,10 +41,10 @@ function CountBadge({ count }: { count: number }) {
 /** Laptop: Seiten direkt links. Handy: Menü-Symbol mit Aufklappkarte. Logo immer Mitte, Konto rechts. */
 export function Header() {
   const { user, profile } = useAuth();
-  const { active } = useWatchlists();
+  const { allTickers } = useWatchlists();
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
-  const count = active?.tickers.length ?? 0;
+  const count = allTickers.size;
 
   useEffect(() => setOpen(false), [pathname]);
 

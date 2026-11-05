@@ -1,14 +1,15 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
-import { useAuth } from '@/auth/useAuth';
 import { QuickCard } from '@/components/company/QuickCard';
 import { CubeLegend } from '@/components/cube/CubeLegend';
 import { FilterBar } from '@/components/filters/FilterBar';
 import { CompanyList } from '@/components/list/CompanyList';
 import { WatchlistBar } from '@/components/list/WatchlistBar';
 import { ErrorBoundary } from '@/components/ui/atoms';
+import { WatchlistPicker } from '@/components/watchlists/WatchlistPicker';
 import { useCompanies, useData } from '@/data/DataProvider';
-import { matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { EXPLORER_FILTERS_KEY, matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
 import { useSessionState } from '@/lib/useSessionState';
+import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
 // three.js ist gross: erst laden, wenn der Würfel wirklich gebraucht wird
@@ -20,19 +21,39 @@ const CUBE_FALLBACK = (
   </div>
 );
 
+function revealCube() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Erst nach dem Klick: Eine neue Auswahl scrollt auch die Firmenliste und würde das sanfte Scrollen sonst abbrechen.
+  setTimeout(() => window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }), 0);
+}
+
 export function Explorer() {
   const companies = useCompanies();
   const { byTicker } = useData();
-  const { profile } = useAuth();
-  const { activeTickers, toggle } = useWatchlists();
+  const { lists, focusId, setFocus, allTickers, shownTickers, spotlight } = useWatchlists();
+  const focusedList = lists.find((l) => l.id === focusId);
+  const [picking, setPicking] = useState<string | null>(null);
+  const pickingCompany = picking ? byTicker.get(picking) : undefined;
+  const { all: profiles, select: selectProfile } = useProfiles();
   // Filter und Sortierung bleiben beim Seitenwechsel erhalten, bis das Browserfenster geschlossen wird
-  const [filters, setFilters] = useSessionState<Filters>('kubus.explorerFilters', restoreFilters);
+  const [filters, setFilters] = useSessionState<Filters>(EXPLORER_FILTERS_KEY, restoreFilters);
   const [sort, setSort] = useSessionState<SortKey>('kubus.explorerSort', restoreSort);
   const [selected, setSelected] = useState<string | null>(null);
+  const profile = useMemo(
+    () => profiles.find((p) => p.id === filters.investorProfile)?.weights ?? 'ausgewogen',
+    [profiles, filters.investorProfile],
+  );
+
+  const changeFilters = (next: Filters) => {
+    // Wer ein Profil wählt, will sehen, welche Firmen am besten dazu passen.
+    if (next.investorProfile && next.investorProfile !== filters.investorProfile) setSort('total');
+    selectProfile(next.investorProfile);
+    setFilters(next);
+  };
 
   const filtered = useMemo(() => companies.filter((c) => matchesFilters(c, filters)), [companies, filters]);
   const visible = useMemo(() => new Set(filtered.map((c) => c.ticker)), [filtered]);
-  const sorted = useMemo(() => sortCompanies(filtered, sort, profile.investorProfile), [filtered, sort, profile.investorProfile]);
+  const sorted = useMemo(() => sortCompanies(filtered, sort, profile), [filtered, sort, profile]);
   const selectedCompany = selected ? byTicker.get(selected) : undefined;
   const missingScores = filtered.filter((c) => !c.isFinancial && Object.values(c.scores).includes(null)).length;
 
@@ -42,7 +63,7 @@ export function Explorer() {
         companies={companies}
         filters={filters}
         resultCount={filtered.length}
-        onChange={setFilters}
+        onChange={changeFilters}
         onPick={setSelected}
       />
       <main className="grid flex-1 gap-4 p-4 lg:h-[calc(100vh-146px)] lg:flex-none lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_420px] lg:grid-rows-[minmax(0,1fr)] lg:px-7">
@@ -55,6 +76,20 @@ export function Explorer() {
                 Jeder Punkt ist ein Unternehmen. Oben rechts hinten liegen die liquiden, rentablen und sicheren.
                 {missingScores > 0 && ` ${missingScores} ohne vollständige Scores fehlen im Würfel.`}
               </p>
+              {/* Die Watchlists liegen unter dem Würfel: Der Fokus lässt sich auch von hier aus beenden. */}
+              {focusedList ? (
+                <button
+                  type="button"
+                  className="pointer-events-auto mt-1.5 rounded-full bg-accent-soft px-3 py-1 text-[13px] font-semibold text-accent hover:bg-note"
+                  onClick={() => setFocus(null)}
+                >
+                  Nur {focusedList.name} ×
+                </button>
+              ) : (
+                <a href="#watchlists" className="pointer-events-auto mt-1 inline-block text-[13px] font-semibold text-accent underline">
+                  Zu den Watchlists ({lists.length})
+                </a>
+              )}
             </div>
             {/* isolate: Firmennamen im Würfel bleiben unter den Textflächen und der Kurzkarte. */}
             <div className="absolute inset-0 isolate">
@@ -64,7 +99,8 @@ export function Explorer() {
                     companies={companies}
                     visible={visible}
                     selected={selected}
-                    highlighted={activeTickers}
+                    highlighted={shownTickers}
+                    spotlight={spotlight}
                     onSelect={setSelected}
                     onDeselect={() => setSelected(null)}
                   />
@@ -74,26 +110,27 @@ export function Explorer() {
             {selectedCompany && (
               <QuickCard
                 company={selectedCompany}
-                starred={activeTickers.has(selectedCompany.ticker)}
-                onToggle={() => toggle(selectedCompany.ticker)}
+                starred={allTickers.has(selectedCompany.ticker)}
+                onToggle={() => setPicking(selectedCompany.ticker)}
                 onClose={() => setSelected(null)}
               />
             )}
             <CubeLegend />
           </section>
-          <WatchlistBar />
         </div>
         <CompanyList
           companies={sorted}
-          profile={profile.investorProfile}
+          profile={profile}
           sort={sort}
           selected={selected}
-          starred={activeTickers}
+          starred={allTickers}
           onSort={setSort}
           onSelect={setSelected}
-          onToggle={toggle}
+          onToggle={setPicking}
         />
       </main>
+      <WatchlistBar onSelect={setSelected} onReveal={revealCube} />
+      {pickingCompany && <WatchlistPicker company={pickingCompany} onClose={() => setPicking(null)} />}
     </div>
   );
 }

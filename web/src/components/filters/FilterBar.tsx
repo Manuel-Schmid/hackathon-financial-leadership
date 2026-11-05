@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Company } from '@/data/types';
 import { activeFilters, type Filters } from '@/lib/filters';
+import { useProfiles } from '@/profiles/ProfileProvider';
 import { FilterPanel } from './FilterPanel';
 import { SearchBar } from './SearchBar';
 
@@ -15,7 +16,8 @@ interface Props {
 export function FilterBar({ companies, filters, resultCount, onChange, onPick }: Props) {
   const [open, setOpen] = useState(false);
   const panelArea = useRef<HTMLDivElement>(null);
-  const active = activeFilters(filters);
+  const { all } = useProfiles();
+  const active = activeFilters(filters, all.find((p) => p.id === filters.investorProfile)?.name);
 
   useEffect(() => {
     if (!open) return;

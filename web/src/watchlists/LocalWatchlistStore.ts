@@ -14,7 +14,7 @@ const browserStorage: JsonStorage = {
 };
 
 const initial = (): Watchlist[] => [
-  { id: 'local-1', name: 'Meine Favoriten', clientName: null, investorProfile: 'ausgewogen', isActive: true, tickers: [] },
+  { id: 'local-1', name: 'Meine Favoriten', clientName: null, investorProfile: 'ausgewogen', tickers: [] },
 ];
 
 /** Gastmodus und Offline-Modus: Watchlists liegen nur in diesem Browser. */
@@ -33,18 +33,17 @@ export class LocalWatchlistStore implements WatchlistStore {
     return this.storage.read(initial());
   }
 
-  async create(input: NewWatchlist): Promise<void> {
-    this.change((lists) => [
-      ...lists,
-      {
-        id: `local-${Date.now()}-${lists.length}`,
-        name: input.name,
-        clientName: input.clientName ?? null,
-        investorProfile: input.investorProfile ?? 'ausgewogen',
-        isActive: lists.length === 0,
-        tickers: [],
-      },
-    ]);
+  async create(input: NewWatchlist): Promise<Watchlist> {
+    const lists = this.storage.read(initial());
+    const created: Watchlist = {
+      id: `local-${Date.now()}-${lists.length}`,
+      name: input.name,
+      clientName: input.clientName ?? null,
+      investorProfile: input.investorProfile ?? 'ausgewogen',
+      tickers: [],
+    };
+    this.storage.write([...lists, created]);
+    return created;
   }
 
   async update(id: string, patch: WatchlistPatch): Promise<void> {
@@ -52,12 +51,7 @@ export class LocalWatchlistStore implements WatchlistStore {
   }
 
   async remove(id: string): Promise<void> {
-    this.change((lists) => {
-      const rest = lists.filter((l) => l.id !== id);
-      // Die aktive gelöscht: die erste übrige wird aktiv, damit der Stern weiter funktioniert.
-      if (rest.length && !rest.some((l) => l.isActive)) rest[0] = { ...rest[0], isActive: true };
-      return rest;
-    });
+    this.change((lists) => lists.filter((l) => l.id !== id));
   }
 
   async addItem(id: string, ticker: string): Promise<void> {
@@ -66,9 +60,5 @@ export class LocalWatchlistStore implements WatchlistStore {
 
   async removeItem(id: string, ticker: string): Promise<void> {
     this.patch(id, (l) => ({ ...l, tickers: l.tickers.filter((t) => t !== ticker) }));
-  }
-
-  async setActive(id: string): Promise<void> {
-    this.change((lists) => lists.map((l) => ({ ...l, isActive: l.id === id })));
   }
 }

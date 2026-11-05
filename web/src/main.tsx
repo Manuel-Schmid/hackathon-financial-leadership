@@ -14,6 +14,7 @@ import { Login } from '@/pages/Login';
 import { Method } from '@/pages/Method';
 import { Profile } from '@/pages/Profile';
 import { Watchlists } from '@/pages/Watchlists';
+import { ProfileProvider } from '@/profiles/ProfileProvider';
 import { WatchlistProvider } from '@/watchlists/WatchlistProvider';
 import './index.css';
 
@@ -22,22 +23,24 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <DataProvider>
-          <WatchlistProvider>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route index element={<Explorer />} />
-                <Route path="vergleich" element={<Compare />} />
-                <Route path="firma/:ticker" element={<CompanyDetail />} />
-                <Route path="watchlists" element={<Watchlists />} />
-                <Route path="methodik" element={<Method />} />
-                <Route path="ueber-uns" element={<About />} />
-                <Route path="impressum" element={<Imprint />} />
-                <Route path="login" element={<Login />} />
-                <Route path="profil" element={<Profile />} />
-                <Route path="*" element={<EmptyState title="Seite nicht gefunden" />} />
-              </Route>
-            </Routes>
-          </WatchlistProvider>
+          <ProfileProvider>
+            <WatchlistProvider>
+              <Routes>
+                <Route element={<Layout />}>
+                  <Route index element={<Explorer />} />
+                  <Route path="vergleich" element={<Compare />} />
+                  <Route path="firma/:ticker" element={<CompanyDetail />} />
+                  <Route path="watchlists" element={<Watchlists />} />
+                  <Route path="methodik" element={<Method />} />
+                  <Route path="ueber-uns" element={<About />} />
+                  <Route path="impressum" element={<Imprint />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="profil" element={<Profile />} />
+                  <Route path="*" element={<EmptyState title="Seite nicht gefunden" />} />
+                </Route>
+              </Routes>
+            </WatchlistProvider>
+          </ProfileProvider>
         </DataProvider>
       </AuthProvider>
     </BrowserRouter>

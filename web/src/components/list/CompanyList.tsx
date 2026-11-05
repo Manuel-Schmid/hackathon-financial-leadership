@@ -1,9 +1,9 @@
 import { memo, useEffect, useRef } from 'react';
-import type { Company, InvestorProfile } from '@/data/types';
+import type { Company } from '@/data/types';
 import { AXIS_IDS, AXIS_STYLE } from '@/lib/config';
 import { SORT_LABELS, type SortKey } from '@/lib/filters';
 import { formatScore } from '@/lib/format';
-import { totalScore } from '@/lib/weighting';
+import { totalScore, type ProfileRef } from '@/lib/weighting';
 import { Bar, FinancialNote, SectorDot } from '../ui/atoms';
 
 const COLUMNS = 'grid-cols-[minmax(0,1fr)_90px_46px_20px]';
@@ -20,7 +20,13 @@ interface RowProps {
 const Row = memo(function Row({ company, total, selected, starred, onSelect, onToggle }: RowProps) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (selected) ref.current?.scrollIntoView({ block: 'nearest' });
+    const row = ref.current;
+    const box = row?.parentElement;
+    if (!selected || !row || !box) return;
+    // Nur die Liste selbst scrollen: scrollIntoView würde auch die Seite bewegen und das Hochscrollen zum Würfel abbrechen.
+    const [r, b] = [row.getBoundingClientRect(), box.getBoundingClientRect()];
+    if (r.top < b.top) box.scrollTop -= b.top - r.top;
+    else if (r.bottom > b.bottom) box.scrollTop += r.bottom - b.bottom;
   }, [selected]);
 
   return (
@@ -52,7 +58,7 @@ const Row = memo(function Row({ company, total, selected, starred, onSelect, onT
       </b>
       <button
         type="button"
-        aria-label={starred ? `${company.name} aus Watchlist entfernen` : `${company.name} zur Watchlist hinzufügen`}
+        aria-label={`Watchlists für ${company.name} wählen`}
         aria-pressed={starred}
         className={`text-[17px] leading-none ${starred ? 'text-R' : 'text-line-strong hover:text-R'}`}
         onClick={(e) => {
@@ -68,7 +74,7 @@ const Row = memo(function Row({ company, total, selected, starred, onSelect, onT
 
 interface Props {
   companies: Company[];
-  profile: InvestorProfile;
+  profile: ProfileRef;
   sort: SortKey;
   selected: string | null;
   starred: Set<string>;

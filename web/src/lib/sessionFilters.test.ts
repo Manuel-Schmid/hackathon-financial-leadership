@@ -39,8 +39,14 @@ describe('restoreFilters', () => {
   });
 
   it('gültiger Filter bleibt erhalten', () => {
-    const f = { universes: ['SWISS'], sector: 'Utilities', capMin: 2e9, capMax: null, search: 'nes', includeFinancials: true };
+    const f = { universes: ['SWISS'], sector: 'Utilities', capMin: 2e9, capMax: null, search: 'nes', includeFinancials: true, investorProfile: 'konservativ' };
     expect(restoreFilters(f)).toEqual(f);
+  });
+
+  it('das Anlegerprofil bleibt erhalten, ältere Werte ohne Profil gelten als ausgewogen', () => {
+    expect(restoreFilters({ investorProfile: 'eigenes-profil-7' }).investorProfile).toBe('eigenes-profil-7');
+    expect(restoreFilters({ search: 'ap' }).investorProfile).toBeNull();
+    expect(restoreFilters({ investorProfile: 7 }).investorProfile).toBeNull();
   });
 
   it('fehlende oder unbrauchbare Felder fallen auf den Standard zurück (z. B. alte App-Version)', () => {
