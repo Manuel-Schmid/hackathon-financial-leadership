@@ -18,7 +18,7 @@ Die Werte stehen nur in `config/theme.json` (Tailwind und Würfel lesen daraus).
 | L | Liquidität | #2F6FDE (soft #E2EBFB) |
 | R | Rentabilität | #D99A1C (soft #FAF0D6, Text auf hell #96690B) |
 | S | Sicherheit | #1C8C66 (soft #DDF1E8) |
-| accent | Auswahl, Ideal-Ecke, Badges | #5A2A82 Pflaume (soft #EEE5F5) |
+| accent | Auswahl, Badges | #5A2A82 Pflaume (soft #EEE5F5); Ideal-Ecke im Würfel in heller Pflaume #9E78C2 (`cube.ideal`) |
 | ink / text | Kopfzeile, Text | #0B1D3A |
 | paper | Hintergrund | #F7F4EC |
 | card | Karten | #FFFFFF, Rand #E4DECF |
