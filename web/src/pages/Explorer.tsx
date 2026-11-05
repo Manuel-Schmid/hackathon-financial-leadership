@@ -7,7 +7,8 @@ import { CompanyList } from '@/components/list/CompanyList';
 import { WatchlistBar } from '@/components/list/WatchlistBar';
 import { ErrorBoundary } from '@/components/ui/atoms';
 import { useCompanies, useData } from '@/data/DataProvider';
-import { DEFAULT_FILTERS, matchesFilters, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { useSessionState } from '@/lib/useSessionState';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
 // three.js ist gross: erst laden, wenn der Würfel wirklich gebraucht wird
@@ -24,8 +25,9 @@ export function Explorer() {
   const { byTicker } = useData();
   const { profile } = useAuth();
   const { activeTickers, toggle } = useWatchlists();
-  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
-  const [sort, setSort] = useState<SortKey>('total');
+  // Filter und Sortierung bleiben beim Seitenwechsel erhalten, bis das Browserfenster geschlossen wird
+  const [filters, setFilters] = useSessionState<Filters>('kubus.explorerFilters', restoreFilters);
+  const [sort, setSort] = useSessionState<SortKey>('kubus.explorerSort', restoreSort);
   const [selected, setSelected] = useState<string | null>(null);
 
   const filtered = useMemo(() => companies.filter((c) => matchesFilters(c, filters)), [companies, filters]);
