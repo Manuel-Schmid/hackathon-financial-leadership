@@ -58,12 +58,17 @@ Buch: „Die Richtwerte sind exemplarische Erwartungswerte und müssen der aktue
 **Umsetzung in KUBUS:** Branchen-Richtwerte für 9 Kennzahlen (Buch-Richtwert × Branchenfaktor aus BACH und Damodaran) in `richtwertBranche` von `config/kpis.json`; Herleitung und Quellen in `docs/BRANCHEN_RICHTWERTE.md`.
 
 ## Scoring (festgelegt)
-1. Kennzahlen pro Unternehmen für das **letzte Geschäftsjahr** berechnen (Ø-Werte aus Vorjahr und aktuellem Jahr).
+1. Kennzahlen pro Unternehmen für das **letzte vollständige Geschäftsjahr** berechnen (Ø-Werte aus Vorjahr und aktuellem Jahr; fehlt im neuesten Jahr noch die Erfolgsrechnung oder das kurzfr. FK, wird das letzte vollständige Jahr verwendet).
 2. Jede Kennzahl mit „Im Score = ja“ in einen Teilscore 0–100 umrechnen: **Perzentil-Rang** innerhalb aller nicht-finanziellen Unternehmen der Datenbank (bestes = 100). Bei „tiefer besser“ umgekehrt.
 3. **Achsen-Score** = Durchschnitt der vorhandenen Teilscores (fehlende Werte zählen nicht).
 4. **Gesamt-Score** = gewichteter Durchschnitt der drei Achsen. Standard 1/3 je Achse; im Profil wählbar: konservativ (L 25 / R 25 / S 50), ausgewogen (33/33/33), renditeorientiert (L 20 / R 60 / S 20).
 5. **Ampel** separat und absolut gegen den Richtwert: grün = erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben, grau = kein Richtwert/keine Daten.
-6. **Finanzsektor** (GICS „Financials“, Banken/Versicherungen): Liquiditätsgrade nicht sinnvoll. Liquiditäts-Score leer; Rentabilität aus ROE + ROA, Sicherheit aus EK-Quote + Verschuldungsgrad; Perzentil nur innerhalb des Finanzsektors. Im UI hohler Punkt + Hinweis „eingeschränkt vergleichbar“. Im Würfel Liquidität = 50 (Mitte) mit gestrichelter Markierung.
+6. **Finanzsektor** (GICS „Financials“ sowie Krankenversicherer ohne Umlaufvermögen wie Elevance Health und Humana): Liquiditätsgrade nicht sinnvoll. Liquiditäts-Score leer; Rentabilität aus ROE + ROA, Sicherheit aus EK-Quote + Verschuldungsgrad; Perzentil nur innerhalb des Finanzsektors. Im UI hohler Punkt + Hinweis „eingeschränkt vergleichbar“. Im Würfel Liquidität = 50 (Mitte) mit gestrichelter Markierung.
+7. **Sonderfälle / Abgrenzungen:**
+   - **Negatives oder fast aufgebrauchtes Eigenkapital:** Bei $\text{EK} \le 0$ erhalten Verschuldungsgrad und Anlagedeckungsgrad II den schlechtesten Rang und eine rote Ampel; Gearing und ROE sind `null`. Zudem wird ROE erst ab einer Eigenkapitalquote von $\ge 2\,\%$ berechnet, damit fast aufgebrauchtes Buch-EK (durch Aktienrückkäufe) den Nenner nicht extrem verzerrt.
+   - **Tilgungsdauer bei Netto-Cash:** Übersteigen die flüssigen Mittel die Finanzschulden ($\text{Net Debt} \le 0$) bei positivem FCF, beträgt die Tilgungsdauer `0.0` Jahre (grüne Ampel).
+   - **ROA ohne ausgewiesenen Zinsaufwand:** Fehlt bei schuldenfreien Firmen das Zinsfeld in Yahoo, wird der Zinsaufwand beim ROA als `0` behandelt ($\text{ROA} = \text{Reingewinn} / \varnothing\text{GK}$), während der Zinsdeckungsfaktor `null` bleibt.
+   - **Immobilien / REITs:** Hinweis auf der Detailseite zu IFRS/US-GAAP-Neubewertungseffekten (können EBIT-Marge und Umsatzrendite über 100 % heben) und langfristiger Hypothekarfinanzierung.
 
 ## Referenzwerte für Tests: VAT Group 2025 (CHF Tausend, Folien VL3–VL5)
 Rohdaten: Umlaufvermögen 475'720 · kurzfr. FK 362'014 · Flüssige Mittel 140'940 · Forderungen 125'765 · Vorräte 190'021 · Anlagevermögen 787'158 · Total Aktiven 1'262'878 (2024: 1'294'746) · Total FK 469'709 · langfr. FK 107'695 · Eigenkapital 793'169 (2024: 753'877) · Finanzverbindlichkeiten kurzfr. 203'626 / langfr. 44'656 · Nettoumsatz 1'073'516 · EBITDA 321'577 · EBIT 272'810 · Reingewinn 214'280 · Op. CF 299'172 · Inv. CF −68'784 · Dividende bezahlt 187'364 · Zinsen bezahlt 4'461.

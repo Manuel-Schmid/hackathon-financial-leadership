@@ -21,25 +21,39 @@ def market_cap_usd(info: dict, fx: dict[str, float]) -> float | None:
     return cap * rate if cap is not None and rate else None
 
 
+def _is_complete_year(m: dict[str, float | None], is_fin: bool) -> bool:
+    if m.get("total_assets") is None or m.get("equity") is None or m.get("net_income") is None:
+        return False
+    if not is_fin and m.get("current_liabilities") is None:
+        return False
+    return True
+
+
 def company_from_cache(row: dict, raw: dict, config: dict, sectors: dict, fx: dict[str, float]) -> dict | None:
     years = available_years(raw)
     if not years:
         return None
     tolerance = config["ampel"]["gelbToleranz"]
-    mapped = {y: map_year(raw, str(y)) for y in years}
-    per_year = {y: compute_kpis(mapped[y], mapped.get(y - 1)) for y in years}
-    latest = years[-1]
-
-    cap = market_cap_usd(raw.get("info", {}), fx)
     sector = sectors[row["sector"]]
+    extra_fin = set(config.get("financialSector", {}).get("extraTickers", []))
+    is_fin = bool(sector.get("financial")) or row["ticker"] in extra_fin
+
+    mapped = {y: map_year(raw, str(y)) for y in years}
+    complete_years = [y for y in years if _is_complete_year(mapped[y], is_fin)]
+    latest = complete_years[-1] if complete_years else years[-1]
+    valid_years = [y for y in years if y <= latest]
+
+    per_year = {y: compute_kpis(mapped[y], mapped.get(y - 1)) for y in valid_years}
+    cap = market_cap_usd(raw.get("info", {}), fx)
+    eq_pos = (mapped[latest].get("equity") or 0) > 0
     kpis = {}
     for kpi in config["kpis"]:
         value = per_year[latest][kpi["id"]]
         kpis[kpi["id"]] = {
             "value": value,
-            "ampel": ampel(value, kpi, tolerance),
-            "ampelBranche": ampel_branche(value, kpi, row["sector"], tolerance),
-            "history": [{"year": y, "value": per_year[y][kpi["id"]]} for y in years],
+            "ampel": ampel(value, kpi, tolerance, equity_positive=eq_pos),
+            "ampelBranche": ampel_branche(value, kpi, row["sector"], tolerance, equity_positive=eq_pos),
+            "history": [{"year": y, "value": per_year[y][kpi["id"]]} for y in valid_years],
         }
     info = raw.get("info", {})
     return {
@@ -52,7 +66,7 @@ def company_from_cache(row: dict, raw: dict, config: dict, sectors: dict, fx: di
         "currency": info.get("financialCurrency") or info.get("currency") or "",
         "marketCapUsd": cap,
         "sizeClass": size_class(cap),
-        "isFinancial": bool(sector.get("financial")),
+        "isFinancial": is_fin,
         "fiscalYear": latest,
         "kpis": kpis,
     }

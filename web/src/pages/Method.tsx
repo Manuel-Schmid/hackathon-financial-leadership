@@ -16,7 +16,7 @@ const LIMITS = [
   'Nur Jahresdaten und keine Prognose; keine Marktbewertung (KGV) im Score.',
   'Yahoo-Daten sind ungeprüft und lückenhaft. Fehlt ein Feld, bleibt die Kennzahl leer und zählt nicht im Score.',
   'Yahoo bereinigt manche Posten: Bei VAT 2025 weist Yahoo einen tieferen EBIT aus als der Geschäftsbericht (24.3 % statt 25.4 % Marge), und Zinsen stammen teils aus dem Aufwand statt aus den bezahlten Zinsen.',
-  'Banken und Versicherungen sind nur eingeschränkt vergleichbar.',
+  'Banken, Versicherungen und Immobilienunternehmen (REITs) sind wegen ihrer Bilanzstruktur nur eingeschränkt vergleichbar.',
   'Richtwerte sind exemplarische Erwartungswerte und branchenabhängig (Buch S. 293).',
 ];
 
@@ -42,8 +42,8 @@ export function Method() {
           <li>Achsen-Score = Durchschnitt der vorhandenen Teilscores.</li>
           <li>Gesamt-Score = gewichteter Durchschnitt der Achsen, je nach Anlegerprofil: {PROFILE_IDS.map((id) => `${id} (${profileLabel(id)})`).join(', ')}.</li>
           <li>Ampel separat und absolut gegen den Richtwert: grün = erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben, grau = kein Richtwert oder keine Daten.</li>
-          <li>Finanzsektor: kein Liquiditäts-Score, Rentabilität aus ROE + ROA, Sicherheit aus EK-Quote + Verschuldungsgrad, Rang nur innerhalb des Sektors. Im Würfel hohler Punkt auf Liquidität 50.</li>
-          <li>Negatives Eigenkapital: schlechtester Rang beim Verschuldungsgrad, keine ROE.</li>
+          <li>Finanzsektor (inkl. Krankenversicherer ohne Umlaufvermögen): kein Liquiditäts-Score, Rentabilität aus ROE + ROA, Sicherheit aus EK-Quote + Verschuldungsgrad, Rang nur innerhalb des Sektors. Im Würfel hohler Punkt auf Liquidität 50.</li>
+          <li>Negatives Eigenkapital: schlechtester Rang bei Verschuldungsgrad und Anlagedeckungsgrad II (rote Ampel), kein Gearing; ROE erst ab 2 % Eigenkapitalquote.</li>
         </ol>
       </section>
 

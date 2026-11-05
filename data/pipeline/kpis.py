@@ -30,7 +30,8 @@ def _tilgungsdauer(c: Fields, p: Fields | None) -> float | None:
     # Ohne positiven Free Cashflow lässt sich nichts tilgen: Kennzahl ist nicht aussagekräftig.
     if fcf is None or fcf <= 0 or c["total_debt"] is None or c["cash"] is None:
         return None
-    return (c["total_debt"] - c["cash"]) / fcf
+    # Bei Netto-Cash (Flüssige Mittel >= Finanzschulden) ist die Nettoverschuldung bereits gedeckt (0.0 Jahre).
+    return max(0.0, (c["total_debt"] - c["cash"]) / fcf)
 
 
 def _quick(c: Fields, p: Fields | None) -> float | None:
@@ -39,17 +40,32 @@ def _quick(c: Fields, p: Fields | None) -> float | None:
     return _div(c["cash"] + c["receivables"], c["current_liabilities"])
 
 
+MIN_EQUITY_RATIO = 0.02
+
+
+def _has_min_equity(f: Fields) -> bool:
+    if f["equity"] is None or f["equity"] <= 0:
+        return False
+    if f["total_assets"] is not None and f["total_assets"] > 0:
+        return (f["equity"] / f["total_assets"]) >= MIN_EQUITY_RATIO
+    return True
+
+
 def _roe(c: Fields, p: Fields | None) -> float | None:
-    avg = _avg(c["equity"], p["equity"]) if p else None
-    # Negatives Eigenkapital: Verlust / negatives EK ergäbe eine falsche positive Rendite.
+    # Negatives oder fast aufgebrauchtes Eigenkapital (< 2 % EK-Quote) verzerrt den Nenner extrem.
+    if p is None or not _has_min_equity(c) or not _has_min_equity(p):
+        return None
+    avg = _avg(c["equity"], p["equity"])
     return None if avg is None or avg <= 0 else _div(c["net_income"], avg)
 
 
 def _roa(c: Fields, p: Fields | None) -> float | None:
     avg = _avg(c["total_assets"], p["total_assets"]) if p else None
-    if c["net_income"] is None or c["interest"] is None:
+    if c["net_income"] is None or avg is None or avg <= 0:
         return None
-    return _div(c["net_income"] + c["interest"], avg)
+    # Fehlt der Zinsaufwand bei Yahoo (z. B. schuldenfreie Firmen), zählt er beim ROA als 0.
+    interest = c["interest"] if c["interest"] is not None else 0.0
+    return _div(c["net_income"] + interest, avg)
 
 
 def _roic(c: Fields, p: Fields | None) -> float | None:
@@ -66,7 +82,8 @@ def _adg2(c: Fields, p: Fields | None) -> float | None:
 
 
 def _gearing(c: Fields, p: Fields | None) -> float | None:
-    if c["total_debt"] is None or c["cash"] is None:
+    # Bei negativem Eigenkapital kippt das Vorzeichen und täuscht Netto-Cash vor.
+    if c["total_debt"] is None or c["cash"] is None or c["equity"] is None or c["equity"] <= 0:
         return None
     return _div(c["total_debt"] - c["cash"], c["equity"])
 
