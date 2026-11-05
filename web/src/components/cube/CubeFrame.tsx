@@ -94,9 +94,9 @@ export function CubeFrame() {
         </group>
       ))}
 
-      {/* Ideal-Ecke 100·100·100: feiner goldener Winkel auf den drei Kanten, keine Kugel (sähe aus wie eine Firma) */}
+      {/* Ideal-Ecke 100·100·100: feiner Winkel in heller Pflaume auf den drei Kanten, keine Kugel (sähe aus wie eine Firma) */}
       {IDEAL_ARMS.map((end, i) => (
-        <Line key={i} points={[ideal, toWorld(...end)]} color={THEME.R.DEFAULT} lineWidth={1.6} />
+        <Line key={i} points={[ideal, toWorld(...end)]} color={THEME.cube.ideal} lineWidth={1.6} />
       ))}
     </group>
   );

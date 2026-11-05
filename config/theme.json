@@ -13,6 +13,6 @@
   "warn": "#E0A100",
   "bad": "#D9443B",
   "note": { "DEFAULT": "#FAF0D6", "text": "#7A5508" },
-  "cube": { "floor": "#FBF9F3", "dimmed": "#EBE6DA", "fallback": "#7C8799" },
+  "cube": { "floor": "#FBF9F3", "dimmed": "#EBE6DA", "fallback": "#7C8799", "ideal": "#9E78C2" },
   "compare": ["#1F4E9E", "#0FA3A3", "#8C2F55", "#D9822B"]
 }
