@@ -119,4 +119,4 @@ Bilanz und Cashflow stimmen exakt (EK-Quote 62.8 %, Current Ratio 131.4 %, FCF 4
 | ROA | 17.1 % | 17.0 % | Yahoo hat nur den Zinsaufwand (3'536), die Folien bezahlte Zinsen (4'461) |
 | Zinsdeckung | 68.1 | 85.6 | dito |
 
-Die Formeln sind korrekt, das belegen die Tests mit den Folienzahlen. Die Abweichungen sind eine Grenze der Datenquelle und gehören in die Diskussion. Bei Firmen ohne ausgewiesenen Zinsaufwand (z. B. Apple) bleiben ROA und Zinsdeckung leer.
+Die Formeln sind korrekt, das belegen die Tests mit den Folienzahlen. Die Abweichungen sind eine Grenze der Datenquelle und gehören in die Diskussion. Bei Firmen ohne ausgewiesenen Zinsaufwand (z. B. Apple) zählt der Zins beim ROA als 0, die Zinsdeckung bleibt leer.

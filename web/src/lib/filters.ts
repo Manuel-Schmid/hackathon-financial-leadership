@@ -21,7 +21,8 @@ export const DEFAULT_FILTERS: Filters = {
   capMin: null,
   capMax: null,
   search: '',
-  includeFinancials: true,
+  // Banken und Versicherungen sind nur eingeschränkt vergleichbar: beim Start aus, per Filter einschaltbar.
+  includeFinancials: false,
 };
 
 export function matchesSearch(company: Company, query: string): boolean {
@@ -39,7 +40,8 @@ export function matchesFilters(company: Company, filters: Filters): boolean {
     if (filters.capMin !== null && cap < filters.capMin) return false;
     if (filters.capMax !== null && cap > filters.capMax) return false;
   }
-  if (!filters.includeFinancials && company.isFinancial) return false;
+  // Wer gezielt sucht, findet auch Banken, sonst sähe es aus, als fehlten sie in der Datenbank.
+  if (!filters.includeFinancials && company.isFinancial && !filters.search.trim()) return false;
   return matchesSearch(company, filters.search);
 }
 
@@ -97,8 +99,8 @@ export function activeFilters(filters: Filters): ActiveFilter[] {
       clear: (f) => ({ ...f, capMin: null, capMax: null }),
     });
   }
-  if (!filters.includeFinancials) {
-    active.push({ id: 'financials', label: 'Ohne Finanzsektor', clear: (f) => ({ ...f, includeFinancials: true }) });
+  if (filters.includeFinancials) {
+    active.push({ id: 'financials', label: 'Mit Finanzsektor', clear: (f) => ({ ...f, includeFinancials: false }) });
   }
   return active;
 }
