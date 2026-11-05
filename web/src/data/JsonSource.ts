@@ -1,4 +1,5 @@
 import type { DataSource } from './DataSource';
+import { normalizeKpi } from './normalize';
 import type { Company, DataMeta } from './types';
 
 interface Payload {
@@ -14,7 +15,13 @@ export class JsonSource implements DataSource {
   private load(): Promise<Payload> {
     this.payload ??= fetch(`${import.meta.env.BASE_URL}data/companies.json`).then((res) => {
       if (!res.ok) throw new Error(`companies.json nicht gefunden (${res.status})`);
-      return res.json() as Promise<Payload>;
+      return (res.json() as Promise<Payload>).then((p) => ({
+        ...p,
+        companies: p.companies.map((c) => ({
+          ...c,
+          kpis: Object.fromEntries(Object.entries(c.kpis).map(([id, k]) => [id, normalizeKpi(k)])),
+        })),
+      }));
     });
     return this.payload;
   }
