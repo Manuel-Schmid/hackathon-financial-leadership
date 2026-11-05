@@ -29,3 +29,15 @@ export function ampelFor(kpi: CompanyKpi | undefined, modus: RichtwertModus): Am
   if (!kpi) return 'grey';
   return modus === 'branche' ? (kpi.ampelBranche ?? kpi.ampel) : kpi.ampel;
 }
+
+/**
+ * Branchen-Richtwert, wenn er etwas anderes sagt als der allgemeine (Detailseite zeigt dann zwei Zeilen).
+ * null, wenn die Branche keinen eigenen Wert hat, er gleich dem allgemeinen ist oder die Branchen-Ampel in den Daten fehlt.
+ */
+export function eigenerBranchenwert(def: KpiDef, sector: string, kpi?: CompanyKpi): { label: string; source: 'branche' } | null {
+  const rw = richtwertFor(def, sector, 'branche', kpi);
+  const branche = def.richtwertBranche?.werte[sector];
+  if (rw?.source !== 'branche' || !branche) return null;
+  const gleich = branche.min === def.richtwert?.min && branche.max === def.richtwert?.max;
+  return gleich ? null : { label: rw.label, source: 'branche' };
+}

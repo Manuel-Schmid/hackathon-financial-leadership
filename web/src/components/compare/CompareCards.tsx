@@ -14,10 +14,16 @@ interface Props {
 export function CompareCard({ company, color, profile, onRemove }: Props) {
   return (
     <div className="card relative px-[18px] py-4" style={{ borderTop: `4px solid ${color}` }}>
-      <button type="button" aria-label={`${company.name} entfernen`} className="absolute right-3 top-1.5 text-muted hover:text-text" onClick={onRemove}>
+      <button
+        type="button"
+        aria-label={`${company.name} entfernen`}
+        title={`${company.name} entfernen`}
+        className="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full text-[24px] leading-none text-text hover:bg-paper hover:text-bad"
+        onClick={onRemove}
+      >
         ×
       </button>
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-start justify-between gap-2 pr-7">
         <div className="min-w-0">
           <h3 className="truncate font-title text-[17px] font-semibold">
             <CompanyLink ticker={company.ticker}>{company.name}</CompanyLink>

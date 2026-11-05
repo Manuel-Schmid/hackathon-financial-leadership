@@ -1,5 +1,5 @@
 import type { Company } from '@/data/types';
-import type { KpiDef } from './config';
+import { THEME, type KpiDef } from './config';
 
 /** Index des besten Werts einer Zeile, oder null wenn kein Vergleich sinnvoll ist. */
 export function bestIndex(companies: Company[], kpi: KpiDef): number | null {
@@ -22,7 +22,7 @@ export function bestIndex(companies: Company[], kpi: KpiDef): number | null {
 }
 
 /** Eigene Farben im Vergleich, weil mehrere Firmen dieselbe Branche haben können. */
-export const COMPARE_COLORS = ['#3B5BA9', '#0FA3A3', '#6A5AE0', '#D9822B'];
+export const COMPARE_COLORS = THEME.compare;
 export const MAX_COMPARE = COMPARE_COLORS.length;
 
 /** Reihenfolge wie im Mockup, gruppiert nach Achse. */

@@ -20,6 +20,61 @@ body {
   @apply bg-paper font-sans text-sm text-text antialiased;
 }
 
+/* Zwei Griffe auf einer Linie: Nur die Griffe nehmen die Maus an, sonst verdeckt ein Regler den anderen. */
+.range-pair {
+  position: relative;
+  height: 22px;
+}
+.range-track,
+.range-fill {
+  position: absolute;
+  top: 9px;
+  height: 3px;
+  border-radius: 2px;
+}
+.range-track {
+  left: 0;
+  right: 0;
+  @apply bg-line-strong;
+}
+.range-fill {
+  @apply bg-accent;
+}
+.range-pair input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+.range-pair input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: grab;
+  pointer-events: auto;
+  /* Volle Angabe: Tailwinds Reset setzt für diese Pseudo-Elemente keinen border-style. */
+  border: 2px solid theme('colors.accent.DEFAULT');
+  background: #fff;
+}
+.range-pair input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: grab;
+  pointer-events: auto;
+  border: 2px solid theme('colors.accent.DEFAULT');
+  background: #fff;
+}
+.range-pair input:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid theme('colors.accent.DEFAULT');
+  outline-offset: 2px;
+}
+
 @layer components {
   .card {
     @apply rounded-[14px] border border-line bg-card;

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Company, CompanyKpi } from '@/data/types';
 import { KPI_BY_ID } from './config';
 import { buildFazit } from './fazit';
-import { ampelFor, compareMode, richtwertFor } from './richtwert';
+import { ampelFor, compareMode, eigenerBranchenwert, richtwertFor } from './richtwert';
 
 function firma(name: string, sector = 'Utilities', kpis: Record<string, CompanyKpi> = {}): Company {
   return {
@@ -66,5 +66,18 @@ describe('Fazit nach Modus', () => {
     const a = firma('A', 'Utilities', { roic: kpi('red', 'green') });
     expect(buildFazit([a, firma('B')])).not.toContain('verfehlt');
     expect(buildFazit([a, firma('C', 'Energy')])).toContain('A verfehlt am meisten Richtwerte deutlich: ROIC');
+  });
+});
+
+describe('eigenerBranchenwert (Detailseite: Branchen-Zeile nur, wenn sie etwas Neues sagt)', () => {
+  it('Branchenwert, der vom allgemeinen abweicht -> anzeigen', () => {
+    expect(eigenerBranchenwert(def('roic'), 'Utilities', kpi('red', 'green'))).toEqual({ label: '≥ 4 %', source: 'branche' });
+  });
+  it('Branchenwert gleich wie allgemein (Versorger EK-Quote 25–50 %) -> nur allgemein', () => {
+    expect(eigenerBranchenwert(def('equity_ratio'), 'Utilities', kpi('red', 'red'))).toBeNull();
+  });
+  it('kein Branchenwert oder keine Branchen-Ampel in den Daten -> nur allgemein', () => {
+    expect(eigenerBranchenwert(def('cash_ratio'), 'Utilities', kpi('red', 'red'))).toBeNull();
+    expect(eigenerBranchenwert(def('roic'), 'Utilities', { value: 0.05, ampel: 'red', ampelBranche: null, history: [] })).toBeNull();
   });
 });

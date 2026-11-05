@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '@/auth/useAuth';
 import { KpiSection } from '@/components/company/KpiSection';
-import { EmptyState, PageTitle, ScoreTiles } from '@/components/ui/atoms';
+import { EmptyState } from '@/components/ui/atoms';
 import { useCompanies, useData } from '@/data/DataProvider';
 import { AXIS_IDS, FINANCIAL } from '@/lib/config';
 import { formatMarketCap, formatScore } from '@/lib/format';
@@ -24,44 +24,47 @@ export function CompanyDetail() {
     );
   }
   const starred = activeTickers.has(company.ticker);
+  const index = company.index === 'SP500' ? 'S&P 500' : company.index;
 
   return (
-    <main className="mx-auto w-full max-w-[1200px] space-y-4 p-4 lg:p-7">
-      <Link to="/" className="text-[13px] font-semibold text-muted hover:text-text">← Zum Explorer</Link>
-      <div className="flex flex-wrap items-start justify-between gap-6">
+    <main className="w-full space-y-4 p-4 lg:px-7 lg:py-6">
+      <Link to="/" className="text-[13px] font-semibold text-muted hover:text-text">Zum Explorer</Link>
+      <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <PageTitle
-            tag={`${company.ticker} · ${company.index === 'SP500' ? 'S&P 500' : company.index}`}
-            title={company.name}
-            sub={`${company.sectorDe} · Börsenwert ${formatMarketCap(company.marketCapUsd)} · Geschäftsjahr ${company.fiscalYear} · Währung ${company.currency || '–'}`}
-          />
-          <button type="button" className="btn mt-3" disabled={!active} onClick={() => toggle(company.ticker)}>
-            {starred ? '★ Aus Watchlist entfernen' : `☆ Zu „${active?.name ?? 'Watchlist'}“ hinzufügen`}
-          </button>
+          <h1 className="font-title text-[32px] font-semibold leading-tight">{company.name}</h1>
+          <p className="mt-1 text-muted">
+            {company.ticker}, {index}, {company.sectorDe}. Börsenwert {formatMarketCap(company.marketCapUsd)}, Geschäftsjahr{' '}
+            {company.fiscalYear}, Währung {company.currency || 'unbekannt'}.
+          </p>
         </div>
-        <div className="flex w-full max-w-[460px] items-stretch gap-2">
-          <div className="grid min-w-[84px] place-items-center rounded-[10px] bg-accent-soft px-3 text-center">
-            <div>
-              <b className="block font-title text-[26px] leading-tight">{formatScore(totalScore(company.scores, profile.investorProfile))}</b>
-              <small className="text-[10px] font-bold uppercase tracking-[.04em] text-muted">Gesamt</small>
-            </div>
+        <div className="flex items-center gap-5">
+          <button type="button" className="btn" disabled={!active} onClick={() => toggle(company.ticker)}>
+            {starred ? '★ Aus Watchlist entfernen' : `☆ Zu «${active?.name ?? 'Watchlist'}» hinzufügen`}
+          </button>
+          <div className="text-right text-accent" title="Gesamt-Score nach Anlegerprofil">
+            <b className="block font-title text-[40px] font-bold leading-none">
+              {formatScore(totalScore(company.scores, profile.investorProfile))}
+            </b>
+            <span className="text-xs font-semibold">Gesamt-Score</span>
           </div>
-          <div className="flex-1"><ScoreTiles scores={company.scores} /></div>
         </div>
       </div>
       {company.isFinancial && (
-        <div className="rounded-[10px] bg-[#FFF4D6] px-4 py-3 text-[13px] text-[#8A5A00]">
+        <div className="rounded-[10px] bg-note px-4 py-3 text-[13px] text-note-text">
           <b>{FINANCIAL.note}.</b> Liquiditätsgrade sind bei Banken und Versicherungen nicht sinnvoll: kein Liquiditäts-Score,
           im Würfel in der Mitte (50). Rentabilität und Sicherheit stammen nur aus ROE, ROA, EK-Quote und Verschuldungsgrad und
           sind nur innerhalb des Finanzsektors gerankt.
         </div>
       )}
-      {AXIS_IDS.map((axis) => (
-        <KpiSection key={axis} axis={axis} company={company} all={all} />
-      ))}
+      <div className="grid items-start gap-4 lg:grid-cols-3">
+        {AXIS_IDS.map((axis) => (
+          <KpiSection key={axis} axis={axis} company={company} all={all} />
+        ))}
+      </div>
       <p className="text-xs text-muted">
-        Formel: Kennzahl mit der Maus berühren. Ampel: grün = Richtwert erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben,
-        grau = kein Richtwert oder keine Daten. Richtwerte sind exemplarisch (Buch S. 293).
+        Ampel je Richtwert: grün = erfüllt, gelb = bis 20 % daneben, rot = deutlich daneben, grau = kein Richtwert oder keine Daten.
+        «Allgemein» = Richtwerte aus dem Buch (S. 292–293), exemplarisch. «Branche» = Richtwert für {company.sectorDe}, nur wo die
+        Branche einen eigenen Wert hat (Herleitung unter Methodik).
       </p>
     </main>
   );

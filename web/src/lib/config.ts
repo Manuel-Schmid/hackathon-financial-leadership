@@ -1,6 +1,10 @@
 import kpiConfig from '@config/kpis.json';
 import sectorConfig from '@config/sectors.json';
+import themeConfig from '@config/theme.json';
 import type { AxisId, InvestorProfile } from '@/data/types';
+
+/** Farben für Stellen ohne Tailwind (Würfel, Diagramme). Quelle: config/theme.json */
+export const THEME = themeConfig;
 
 export type KpiUnit = 'pct' | 'currency' | 'years' | 'factor';
 export type Richtwert = { min?: number; max?: number; label: string };
@@ -30,7 +34,11 @@ export const KPIS = kpiConfig.kpis as KpiDef[];
 export const KPI_BY_ID = new Map(KPIS.map((k) => [k.id, k]));
 export const SECTORS = sectorConfig as Record<string, SectorDef>;
 export const AXIS_IDS: AxisId[] = ['liquiditaet', 'rentabilitaet', 'sicherheit'];
-export const AXES = kpiConfig.axes as Record<AxisId, { label: string; color: string }>;
+export const AXES: Record<AxisId, { label: string; color: string }> = {
+  liquiditaet: { label: kpiConfig.axes.liquiditaet.label, color: THEME.L.DEFAULT },
+  rentabilitaet: { label: kpiConfig.axes.rentabilitaet.label, color: THEME.R.DEFAULT },
+  sicherheit: { label: kpiConfig.axes.sicherheit.label, color: THEME.S.DEFAULT },
+};
 export const PROFILES = kpiConfig.profile as Record<InvestorProfile, Record<AxisId, number>>;
 export const PROFILE_IDS = Object.keys(PROFILES) as InvestorProfile[];
 export const FINANCIAL = kpiConfig.financialSector;

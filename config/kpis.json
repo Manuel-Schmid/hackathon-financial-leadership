@@ -2,16 +2,13 @@
   "version": 1,
   "axes": {
     "liquiditaet": {
-      "label": "Liquidität",
-      "color": "#2F80ED"
+      "label": "Liquidität"
     },
     "rentabilitaet": {
-      "label": "Rentabilität",
-      "color": "#E8A317"
+      "label": "Rentabilität"
     },
     "sicherheit": {
-      "label": "Sicherheit",
-      "color": "#1E9E6A"
+      "label": "Sicherheit"
     }
   },
   "ampel": {

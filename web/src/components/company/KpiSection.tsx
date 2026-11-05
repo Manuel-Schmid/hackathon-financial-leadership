@@ -1,100 +1,132 @@
-import { Line, LineChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
-import type { AxisId, Company } from '@/data/types';
-import { AXES, AXIS_STYLE, KPIS, type KpiDef } from '@/lib/config';
-import { formatKpi } from '@/lib/format';
+import { useMemo } from 'react';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import type { Ampel, AxisId, Company } from '@/data/types';
+import { axisTicks, companyYears, formatAxisTick, historyForYears } from '@/lib/chartAxis';
+import { AXES, AXIS_STYLE, KPIS, THEME, type KpiDef } from '@/lib/config';
+import { formatKpi, formatScore } from '@/lib/format';
 import { sectorMedian } from '@/lib/medians';
-import { ampelFor, richtwertFor } from '@/lib/richtwert';
+import { ampelFor, eigenerBranchenwert } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
-function Sparkline({ company, def }: { company: Company; def: KpiDef }) {
-  const history = company.kpis[def.id]?.history ?? [];
-  const known = history.filter((p) => p.value !== null);
-  if (known.length < 2) return <span className="text-xs text-muted">–</span>;
+const AXIS_TEXT = { fontSize: 11, fill: THEME.muted };
+const AXIS_LINE = { stroke: THEME.line.strong };
+
+interface ValueTickProps {
+  x?: number;
+  y?: number;
+  payload?: { value: number };
+  unit: KpiDef['unit'];
+}
+
+/** Eigene Beschriftung: Die der Bibliothek bricht «200 Mrd.» auf zwei Zeilen um. */
+function ValueTick({ x = 0, y = 0, payload, unit }: ValueTickProps) {
   return (
-    <div className="h-8 w-[110px]">
+    <text x={x} y={y} dy={4} textAnchor="end" fontSize={AXIS_TEXT.fontSize} fill={AXIS_TEXT.fill}>
+      {formatAxisTick(payload?.value ?? 0, unit)}
+    </text>
+  );
+}
+
+function TimeChart({ company, def, years }: { company: Company; def: KpiDef; years: number[] }) {
+  const history = historyForYears(company.kpis[def.id]?.history ?? [], years);
+  const values = history.map((p) => p.value).filter((v): v is number => v !== null);
+  if (values.length < 2) {
+    return <p className="self-center text-center text-xs text-muted">Kein Verlauf verfügbar</p>;
+  }
+  const ticks = axisTicks(values);
+
+  return (
+    <div className="h-[92px] min-w-0">
       <ResponsiveContainer>
-        <LineChart data={history} margin={{ top: 3, bottom: 3, left: 3, right: 3 }}>
-          <YAxis hide domain={['auto', 'auto']} />
+        <LineChart data={history} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
+          <CartesianGrid stroke={THEME.line.soft} />
+          <XAxis dataKey="year" tick={AXIS_TEXT} tickLine={false} axisLine={AXIS_LINE} interval={0} height={20} tickMargin={4} />
+          <YAxis
+            width={58}
+            ticks={ticks}
+            interval={0}
+            domain={[ticks[0], ticks[ticks.length - 1]]}
+            tick={(props: Omit<ValueTickProps, 'unit'>) => <ValueTick {...props} unit={def.unit} />}
+            tickLine={false}
+            axisLine={AXIS_LINE}
+          />
           <Tooltip
             wrapperStyle={{ zIndex: 20 }}
             contentStyle={{ fontSize: 12, padding: '2px 8px', borderRadius: 8 }}
-            labelFormatter={(i) => String(history[Number(i)]?.year ?? '')}
-            formatter={(v) => [formatKpi(v as number, def.unit, company.currency), def.short]}
+            formatter={(value) => [formatKpi(value as number, def.unit, company.currency), def.short]}
           />
-          <Line type="monotone" dataKey="value" stroke={AXES[def.axis].color} strokeWidth={2} dot={{ r: 2 }} isAnimationActive={false} connectNulls />
+          <Line type="linear" dataKey="value" stroke={AXES[def.axis].color} strokeWidth={2} dot={{ r: 2.5 }} isAnimationActive={false} connectNulls />
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
 }
 
-function usage(def: KpiDef): string | null {
-  if (def.inScore === 'ampel') return 'nur Ampel, nicht im Score';
-  if (def.inScore === 'detail') return 'nur Anzeige, nicht im Score';
-  return null;
+function usage(def: KpiDef): string {
+  if (def.inScore === 'ampel') return ' Nur Ampel, nicht im Score.';
+  if (def.inScore === 'detail') return ' Nur Anzeige, nicht im Score.';
+  return '';
 }
 
-export function KpiSection({ axis, company, all }: { axis: AxisId; company: Company; all: Company[] }) {
-  const kpis = KPIS.filter((k) => k.axis === axis);
+function RichtwertLine({ label, value, ampel, title }: { label: string; value: string; ampel: Ampel; title: string }) {
   return (
-    <section className="card overflow-x-auto">
-      <h2 className={`px-5 pt-4 font-title text-[17px] font-semibold ${AXIS_STYLE[axis].text}`}>{AXES[axis].label}</h2>
-      <table className="mt-2 w-full min-w-[860px] border-collapse text-[13.5px]">
-        <thead>
-          <tr className="tag text-right">
-            <th className="py-2 pl-5 text-left font-bold">Kennzahl</th>
-            <th className="px-3 py-2 font-bold">Wert</th>
-            <th className="px-3 py-2 font-bold">Richtwert allgemein</th>
-            <th className="px-3 py-2 font-bold">Richtwert {company.sectorDe}</th>
-            <th className="px-3 py-2 font-bold">Branchen-Median</th>
-            <th className="py-2 pl-3 pr-5 font-bold">Verlauf</th>
-          </tr>
-        </thead>
-        <tbody>
-          {kpis.map((def) => {
-            const kpi = company.kpis[def.id];
-            const med = sectorMedian(all, company.sector, def.id);
-            const branche = richtwertFor(def, company.sector, 'branche', kpi);
-            // Beträge in verschiedenen Währungen haben keinen sinnvollen Median
-            const showMedian = def.unit !== 'currency';
-            return (
-              <tr key={def.id} className="border-t border-line-soft">
-                <td className="py-2 pl-5 font-bold" title={`${def.formula} (${def.source})`}>
-                  {def.label}
-                  <small className="block font-medium text-muted">{def.formula}</small>
-                  {usage(def) && <small className="block font-medium text-muted">{usage(def)}</small>}
-                </td>
-                <td className="whitespace-nowrap px-3 py-2 text-right font-mono font-semibold">
-                  {formatKpi(kpi?.value, def.unit, company.currency)}
-                </td>
-                <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted">
-                  <span className="inline-flex items-center gap-2">
-                    {def.richtwert?.label ?? '–'}
-                    <AmpelDot ampel={kpi?.ampel ?? 'grey'} />
-                  </span>
-                </td>
-                <td
-                  className={`whitespace-nowrap px-3 py-2 text-right text-[12.5px] ${branche?.source === 'branche' ? 'text-muted' : 'text-muted/50'}`}
-                  title={branche?.source === 'branche' ? def.richtwertBranche?.quelle : 'kein Branchenwert, allgemeiner Richtwert'}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    {branche?.label ?? '–'}
-                    <AmpelDot ampel={ampelFor(kpi, 'branche')} />
-                  </span>
-                </td>
-                <td className="whitespace-nowrap px-3 py-2 text-right font-mono text-muted">
-                  {showMedian ? formatKpi(med, def.unit) : '–'}
-                </td>
-                <td className="py-1 pl-3 pr-5">
-                  <div className="flex justify-end">
-                    <Sparkline company={company} def={def} />
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-snug text-muted" title={title}>
+      {/* Kurzform für die schmale Spalte: «J.» wie in der Median-Zeile, ohne Klammerzusatz («(RONOA)»); voll im Tooltip */}
+      <span>
+        {label} {value.replace(' Jahre', ' J.').replace(/ \(.*\)$/, '')}
+      </span>
+      <AmpelDot ampel={ampel} />
+    </p>
+  );
+}
+
+function KpiRow({ def, company, all, years }: { def: KpiDef; company: Company; all: Company[]; years: number[] }) {
+  const kpi = company.kpis[def.id];
+  // Beträge in verschiedenen Währungen haben keinen sinnvollen Median
+  const median = def.unit === 'currency' ? null : sectorMedian(all, company.sector, def.id);
+  // Branchen-Zeile nur, wenn die Branche einen eigenen, vom allgemeinen abweichenden Richtwert hat
+  const branche = eigenerBranchenwert(def, company.sector, kpi);
+  return (
+    <div className="grid grid-cols-[132px_minmax(0,1fr)] items-center gap-2 border-t border-line-soft py-2.5">
+      <div className="min-w-0">
+        <h3 className="text-[13.5px] font-bold leading-tight" title={`${def.label}: ${def.formula} (${def.source}).${usage(def)}`}>
+          {def.short}
+        </h3>
+        <p className="mt-0.5 whitespace-nowrap font-mono text-[15px] font-semibold leading-snug">
+          {formatKpi(kpi?.value, def.unit, company.currency)}
+        </p>
+        {def.richtwert ? (
+          <RichtwertLine label="Allgemein" value={def.richtwert.label} ampel={kpi?.ampel ?? 'grey'} title={`Allgemeiner Richtwert ${def.richtwert.label} (Buch S. 292–293)`} />
+        ) : (
+          <p className="mt-0.5 text-xs leading-snug text-muted">Kein Richtwert</p>
+        )}
+        {branche && (
+          <RichtwertLine
+            label="Branche"
+            value={branche.label}
+            ampel={ampelFor(kpi, 'branche')}
+            title={`Richtwert ${company.sectorDe}: ${def.richtwertBranche?.quelle ?? ''}`}
+          />
+        )}
+        {median !== null && <p className="text-xs leading-snug text-muted">Median {formatKpi(median, def.unit)}</p>}
+      </div>
+      <TimeChart company={company} def={def} years={years} />
+    </div>
+  );
+}
+
+/** Eine Spalte des Zieldreiecks: Achsen-Score oben, darunter alle Kennzahlen dieser Achse. */
+export function KpiSection({ axis, company, all }: { axis: AxisId; company: Company; all: Company[] }) {
+  const years = useMemo(() => companyYears(company), [company]);
+  return (
+    <section className="card rounded-t-none border-t-4 px-5 pb-1 pt-4" style={{ borderTopColor: AXES[axis].color }}>
+      <div className={`mb-2 flex items-baseline justify-between ${AXIS_STYLE[axis].text}`}>
+        <h2 className="font-title text-[17px] font-semibold">{AXES[axis].label}</h2>
+        <b className="font-title text-[28px] font-bold leading-none">{formatScore(company.scores[axis])}</b>
+      </div>
+      {KPIS.filter((k) => k.axis === axis).map((def) => (
+        <KpiRow key={def.id} def={def} company={company} all={all} years={years} />
+      ))}
     </section>
   );
 }
