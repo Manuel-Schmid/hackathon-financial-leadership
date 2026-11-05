@@ -45,6 +45,7 @@ export function CubeFrame() {
     [toWorld(0, 100, 0), toWorld(0, 100, 100)],
   ];
   const origin = toWorld(0, 0, 0);
+  const ideal = toWorld(100, 100, 100);
 
   return (
     <group>
@@ -90,6 +91,12 @@ export function CubeFrame() {
           )}
         </group>
       ))}
+
+      {/* Ideal-Ecke 100·100·100: dezente Markierung ohne Text (Radius 65 % der früheren 0.55) */}
+      <mesh position={ideal}>
+        <sphereGeometry args={[0.36, 24, 24]} />
+        <meshBasicMaterial color={THEME.accent.DEFAULT} transparent opacity={0.12} depthWrite={false} />
+      </mesh>
     </group>
   );
 }
