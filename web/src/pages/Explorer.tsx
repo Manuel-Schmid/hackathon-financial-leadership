@@ -31,19 +31,12 @@ export function Explorer() {
   const filtered = useMemo(() => companies.filter((c) => matchesFilters(c, filters)), [companies, filters]);
   const visible = useMemo(() => new Set(filtered.map((c) => c.ticker)), [filtered]);
   const sorted = useMemo(() => sortCompanies(filtered, sort, profile.investorProfile), [filtered, sort, profile.investorProfile]);
-  const counts = useMemo(
-    () => ({
-      SP500: companies.filter((c) => c.index === 'SP500').length,
-      SWISS: companies.filter((c) => c.index !== 'SP500').length,
-    }),
-    [companies],
-  );
   const selectedCompany = selected ? byTicker.get(selected) : undefined;
   const missingScores = filtered.filter((c) => !c.isFinancial && Object.values(c.scores).includes(null)).length;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <FilterBar filters={filters} counts={counts} onChange={setFilters} />
+      <FilterBar filters={filters} onChange={setFilters} />
       <main className="grid flex-1 gap-4 p-4 lg:h-[calc(100vh-150px)] lg:flex-none lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-[minmax(0,1fr)] lg:px-7">
         <div className="flex min-h-0 flex-col gap-4">
           <section className="card relative min-h-[520px] flex-1 overflow-hidden">
