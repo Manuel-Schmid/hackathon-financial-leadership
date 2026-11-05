@@ -7,6 +7,7 @@ import { COMPARE_COLORS } from '@/lib/compare';
 import { AXES, AXIS_IDS, AXIS_STYLE } from '@/lib/config';
 import { formatKpi } from '@/lib/format';
 import { compareMode } from '@/lib/richtwert';
+import { CompanyLink } from '../ui/atoms';
 
 /** Weiche Trennstellen für lange Spaltenköpfe, damit die gleich breiten Spalten sauber umbrechen. */
 const SHY = String.fromCharCode(173); // weiches Trennzeichen
@@ -85,7 +86,7 @@ export function AmpelMatrix({ companies }: { companies: Company[] }) {
                 className={`truncate pr-3 text-left text-[13.5px] font-bold ${MOTION} ${focus && focus.row !== i ? 'opacity-45' : ''}`}
                 style={{ color: COMPARE_COLORS[i] }}
               >
-                {row.company.name}
+                <CompanyLink ticker={row.company.ticker}>{row.company.name}</CompanyLink>
               </th>
               {row.cells.map((cell, col) => {
                 // Eine Angabe pro Zeile im Tooltip; für Screenreader dieselben Angaben in einer Zeile

@@ -122,9 +122,33 @@ export const SORT_LABELS: Record<SortKey, string> = {
   marketCap: 'Börsenwert',
 };
 
-/** Sortiert absteigend (Name aufsteigend); fehlende Werte immer ans Ende. */
-export function sortCompanies(companies: Company[], key: SortKey, profile: ProfileRef = 'ausgewogen'): Company[] {
-  if (key === 'name') return [...companies].sort((a, b) => a.name.localeCompare(b.name, 'de'));
+export type SortDir = 'asc' | 'desc';
+export interface SortState {
+  key: SortKey;
+  dir: SortDir;
+}
+
+/** Sinnvolle Startrichtung je Spalte: Name A–Z, Scores und Börsenwert vom höchsten Wert. */
+export const DEFAULT_DIR: Record<SortKey, SortDir> = {
+  total: 'desc',
+  liquiditaet: 'desc',
+  rentabilitaet: 'desc',
+  sicherheit: 'desc',
+  name: 'asc',
+  marketCap: 'desc',
+};
+export const DEFAULT_SORT: SortState = { key: 'total', dir: 'desc' };
+
+/** Klick auf einen Spaltentitel: gleiche Spalte dreht die Richtung um, eine neue beginnt mit ihrer Startrichtung. */
+export function nextSort(current: SortState, key: SortKey): SortState {
+  if (current.key === key) return { key, dir: current.dir === 'asc' ? 'desc' : 'asc' };
+  return { key, dir: DEFAULT_DIR[key] };
+}
+
+/** Sortiert nach Schlüssel und Richtung (Standard: DEFAULT_DIR); fehlende Werte immer ans Ende. */
+export function sortCompanies(companies: Company[], key: SortKey, profile: ProfileRef = 'ausgewogen', dir: SortDir = DEFAULT_DIR[key]): Company[] {
+  const sign = dir === 'asc' ? 1 : -1;
+  if (key === 'name') return [...companies].sort((a, b) => sign * a.name.localeCompare(b.name, 'de'));
   const value = (c: Company): number | null => {
     if (key === 'total') return totalScore(c.scores, profile);
     if (key === 'marketCap') return c.marketCapUsd;
@@ -134,7 +158,7 @@ export function sortCompanies(companies: Company[], key: SortKey, profile: Profi
     const [x, y] = [value(a), value(b)];
     if (x === null) return y === null ? 0 : 1;
     if (y === null) return -1;
-    return y - x;
+    return sign * (x - y);
   });
 }
 
@@ -160,6 +184,12 @@ export function restoreFilters(raw: unknown): Filters {
   };
 }
 
-export function restoreSort(raw: unknown): SortKey {
-  return typeof raw === 'string' && raw in SORT_LABELS ? (raw as SortKey) : 'total';
+/** Gespeicherte Sortierung prüfen; versteht auch den Wert der letzten Version (nur Schlüssel, Standardrichtung). */
+export function restoreSort(raw: unknown): SortState {
+  const isKey = (k: unknown): k is SortKey => typeof k === 'string' && k in SORT_LABELS;
+  if (isKey(raw)) return { key: raw, dir: DEFAULT_DIR[raw] };
+  if (!raw || typeof raw !== 'object') return DEFAULT_SORT;
+  const { key, dir } = raw as Record<string, unknown>;
+  if (!isKey(key)) return DEFAULT_SORT;
+  return { key, dir: dir === 'asc' || dir === 'desc' ? dir : DEFAULT_DIR[key] };
 }

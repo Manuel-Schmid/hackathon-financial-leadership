@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AmpelMatrix } from '@/components/compare/AmpelMatrix';
 import { CompareCard } from '@/components/compare/CompareCards';
@@ -7,46 +6,13 @@ import { CompareSearch } from '@/components/compare/CompareSearch';
 import { CompareTable } from '@/components/compare/CompareTable';
 import { ProfileButton } from '@/components/profiles/ProfilePicker';
 import { EmptyState, PageTitle } from '@/components/ui/atoms';
-import { useCompanies, useData } from '@/data/DataProvider';
+import { useData } from '@/data/DataProvider';
 import type { Company } from '@/data/types';
 import { COMPARE_COLORS, MAX_COMPARE } from '@/lib/compare';
 import { buildFazit } from '@/lib/fazit';
-import { tickerAndSector } from '@/lib/format';
 import { profileLabel } from '@/lib/weighting';
 import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
-
-function AddCompany({ onAdd }: { onAdd(ticker: string): void }) {
-  const companies = useCompanies();
-  const [value, setValue] = useState('');
-  /** Exakter Treffer (Vorschlag gewählt oder Ticker getippt) wird direkt hinzugefügt. */
-  const addIfExact = (text: string): boolean => {
-    const query = text.trim().toLowerCase();
-    const match = companies.find((c) => c.ticker.toLowerCase() === query || c.name.toLowerCase() === query);
-    if (match) {
-      onAdd(match.ticker);
-      setValue('');
-    }
-    return Boolean(match);
-  };
-  return (
-    <form onSubmit={(e) => { e.preventDefault(); addIfExact(value); }}>
-      <input
-        id="compare-add"
-        list="kubus-companies"
-        className="input h-9 w-full py-0 font-medium"
-        placeholder="Name oder Ticker"
-        value={value}
-        onChange={(e) => {
-          if (!addIfExact(e.target.value)) setValue(e.target.value);
-        }}
-      />
-      <datalist id="kubus-companies">
-        {companies.map((c) => <option key={c.ticker} value={c.name}>{tickerAndSector(c)}</option>)}
-      </datalist>
-    </form>
-  );
-}
 
 const FIELD_LABEL = 'mb-1.5 block text-[13px] font-bold';
 
@@ -65,7 +31,7 @@ export function Compare() {
 
   return (
     <>
-      <CompareSearch />
+      <CompareSearch list={active} onAdd={add} />
       <main className="mx-auto w-full max-w-[1600px] space-y-4 px-4 pb-4 pt-3 lg:px-7 lg:pb-7 lg:pt-3">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <PageTitle
@@ -73,7 +39,7 @@ export function Compare() {
             title={active.name}
             sub={`${active.clientName ? `Kunde: ${active.clientName}. ` : ''}Gewichtung ${profileLabel(profile.weights)}`}
           />
-          <div className="grid w-full gap-3 sm:grid-cols-3 lg:w-[660px]">
+          <div className="grid w-full gap-3 sm:grid-cols-2 lg:w-[440px]">
             <div className="min-w-0">
               <label htmlFor="compare-list" className={FIELD_LABEL}>Watchlist</label>
               <select
@@ -89,16 +55,12 @@ export function Compare() {
               <label htmlFor="compare-profile" className={FIELD_LABEL}>Anlegerprofil</label>
               <ProfileButton field id="compare-profile" value={active.investorProfile} listName={active.name} onChange={(investorProfile) => update(active.id, { investorProfile })} />
             </div>
-            <div className="min-w-0">
-              <label htmlFor="compare-add" className={FIELD_LABEL}>Unternehmen hinzufügen</label>
-              <AddCompany onAdd={add} />
-            </div>
           </div>
         </div>
 
         {companies.length === 0 && (
           <EmptyState title="Diese Watchlist ist leer">
-            Im <Link className="underline" to="/">Explorer</Link> mit dem Stern Unternehmen hinzufügen oder oben direkt suchen.
+            Im <Link className="underline" to="/">Explorer</Link> mit dem Stern Unternehmen hinzufügen oder oben suchen und «+ Zur Watchlist» wählen.
           </EmptyState>
         )}
         {all.length > MAX_COMPARE && (

@@ -3,7 +3,7 @@ import type { AxisScores, Company } from '@/data/types';
 import { KPIS, PROFILES } from './config';
 import { buildFazit } from './fazit';
 import { capBounds, capHistogram, capToPosition, positionToCap } from './capRange';
-import { activeFilters, DEFAULT_FILTERS, formatCapRange, matchesFilters, searchSuggestions, sortCompanies } from './filters';
+import { activeFilters, DEFAULT_DIR, DEFAULT_FILTERS, formatCapRange, matchesFilters, nextSort, searchSuggestions, sortCompanies } from './filters';
 import { formatKpi, formatMarketCap, formatScore, tickerAndSector } from './format';
 import { median, sectorMedian } from './medians';
 import { totalScore } from './weighting';
@@ -119,6 +119,22 @@ describe('Filter', () => {
     const a = company({ ticker: 'A', scores: { liquiditaet: null, rentabilitaet: null, sicherheit: null } });
     const b = company({ ticker: 'B' });
     expect(sortCompanies([a, b], 'total').map((c) => c.ticker)).toEqual(['B', 'A']);
+  });
+  it('sortiert in beide Richtungen, fehlende Werte bleiben am Ende', () => {
+    const lo = company({ ticker: 'LO', name: 'Alpha', scores: { liquiditaet: 10, rentabilitaet: 10, sicherheit: 10 } });
+    const hi = company({ ticker: 'HI', name: 'Beta', scores: { liquiditaet: 90, rentabilitaet: 90, sicherheit: 90 } });
+    const na = company({ ticker: 'NA', name: 'Gamma', scores: { liquiditaet: null, rentabilitaet: null, sicherheit: null } });
+    const t = (cs: Company[]) => cs.map((c) => c.ticker);
+    expect(t(sortCompanies([lo, na, hi], 'sicherheit', 'ausgewogen', 'desc'))).toEqual(['HI', 'LO', 'NA']);
+    expect(t(sortCompanies([hi, na, lo], 'sicherheit', 'ausgewogen', 'asc'))).toEqual(['LO', 'HI', 'NA']);
+    expect(t(sortCompanies([hi, lo], 'name', 'ausgewogen', 'desc'))).toEqual(['HI', 'LO']);
+    expect(t(sortCompanies([hi, lo], 'name'))).toEqual(['LO', 'HI']);
+  });
+  it('Klick auf Spaltentitel: gleiche Spalte dreht um, neue Spalte mit sinnvoller Standardrichtung', () => {
+    expect(nextSort({ key: 'total', dir: 'desc' }, 'total')).toEqual({ key: 'total', dir: 'asc' });
+    expect(nextSort({ key: 'total', dir: 'asc' }, 'name')).toEqual({ key: 'name', dir: 'asc' });
+    expect(nextSort({ key: 'name', dir: 'asc' }, 'marketCap')).toEqual({ key: 'marketCap', dir: 'desc' });
+    expect(DEFAULT_DIR.rentabilitaet).toBe('desc');
   });
 });
 
