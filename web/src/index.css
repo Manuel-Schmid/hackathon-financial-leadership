@@ -101,9 +101,23 @@ body {
 
 /* Kundenreport (Vergleich → «Als Report drucken»): Querformat, weiss, Farben wie am Bildschirm */
 @media print {
+  /* Eigene Randfelder ersetzen Chromes Kopf-/Fusszeile (Datum/Uhrzeit links, Adresse unten).
+     Oben Mitte: Report-Titel (setzt «Als Report drucken»), unten rechts: Seitenzahl. Chrome ab 131. */
   @page {
     size: A4 landscape;
-    margin: 10mm;
+    margin: 12mm 10mm;
+    @top-center {
+      content: 'KUBUS Kundenreport';
+      font-family: Manrope, sans-serif;
+      font-size: 9px;
+      color: #66748a;
+    }
+    @bottom-right {
+      content: 'Seite ' counter(page) ' von ' counter(pages);
+      font-family: Manrope, sans-serif;
+      font-size: 9px;
+      color: #66748a;
+    }
   }
   html,
   body {
