@@ -67,6 +67,12 @@ create table if not exists public.watchlist_items (
   primary key (watchlist_id, ticker)
 );
 
+-- Tabellen ausdrücklich freigeben; welche Zeilen sichtbar sind, regelt danach RLS.
+grant usage on schema public to anon, authenticated, service_role;
+grant select on public.companies, public.financials, public.kpis, public.scores to anon, authenticated;
+grant select, insert, update, delete on public.profiles, public.watchlists, public.watchlist_items to authenticated;
+grant all on all tables in schema public to service_role;
+
 alter table public.companies enable row level security;
 alter table public.financials enable row level security;
 alter table public.kpis enable row level security;

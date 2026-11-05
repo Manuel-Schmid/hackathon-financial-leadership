@@ -7,16 +7,16 @@ Technische Ergänzung zu `docs/PLAN.md`: Der Plan sagt, **was** wir bauen. Diese
 | Schritt | Inhalt | Status |
 |---|---|---|
 | 1 | Gerüst Frontend (Vite, Tailwind, Router, Layout) | fertig |
-| 2 | Datenbank (`supabase/schema.sql`) | geschrieben, **noch nie gegen Supabase ausgeführt** |
+| 2 | Datenbank (`supabase/schema.sql`) | ausgeführt; öffentlich lesen geht, öffentlich schreiben wird blockiert |
 | 3a | Pipeline: Ticker, Mapping, Kennzahlen, Scoring, JSON-Export | fertig, Tests grün (u. a. VAT 2025, Geberit 2015) |
 | 3b | Yahoo-Abruf (`fetch.py`) | gelaufen, Ergebnis in `web/public/data/companies.json` |
-| 3c | `load_supabase.py` | geschrieben, **noch nie gelaufen** (kein Supabase-Projekt) |
+| 3c | `load_supabase.py` | gelaufen; `SupabaseSource` liefert dieselben Daten wie `companies.json` (0 Abweichungen, Tabelle `financials` bleibt leer) |
 | 4 | Explorer: Würfel, Filter, Liste, Kurzkarte, Watchlist-Leiste | fertig, im Browser geprüft |
 | 5 | Detailseite | fertig, im Browser geprüft |
 | 6 | Konto: Gastmodus und Watchlists im Browser | fertig, im Browser geprüft |
-| 6b | Konto: Login, Registrieren, Profil, `SupabaseWatchlistStore` | geschrieben, **ungetestet** (kein Supabase-Projekt) |
+| 6b | Konto: Login, Registrieren, Profil, `SupabaseWatchlistStore` | geschrieben, **ungetestet** (braucht zwei registrierte Konten) |
 | 7 | Vergleich und Methodik | fertig, im Browser geprüft |
-| 8 | Offline-Modus (JSON + Gast) | läuft, weil Supabase fehlt; Rückfall bei Supabase-Ausfall ungetestet |
+| 8 | Offline-Modus (JSON + Gast) | getestet: bei fehlenden Tabellen und bei unerreichbarem Supabase; ohne Netz dauert der Start rund 8 s. Mit `VITE_DATA_MODE=json` startet die App sofort aus der Datei |
 | 8b | Demo-Konten, Screenshots für die Abgabe | offen |
 
 ## Grundregel: Abhängigkeiten zeigen nur in eine Richtung

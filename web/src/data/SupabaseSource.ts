@@ -39,14 +39,17 @@ export class SupabaseSource implements DataSource {
 
   constructor(private client: SupabaseClient) {}
 
-  private async all<T>(table: string, order: string): Promise<T[]> {
+  /** Lädt alle Seiten. order muss eindeutig sein, sonst fehlen oder doppeln Zeilen an den Seitengrenzen. */
+  private async all<T>(table: string, order: string[]): Promise<T[]> {
     const { count, error } = await this.client.from(table).select('*', { count: 'exact', head: true });
     if (error) throw error;
     const pages = Math.ceil((count ?? 0) / PAGE);
     const results = await Promise.all(
-      Array.from({ length: pages }, (_, i) =>
-        this.client.from(table).select('*').order(order).order('year', { ascending: true, nullsFirst: true }).range(i * PAGE, (i + 1) * PAGE - 1),
-      ),
+      Array.from({ length: pages }, (_, i) => {
+        let query = this.client.from(table).select('*');
+        for (const column of order) query = query.order(column);
+        return query.range(i * PAGE, (i + 1) * PAGE - 1);
+      }),
     );
     return results.flatMap((r) => {
       if (r.error) throw r.error;
@@ -59,8 +62,8 @@ export class SupabaseSource implements DataSource {
     if (error) throw error;
     if (!data?.length) throw new Error('Supabase ist noch leer');
     const [kpiRows, scoreRows] = await Promise.all([
-      this.all<KpiRow>('kpis', 'ticker'),
-      this.all<ScoreRow>('scores', 'ticker'),
+      this.all<KpiRow>('kpis', ['ticker', 'kpi_id', 'year']),
+      this.all<ScoreRow>('scores', ['ticker', 'year']),
     ]);
 
     const kpis = new Map<string, Record<string, CompanyKpi>>();
