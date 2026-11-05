@@ -16,6 +16,10 @@ export interface KpiDef {
   axis: AxisId;
   formula: string;
   direction: 'higher' | 'lower';
+  /** Negativer Wert = negatives Eigenkapital: schlechtester Rang (wie scoring.py). */
+  negativeIsWorst?: boolean;
+  /** Bei negativem Eigenkapital schlechtester Rang (wie scoring.py). */
+  requiresPositiveEquity?: boolean;
   inScore: boolean | string;
   richtwert: Richtwert | null;
   /** Branchen-Richtwerte (docs/BRANCHEN_RICHTWERTE.md), Schlüssel = Sektor englisch */

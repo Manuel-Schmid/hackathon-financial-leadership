@@ -7,7 +7,8 @@ import { WatchlistBar } from '@/components/list/WatchlistBar';
 import { ErrorBoundary } from '@/components/ui/atoms';
 import { WatchlistPicker } from '@/components/watchlists/WatchlistPicker';
 import { useCompanies, useData } from '@/data/DataProvider';
-import { DEFAULT_FILTERS, matchesFilters, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { EXPLORER_FILTERS_KEY, matchesFilters, restoreFilters, restoreSort, sortCompanies, type Filters, type SortKey } from '@/lib/filters';
+import { useSessionState } from '@/lib/useSessionState';
 import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
@@ -33,10 +34,10 @@ export function Explorer() {
   const focusedList = lists.find((l) => l.id === focusId);
   const [picking, setPicking] = useState<string | null>(null);
   const pickingCompany = picking ? byTicker.get(picking) : undefined;
-  const { all: profiles, selected: selectedProfile, select: selectProfile } = useProfiles();
-  // Das Profil überlebt den Abstecher auf eine Detailseite, damit dort derselbe Score steht.
-  const [filters, setFilters] = useState<Filters>({ ...DEFAULT_FILTERS, investorProfile: selectedProfile?.id ?? null });
-  const [sort, setSort] = useState<SortKey>('total');
+  const { all: profiles, select: selectProfile } = useProfiles();
+  // Filter und Sortierung bleiben beim Seitenwechsel erhalten, bis das Browserfenster geschlossen wird
+  const [filters, setFilters] = useSessionState<Filters>(EXPLORER_FILTERS_KEY, restoreFilters);
+  const [sort, setSort] = useSessionState<SortKey>('kubus.explorerSort', restoreSort);
   const [selected, setSelected] = useState<string | null>(null);
   const profile = useMemo(
     () => profiles.find((p) => p.id === filters.investorProfile)?.weights ?? 'ausgewogen',

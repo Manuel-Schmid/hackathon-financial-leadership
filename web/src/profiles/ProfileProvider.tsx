@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useAuth } from '@/auth/useAuth';
+import { EXPLORER_FILTERS_KEY, restoreFilters } from '@/lib/filters';
+import { readSession } from '@/lib/storage';
 import { supabase } from '@/lib/supabaseClient';
 import { LocalProfileStore } from './LocalProfileStore';
 import { TEMPLATES, type ProfileInput, type ProfileStore, type SavedProfile } from './ProfileStore';
@@ -30,7 +32,10 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     [user],
   );
   const [own, setOwn] = useState<SavedProfile[]>([]);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Wie im Explorer-Filter: Auch die Detailseite zeigt nach dem Neuladen denselben Score.
+  const [selectedId, setSelectedId] = useState<string | null>(
+    () => restoreFilters(readSession<unknown>(EXPLORER_FILTERS_KEY, null)).investorProfile,
+  );
   const [error, setError] = useState<string | null>(null);
 
   const reload = useCallback(
