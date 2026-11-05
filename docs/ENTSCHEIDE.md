@@ -1,0 +1,17 @@
+# Entscheide, Weg und Gelernt
+
+Laufend ergänzen (Uhrzeit · was · warum · was hat (nicht) funktioniert). Grundlage für die Präsentationsteile „Weg“ und „Gelernt“.
+
+| Zeit | Entscheid / Ereignis | Warum / Ergebnis |
+|---|---|---|
+| Do 11:00 | Aufgabe erhalten (VL7, Folie 40) | Tool zum Vergleich von Unternehmen anhand von Kennzahlen |
+| Do 12:00 | Idee: Zieldreieck als 3D-Würfel | Verbindet Theorie (Abb. 106 Buch) mit einer Darstellung „auf einen Blick“ |
+| Do 12:30 | Achse „Sicherheit“ statt „Risiko“ | Auf allen Achsen gilt hoch = gut, Ideal-Ecke eindeutig |
+| Do 12:30 | S&P 500 + SMI/SMIM, Banken mit Hinweis | Relevantes Universum für Wealth Manager; Banken-Bilanzen anders aufgebaut |
+| Do 12:30 | Supabase mit Login + Watchlists pro Kunde | Use Case Wealth Manager aus der Aufgabenstellung |
+| Do 12:30 | Präsentation lokal, Offline-Modus | Unabhängig vom WLAN im Raum |
+| Do 12:45 | Perzentil-Scores + absolute Ampeln | Robust gegen Ausreisser, leicht erklärbar; Richtwerte aus Buch S. 293 |
+| Do 13:00 | Umsetzung mit Claude Code im Repo | Code direkt auf dem Laptop, Yahoo erreichbar, Push mit eigenem Login |
+| Do | Pipeline vor dem Frontend, zuerst mit VAT- und Geberit-Zahlen getestet | Die Formeln stimmen mit den Folien überein, bevor echte Daten fliessen; 45 Tests grün |
+| Do | Negatives Eigenkapital zählt beim Verschuldungsgrad als schlechtester Rang | Sonst hätten überschuldete Firmen den besten Wert („tiefer = besser“), gefunden beim Schreiben der Scoring-Regeln |
+| Do | SMI/SMIM-Liste offen | Entwurf hat 21 + 28 statt 20 + 30 Titel, muss gegen six-group.com geprüft werden |

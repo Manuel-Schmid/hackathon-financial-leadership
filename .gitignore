@@ -1,0 +1,22 @@
+# Geheimnisse
+.env
+.env.*
+!.env.example
+# Daten-Cache
+data/cache/
+# Buch-Scans nicht ins öffentliche Repo (Zahlen stehen in docs/KENNZAHLEN.md)
+docs/quellen/
+# Node / Python (ohne Schrägstrich: gilt auch für .nosync-Symlinks wegen iCloud)
+node_modules
+*.nosync
+dist/
+__pycache__/
+*.pyc
+.venv
+.pytest_cache/
+# System
+.DS_Store
+.vscode/
+# iCloud-Duplikate ("Datei 2.ts")
+* 2
+* 2.*

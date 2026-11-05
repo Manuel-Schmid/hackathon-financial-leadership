@@ -1,0 +1,41 @@
+@font-face{font-family:Sora;font-weight:400;src:url(../node_modules/@fontsource/sora/files/sora-latin-400-normal.woff2)}
+@font-face{font-family:Sora;font-weight:600;src:url(../node_modules/@fontsource/sora/files/sora-latin-600-normal.woff2)}
+@font-face{font-family:Sora;font-weight:700;src:url(../node_modules/@fontsource/sora/files/sora-latin-700-normal.woff2)}
+@font-face{font-family:Manrope;font-weight:400;src:url(../node_modules/@fontsource/manrope/files/manrope-latin-400-normal.woff2)}
+@font-face{font-family:Manrope;font-weight:500;src:url(../node_modules/@fontsource/manrope/files/manrope-latin-500-normal.woff2)}
+@font-face{font-family:Manrope;font-weight:600;src:url(../node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff2)}
+@font-face{font-family:Manrope;font-weight:700;src:url(../node_modules/@fontsource/manrope/files/manrope-latin-700-normal.woff2)}
+@font-face{font-family:JBM;font-weight:400;src:url(../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2)}
+@font-face{font-family:JBM;font-weight:600;src:url(../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2)}
+:root{
+ --ink:#0E1726; --ink2:#1A2436; --paper:#F4F6F9; --card:#FFFFFF; --line:#E1E6EE; --muted:#66748A; --text:#152033;
+ --L:#2F80ED; --R:#E8A317; --S:#1E9E6A;   /* Liquidität, Rentabilität, Sicherheit */
+ --Lsoft:#E6F0FD; --Rsoft:#FDF3DC; --Ssoft:#E2F4EC;
+ --good:#1E9E6A; --warn:#E0A100; --bad:#D9443B;
+ --accent:#5B4BE0;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:Manrope,sans-serif;color:var(--text);background:var(--paper);width:1600px;height:1000px;overflow:hidden;font-size:14px}
+.top{height:64px;background:var(--ink);display:flex;align-items:center;padding:0 28px;gap:28px;color:#fff}
+.brand{display:flex;align-items:center;gap:12px}
+.brand b{font-family:Sora;font-weight:700;font-size:22px;letter-spacing:.06em}
+.brand small{display:block;font-size:11px;color:#9AA7BD;letter-spacing:.04em;margin-top:-2px}
+.nav{display:flex;gap:6px;margin-left:24px}
+.nav a{color:#B7C2D6;padding:8px 14px;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
+.nav a.on{background:#24304A;color:#fff}
+.badge{display:inline-block;background:var(--accent);color:#fff;font-size:11px;border-radius:99px;padding:1px 7px;margin-left:6px}
+.sp{flex:1}
+.stand{font-size:12px;color:#9AA7BD;border:1px solid #2C3A55;border-radius:99px;padding:5px 12px}
+.user{display:flex;align-items:center;gap:10px;font-weight:600}
+.av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--L),var(--S));display:grid;place-items:center;font-family:Sora;font-size:13px}
+.mono{font-family:JBM}
+.tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 12px;font-weight:600;font-size:13px}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.bars{display:flex;gap:4px;align-items:flex-end}
+.bar{width:44px;height:6px;border-radius:3px;background:#EEF1F5;position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.amp{width:9px;height:9px;border-radius:50%;display:inline-block}
+.footnote{position:absolute;bottom:10px;right:28px;font-size:11px;color:var(--muted)}

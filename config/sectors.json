@@ -1,0 +1,47 @@
+{
+  "Information Technology": {
+    "de": "Technologie",
+    "color": "#6A5AE0"
+  },
+  "Health Care": {
+    "de": "Gesundheit",
+    "color": "#E0567E"
+  },
+  "Industrials": {
+    "de": "Industrie",
+    "color": "#3B5BA9"
+  },
+  "Consumer Discretionary": {
+    "de": "Zyklischer Konsum",
+    "color": "#D9822B"
+  },
+  "Consumer Staples": {
+    "de": "Basiskonsum",
+    "color": "#B5651D"
+  },
+  "Financials": {
+    "de": "Finanzen",
+    "color": "#7C8799",
+    "financial": true
+  },
+  "Energy": {
+    "de": "Energie",
+    "color": "#2BA3B5"
+  },
+  "Utilities": {
+    "de": "Versorger",
+    "color": "#4FB3A9"
+  },
+  "Materials": {
+    "de": "Werkstoffe",
+    "color": "#8E6C4A"
+  },
+  "Communication Services": {
+    "de": "Kommunikation",
+    "color": "#B65FC9"
+  },
+  "Real Estate": {
+    "de": "Immobilien",
+    "color": "#A0A85A"
+  }
+}

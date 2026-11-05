@@ -1,0 +1,50 @@
+Symbol,Security,GICS Sector,Index
+ABBN.SW,ABB,Industrials,SMI
+ALC.SW,Alcon,Health Care,SMI
+AMRZ.SW,Amrize,Materials,SMI
+CFR.SW,Richemont,Consumer Discretionary,SMI
+GEBN.SW,Geberit,Industrials,SMI
+GIVN.SW,Givaudan,Materials,SMI
+HOLN.SW,Holcim,Materials,SMI
+KNIN.SW,Kuehne+Nagel,Industrials,SMI
+LOGN.SW,Logitech,Information Technology,SMI
+LONN.SW,Lonza,Health Care,SMI
+NESN.SW,Nestlé,Consumer Staples,SMI
+NOVN.SW,Novartis,Health Care,SMI
+PGHN.SW,Partners Group,Financials,SMI
+ROG.SW,Roche,Health Care,SMI
+SCMN.SW,Swisscom,Communication Services,SMI
+SIKA.SW,Sika,Materials,SMI
+SLHN.SW,Swiss Life,Financials,SMI
+SOON.SW,Sonova,Health Care,SMI
+SREN.SW,Swiss Re,Financials,SMI
+UBSG.SW,UBS,Financials,SMI
+ZURN.SW,Zurich Insurance,Financials,SMI
+ACLN.SW,Accelleron,Industrials,SMIM
+ADEN.SW,Adecco,Industrials,SMIM
+AVOL.SW,Avolta,Consumer Discretionary,SMIM
+BAER.SW,Julius Bär,Financials,SMIM
+BALN.SW,Baloise,Financials,SMIM
+BANB.SW,Bachem,Health Care,SMIM
+BARN.SW,Barry Callebaut,Consumer Staples,SMIM
+BEAN.SW,Belimo,Industrials,SMIM
+BKW.SW,BKW,Utilities,SMIM
+CLN.SW,Clariant,Materials,SMIM
+EMSN.SW,EMS-Chemie,Materials,SMIM
+FHZN.SW,Flughafen Zürich,Industrials,SMIM
+GALD.SW,Galderma,Health Care,SMIM
+GF.SW,Georg Fischer,Industrials,SMIM
+HELN.SW,Helvetia,Financials,SMIM
+LISN.SW,Lindt & Sprüngli,Consumer Staples,SMIM
+PSPN.SW,PSP Swiss Property,Real Estate,SMIM
+SCHP.SW,Schindler,Industrials,SMIM
+SDZ.SW,Sandoz,Health Care,SMIM
+SGSN.SW,SGS,Industrials,SMIM
+SIGN.SW,SIG Group,Materials,SMIM
+SPSN.SW,Swiss Prime Site,Real Estate,SMIM
+SQN.SW,Swissquote,Financials,SMIM
+STMN.SW,Straumann,Health Care,SMIM
+TECN.SW,Tecan,Health Care,SMIM
+TEMN.SW,Temenos,Information Technology,SMIM
+UHR.SW,Swatch Group,Consumer Discretionary,SMIM
+VACN.SW,VAT Group,Industrials,SMIM

@@ -1,0 +1,147 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>
+.filters{height:80px;display:flex;align-items:flex-start;padding-top:12px!important;gap:22px;padding:0 28px;border-bottom:1px solid var(--line);background:#fff}
+.fg{display:flex;flex-direction:column;gap:6px;min-height:56px}
+.fg>.row,.fg>.seg,.fg>.search,.fg>.toggle{height:34px;align-items:center}
+.fg .row{display:flex;gap:6px}
+.seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg span{padding:6px 12px;font-weight:600;font-size:13px;border-right:1px solid var(--line)}
+.seg span:last-child{border-right:0}
+.seg span.on{background:var(--ink);color:#fff}
+.search{width:250px;border:1px solid var(--line);border-radius:9px;padding:7px 12px;color:var(--muted);font-size:13px}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--S);position:relative}.sw::after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.main{display:grid;grid-template-columns:1040px 1fr;gap:20px;padding:14px 28px}
+.cubecard{height:760px;position:relative;overflow:hidden}
+.cubehead{position:absolute;left:24px;top:20px}
+.cubehead h2{font-family:Sora;font-size:20px;font-weight:600}
+.cubehead p{color:var(--muted);font-size:13px;margin-top:4px}
+.hint{position:absolute;left:24px;bottom:18px;color:var(--muted);font-size:12px;display:flex;gap:16px}
+.legend{position:absolute;right:20px;bottom:16px;display:grid;grid-template-columns:repeat(4,auto);gap:6px 16px;font-size:12px;font-weight:600;color:#3B4659}
+.legend span{display:flex;align-items:center;gap:6px}
+.quick{position:absolute;right:20px;top:20px;width:300px;padding:16px 18px;box-shadow:0 10px 30px rgba(14,23,38,.12)}
+.quick h3{font-family:Sora;font-size:17px}
+.quick .sub{color:var(--muted);font-size:12px;margin:2px 0 12px}
+.sc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sc div{border-radius:10px;padding:8px 10px}
+.sc b{font-family:Sora;font-size:22px;display:block}
+.sc small{font-size:11px;font-weight:700;letter-spacing:.04em}
+.kpi{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:13px}
+.kpi em{font-style:normal;color:var(--muted);font-size:11.5px}
+.kpi .v{font-family:JBM;font-weight:600;display:flex;gap:8px;align-items:center}
+.btns{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;text-align:center;padding:8px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid var(--line)}
+.btn.p{background:var(--ink);color:#fff;border-color:var(--ink)}
+.fav{margin-top:16px;height:64px;display:flex;align-items:center;gap:12px;padding:0 20px}
+.chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px}
+.chip .x{color:var(--muted);font-weight:400}
+.list{height:840px;padding:18px 0 0;overflow:hidden}
+.lh{padding:0 20px 12px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--line)}
+.lh h2{font-family:Sora;font-size:18px;font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 150px 22px;padding:8px 20px;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.row{display:grid;grid-template-columns:1fr 150px 22px;align-items:center;padding:9px 20px;border-top:1px solid #EEF1F5}
+.row.sel{background:#F1F3FF}
+.row .n{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.row .m{color:var(--muted);font-size:12px;margin-top:1px;padding-left:18px}
+.mb{display:flex;flex-direction:column;gap:3px}
+.mb .bar{width:150px;height:5px}
+.star{font-size:17px;color:#C9D1DD}.star.on{color:var(--R)}
+.warn{font-size:11px;color:#8A5A00;background:#FFF4D6;border-radius:6px;padding:1px 6px;margin-left:4px;font-weight:600}
+</style></head><body>
+<div class="top">
+ <div class="brand"><img src="logo.svg"><div><b>KUBUS</b><small>Kennzahlen im Zieldreieck</small></div></div>
+ <div class="nav"><a class="on">Explorer</a><a>Vergleich<span class="badge">4</span></a><a>Watchlists</a><a>Methodik</a></div>
+ <div class="sp"></div>
+ <span class="stand">Daten: Yahoo Finance · Geschäftsjahr 2025 · Stand 05.11.2026</span>
+ <div class="user"><div class="av">LM</div>Lea Meier</div>
+</div>
+<div class="filters">
+ <div class="fg"><span class="tag">Datenbank</span><div class="row"><span class="pill on">S&amp;P 500 · 503</span><span class="pill on">SMI / SMIM · 50</span></div></div>
+ <div class="fg"><span class="tag">Branche</span><div class="row"><span class="pill">Alle Branchen ▾</span></div></div>
+ <div class="fg"><span class="tag">Grösse (Börsenwert)</span><div class="seg"><span class="on">Large &gt;10 Mrd.</span><span class="on">Mid 2–10</span><span>Small &lt;2</span></div></div>
+ <div class="fg"><span class="tag">Suche</span><div class="search">⌕ Name oder Ticker, z.B. VACN</div></div>
+ <div class="fg"><span class="tag">Finanzsektor</span><div class="toggle"><div class="sw"></div>Banken &amp; Versicherungen ⓘ</div></div>
+ <div class="sp"></div>
+ <span class="pill" style="margin-top:20px">↺ Zurücksetzen</span>
+</div>
+<div class="main">
+ <div>
+  <div class="card cubecard">
+   <div class="cubehead"><h2>Zieldreieck als Würfel</h2><p>Jeder Punkt ist ein Unternehmen · Scores 0–100 · oben rechts hinten = liquide, rentabel und sicher</p></div>
+   <svg id="cube" width="1040" height="760" style="position:absolute;left:0;top:0"></svg>
+   <div class="card quick">
+    <h3>VAT Group</h3><div class="sub">VACN.SW · Industrie · SMIM · Börsenwert 13.1 Mrd. CHF</div>
+    <div class="sc"><div style="background:var(--Lsoft)"><small style="color:var(--L)">LIQUIDITÄT</small><b>71</b></div><div style="background:var(--Rsoft)"><small style="color:#B07A00">RENTABILITÄT</small><b>88</b></div><div style="background:var(--Ssoft)"><small style="color:var(--S)">SICHERHEIT</small><b>84</b></div></div>
+    <div class="kpi"><span>Current Ratio<br><em>Richtwert 150 %</em></span><span class="v">131 %<i class="amp" style="background:var(--warn)"></i></span></div>
+    <div class="kpi"><span>Eigenkapitalrendite<br><em>Richtwert 10–15 %</em></span><span class="v">27.7 %<i class="amp" style="background:var(--good)"></i></span></div>
+    <div class="kpi"><span>EBIT-Marge</span><span class="v">25.4 %<i class="amp" style="background:var(--good)"></i></span></div>
+    <div class="kpi"><span>Eigenkapitalquote<br><em>Richtwert 25–50 %</em></span><span class="v">62.8 %<i class="amp" style="background:var(--good)"></i></span></div>
+    <div class="btns"><span class="btn">★ Favorit</span><span class="btn p">Details →</span></div>
+   </div>
+   <div class="hint"><span>⟲ Ziehen zum Drehen</span><span>⊕ Scrollen zum Zoomen</span><span>● Klick für Details</span></div>
+   <div class="legend">
+    <span><i class="dot" style="background:#6A5AE0"></i>Technologie</span><span><i class="dot" style="background:#E0567E"></i>Gesundheit</span><span><i class="dot" style="background:#3B5BA9"></i>Industrie</span><span><i class="dot" style="background:#D9822B"></i>Konsum</span>
+    <span><i class="dot" style="background:#2BA3B5"></i>Energie &amp; Versorger</span><span><i class="dot" style="background:#8E6C4A"></i>Werkstoffe</span><span><i class="dot" style="background:#B65FC9"></i>Kommunikation</span><span><i class="dot" style="border:2px solid #7C8799;background:#fff"></i>Finanzen ⓘ</span>
+   </div>
+  </div>
+  <div class="card fav">
+   <span class="tag" style="margin-right:6px">Watchlist</span><b style="font-family:Sora">Kunde Müller · konservativ</b>
+   <span class="chip"><i class="dot" style="background:#3B5BA9"></i>VAT Group <span class="x">×</span></span>
+   <span class="chip"><i class="dot" style="background:#3B5BA9"></i>Geberit <span class="x">×</span></span>
+   <span class="chip"><i class="dot" style="background:#6A5AE0"></i>Apple <span class="x">×</span></span>
+   <span class="chip"><i class="dot" style="background:#D9822B"></i>Nestlé <span class="x">×</span></span>
+   <div class="sp"></div><span class="btn p" style="flex:none;padding:9px 18px">Vergleichen (4) →</span>
+  </div>
+ </div>
+ <div class="card list">
+  <div class="lh"><div><span class="tag">Gefiltert</span><h2>486 Unternehmen</h2></div><span class="pill">Sortieren: Gesamt-Score ▾</span></div>
+  <div class="cols"><span>Unternehmen</span><span>L · R · S</span><span></span></div>
+  <div id="rows"></div>
+ </div>
+</div>
+<div class="footnote">Mockup · Scores sind Beispielwerte, VAT-Kennzahlen aus dem Geschäftsbericht 2025</div>
+<script>
+const C={Tech:'#6A5AE0',Health:'#E0567E',Ind:'#3B5BA9',Cons:'#D9822B',Energy:'#2BA3B5',Mat:'#8E6C4A',Comm:'#B65FC9',Fin:'#7C8799'};
+const named=[
+['VAT Group','VACN.SW','Ind',71,88,84,13,1],['Geberit','GEBN.SW','Ind',66,80,72,18,1],['Apple','AAPL','Tech',58,95,52,3400,1],['Nestlé','NESN.SW','Cons',34,70,38,230,1],
+['Microsoft','MSFT','Tech',74,92,80,3100],['NVIDIA','NVDA','Tech',90,97,86,3300],['Roche','ROG.SW','Health',57,79,55,220],['Novartis','NOVN.SW','Health',52,75,50,200],
+['Logitech','LOGN.SW','Tech',88,70,82,13],['Richemont','CFR.SW','Cons',86,60,79,75],['EMS-Chemie','EMSN.SW','Mat',80,83,90,15],['Swisscom','SCMN.SW','Comm',24,50,46,28],
+['Coca-Cola','KO','Cons',40,82,40,280],['ExxonMobil','XOM','Energy',55,66,70,480],['Pfizer','PFE','Health',45,30,48,160],['Boeing','BA','Ind',50,8,6,130],
+['Holcim','HOLN.SW','Mat',52,56,62,40],['Johnson & Johnson','JNJ','Health',60,68,64,370],['UBS','UBSG.SW','Fin',50,45,40,90],['JPMorgan','JPM','Fin',48,62,44,600]];
+let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};
+const keys=Object.keys(C);const bg=[];for(let i=0;i<260;i++){const b=keys[Math.floor(rnd()*7)];const base=[rnd(),rnd(),rnd()];bg.push(['','',b,8+base[0]*84,6+base[1]*86,8+(base[2]*0.75+(1-base[1])*0.25)*84,2+rnd()*50]);}
+const pts=[...bg,...named];
+const svg=document.getElementById('cube');const NS='http://www.w3.org/2000/svg';
+const OX=120,OY=640,W=360,H=330,D=230,ca=Math.cos(Math.PI/6),sa=Math.sin(Math.PI/6);
+function P(x,y,z){x=(x+1)/2;y=(y+1)/2;z=(z+1)/2;return [OX+x*W+z*D*ca, OY-y*H-z*D*sa, z];}
+const n=v=>v/50-1;
+function el(t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e}
+function line(a,b,st){const p=P(...a),q=P(...b);return el('line',{x1:p[0],y1:p[1],x2:q[0],y2:q[1],...st})}
+function poly(vs,st){el('polygon',{points:vs.map(v=>P(...v)).map(p=>p[0]+','+p[1]).join(' '),...st})}
+poly([[-1,-1,-1],[1,-1,-1],[1,-1,1],[-1,-1,1]],{fill:'#F5F7FB'});
+poly([[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]],{fill:'#FAFBFD'});
+poly([[-1,-1,-1],[-1,-1,1],[-1,1,1],[-1,1,-1]],{fill:'#F8F9FC'});
+for(let i=-1;i<=1.001;i+=0.5){line([i,-1,-1],[i,-1,1],{stroke:'#E3E8EF'});line([-1,-1,i],[1,-1,i],{stroke:'#E3E8EF'});line([-1,i,1],[1,i,1],{stroke:'#EBEEF3'});line([i,-1,1],[i,1,1],{stroke:'#EBEEF3'});line([-1,i,-1],[-1,i,1],{stroke:'#EBEEF3'});line([-1,-1,i],[-1,1,i],{stroke:'#EBEEF3'});}
+const E=[[[1,1,1],[-1,1,1]],[[1,1,1],[1,-1,1]],[[1,1,1],[1,1,-1]],[[1,-1,-1],[1,1,-1]],[[1,-1,-1],[1,-1,1]],[[-1,1,-1],[1,1,-1]],[[-1,1,-1],[-1,1,1]],[[-1,-1,1],[1,-1,1]],[[-1,-1,1],[-1,1,1]]];
+E.forEach(e=>line(e[0],e[1],{stroke:'#C5CEDB','stroke-width':1,'stroke-dasharray':'4 4'}));
+const pts2=pts.map(d=>({d,p:P(n(d[3]),n(d[4]),n(d[5]))})).sort((a,b)=>b.p[2]-a.p[2]);
+const show=['VAT Group','Apple','NVIDIA','Nestlé','Boeing','Swisscom','EMS-Chemie','Geberit','JPMorgan','Logitech'];
+const off={'VAT Group':[14,-10],'Geberit':[12,14],'Apple':[12,4],'NVIDIA':[12,4],'EMS-Chemie':[12,4],'Logitech':[12,4],'Nestlé':[12,4],'Boeing':[12,4],'Swisscom':[12,4],'JPMorgan':[12,4]};
+pts2.forEach(({d,p})=>{const r=Math.max(3,Math.min(13,Math.sqrt(d[6])*0.55));const named=d[0]!=='';const fin=d[2]==='Fin';
+ if(named){const fl=P(n(d[3]),-1,n(d[5]));el('line',{x1:p[0],y1:p[1],x2:fl[0],y2:fl[1],stroke:C[d[2]],'stroke-opacity':.4,'stroke-dasharray':'2 3'});el('circle',{cx:fl[0],cy:fl[1],r:2,fill:C[d[2]],'fill-opacity':.5})}
+ el('circle',{cx:p[0],cy:p[1],r:named?r+1:r,fill:fin?'#fff':C[d[2]],'fill-opacity':named?0.95:0.35,stroke:fin?C.Fin:'#fff','stroke-width':fin?2:named?1.5:.6});
+ if(d[0]==='VAT Group')el('circle',{cx:p[0],cy:p[1],r:r+8,fill:'none',stroke:'#5B4BE0','stroke-width':2.5});
+});
+pts2.forEach(({d,p})=>{if(!show.includes(d[0]))return;const r=Math.max(3,Math.min(13,Math.sqrt(d[6])*0.55));const o=off[d[0]];el('text',{x:p[0]+r+o[0]-8,y:p[1]+o[1],'font-size':12.5,'font-weight':700,fill:'#152033','font-family':'Manrope','paint-order':'stroke',stroke:'#fff','stroke-width':4,'stroke-linejoin':'round'},d[0]);});
+line([-1,-1,-1],[1,-1,-1],{stroke:'#2F80ED','stroke-width':3.5});
+line([-1,-1,-1],[-1,1,-1],{stroke:'#E8A317','stroke-width':3.5});
+line([-1,-1,-1],[-1,-1,1],{stroke:'#1E9E6A','stroke-width':3.5});
+function lab(x,y,txt,col,anchor,rot){el('text',{x,y,'text-anchor':anchor,'font-family':'Sora','font-weight':700,'font-size':14,fill:col,transform:rot?`rotate(${rot} ${x} ${y})`:''},txt)}
+let q=P(0,-1,-1);lab(q[0],q[1]+40,'LIQUIDITÄT →','#2F80ED','middle');
+q=P(-1,0,-1);lab(q[0]-36,q[1],'RENTABILITÄT →','#B07A00','middle',-90);
+q=P(-1,-1,0);lab(q[0]+44,q[1]+42,'SICHERHEIT →','#1E9E6A','middle',-30);
+[0,50,100].forEach(v=>{let p=P(n(v),-1,-1);el('text',{x:p[0],y:p[1]+18,'text-anchor':'middle','font-size':11,fill:'#8A96A8','font-family':'JBM'},v);p=P(-1,n(v),-1);el('text',{x:p[0]-10,y:p[1]+4,'text-anchor':'end','font-size':11,fill:'#8A96A8','font-family':'JBM'},v);p=P(-1,-1,n(v));if(v)el('text',{x:p[0]-12,y:p[1]-6,'text-anchor':'end','font-size':11,fill:'#8A96A8','font-family':'JBM'},v);});
+const ic=P(1,1,1);el('circle',{cx:ic[0],cy:ic[1],r:22,fill:'#5B4BE0','fill-opacity':.08,stroke:'#5B4BE0','stroke-dasharray':'3 3'});el('text',{x:ic[0]-28,y:ic[1]-30,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#5B4BE0','font-family':'Manrope'},'Ideal-Ecke 100·100·100');
+// list
+const list=[...named].map(d=>({d,t:(d[3]+d[4]+d[5])/3})).sort((a,b)=>b.t-a.t).slice(0,16);
+document.getElementById('rows').innerHTML=list.map(({d})=>`<div class="row ${d[0]==='VAT Group'?'sel':''}"><div><div class="n"><i class="dot" style="${d[2]==='Fin'?'border:2px solid #7C8799;background:#fff':'background:'+C[d[2]]}"></i>${d[0]}${d[2]==='Fin'?'<span class="warn">ⓘ eingeschränkt vergleichbar</span>':''}</div><div class="m">${d[1]} · ${d[1].endsWith('.SW')?'SMI/SMIM':'S&P 500'}</div></div><div class="mb"><div class="bar"><i style="width:${d[3]}%;background:var(--L)"></i></div><div class="bar"><i style="width:${d[4]}%;background:var(--R)"></i></div><div class="bar"><i style="width:${d[5]}%;background:var(--S)"></i></div></div><span class="star ${d[7]?'on':''}">★</span></div>`).join('');
+</script></body></html>

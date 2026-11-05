@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "axes": {
+    "liquiditaet": {
+      "label": "Liquidität",
+      "color": "#2F80ED"
+    },
+    "rentabilitaet": {
+      "label": "Rentabilität",
+      "color": "#E8A317"
+    },
+    "sicherheit": {
+      "label": "Sicherheit",
+      "color": "#1E9E6A"
+    }
+  },
+  "ampel": {
+    "gelbToleranz": 0.2
+  },
+  "profile": {
+    "konservativ": {
+      "liquiditaet": 0.25,
+      "rentabilitaet": 0.25,
+      "sicherheit": 0.5
+    },
+    "ausgewogen": {
+      "liquiditaet": 0.3334,
+      "rentabilitaet": 0.3333,
+      "sicherheit": 0.3333
+    },
+    "renditeorientiert": {
+      "liquiditaet": 0.2,
+      "rentabilitaet": 0.6,
+      "sicherheit": 0.2
+    }
+  },
+  "kpis": [
+    {
+      "id": "cash_ratio",
+      "label": "Liquiditätsgrad I (Cash Ratio)",
+      "short": "Cash Ratio",
+      "axis": "liquiditaet",
+      "formula": "Flüssige Mittel / kurzfristiges Fremdkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 0.8,
+        "label": "80 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "quick_ratio",
+      "label": "Liquiditätsgrad II (Quick Ratio)",
+      "short": "Quick Ratio",
+      "axis": "liquiditaet",
+      "formula": "(Flüssige Mittel + Forderungen) / kurzfristiges Fremdkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 1.0,
+        "label": "> 100 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "current_ratio",
+      "label": "Liquiditätsgrad III (Current Ratio)",
+      "short": "Current Ratio",
+      "axis": "liquiditaet",
+      "formula": "Umlaufvermögen / kurzfristiges Fremdkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 1.5,
+        "label": "150 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "cashflow_ratio",
+      "label": "Cashflow Ratio",
+      "short": "Cashflow Ratio",
+      "axis": "liquiditaet",
+      "formula": "Operativer Cashflow / kurzfristige Verbindlichkeiten",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": null,
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "fcf",
+      "label": "Free Cashflow",
+      "short": "FCF",
+      "axis": "liquiditaet",
+      "formula": "Operativer CF + CF aus Investitionstätigkeit − Mindestdividende",
+      "direction": "higher",
+      "inScore": "ampel",
+      "richtwert": {
+        "min": 0,
+        "label": "> 0"
+      },
+      "unit": "currency",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "tilgungsdauer",
+      "label": "Tilgungsdauer",
+      "short": "Tilgungsdauer",
+      "axis": "liquiditaet",
+      "formula": "(Finanzverbindlichkeiten − Flüssige Mittel) / Free Cashflow",
+      "direction": "lower",
+      "inScore": "detail",
+      "richtwert": {
+        "min": 2,
+        "max": 5,
+        "label": "2–5 Jahre"
+      },
+      "unit": "years",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "roe",
+      "label": "Eigenkapitalrendite (ROE)",
+      "short": "ROE",
+      "axis": "rentabilitaet",
+      "formula": "Jahresgewinn / Ø Eigenkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 0.1,
+        "max": 0.15,
+        "label": "10–15 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "roa",
+      "label": "Gesamtkapitalrendite (ROA)",
+      "short": "ROA",
+      "axis": "rentabilitaet",
+      "formula": "(Jahresgewinn + FK-Zinsen) / Ø Gesamtkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 0.07,
+        "label": "> 7 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "ebit_margin",
+      "label": "EBIT-Marge",
+      "short": "EBIT-Marge",
+      "axis": "rentabilitaet",
+      "formula": "EBIT / Nettoumsatz",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": null,
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "ros",
+      "label": "Reingewinnmarge (ROS)",
+      "short": "Umsatzrendite",
+      "axis": "rentabilitaet",
+      "formula": "Reingewinn / Nettoumsatz",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 0.01,
+        "max": 0.1,
+        "label": "1–10 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "ebitda_margin",
+      "label": "EBITDA-Marge",
+      "short": "EBITDA-Marge",
+      "axis": "rentabilitaet",
+      "formula": "EBITDA / Nettoumsatz",
+      "direction": "higher",
+      "inScore": "detail",
+      "richtwert": null,
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "roic",
+      "label": "Rendite auf investiertem Kapital (ROIC)",
+      "short": "ROIC",
+      "axis": "rentabilitaet",
+      "formula": "NOPAT / Ø investiertes Kapital",
+      "direction": "higher",
+      "inScore": "detail",
+      "richtwert": {
+        "min": 0.1,
+        "label": "10 % (RONOA)"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "equity_ratio",
+      "label": "Eigenkapitalquote",
+      "short": "EK-Quote",
+      "axis": "sicherheit",
+      "formula": "Eigenkapital / Gesamtkapital",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 0.25,
+        "max": 0.5,
+        "label": "25–50 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "debt_equity",
+      "label": "Verschuldungsgrad (Debt Equity Ratio)",
+      "short": "Verschuldungsgrad",
+      "axis": "sicherheit",
+      "formula": "Fremdkapital / Eigenkapital",
+      "direction": "lower",
+      "negativeIsWorst": true,
+      "inScore": true,
+      "richtwert": {
+        "min": 1.0,
+        "max": 2.3,
+        "label": "100–230 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "adg2",
+      "label": "Anlagedeckungsgrad II",
+      "short": "Anlagedeckung II",
+      "axis": "sicherheit",
+      "formula": "(Eigenkapital + langfristiges FK) / Anlagevermögen",
+      "direction": "higher",
+      "inScore": true,
+      "richtwert": {
+        "min": 1.0,
+        "label": "> 100 %"
+      },
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "gearing",
+      "label": "Gearing",
+      "short": "Gearing",
+      "axis": "sicherheit",
+      "formula": "(verzinsliches FK − Flüssige Mittel) / Eigenkapital",
+      "direction": "lower",
+      "inScore": "detail",
+      "richtwert": null,
+      "unit": "pct",
+      "source": "Buch S. 292-293"
+    },
+    {
+      "id": "interest_cover",
+      "label": "Zinsdeckungsfaktor",
+      "short": "Zinsdeckung",
+      "axis": "sicherheit",
+      "formula": "Operativer CF vor FK-Zinsen / FK-Zinsen",
+      "direction": "higher",
+      "inScore": "detail",
+      "richtwert": null,
+      "unit": "factor",
+      "source": "Buch S. 292-293"
+    }
+  ],
+  "financialSector": {
+    "note": "Banken und Versicherungen: eingeschränkt vergleichbar",
+    "scoreKpis": {
+      "rentabilitaet": [
+        "roe",
+        "roa"
+      ],
+      "sicherheit": [
+        "equity_ratio",
+        "debt_equity"
+      ]
+    },
+    "liquiditaetDefault": 50
+  },
+  "notes": [
+    "inScore: true = zählt im Achsen-Score; 'ampel' = nur Ampel/Anzeige; 'detail' = nur Detailseite",
+    "richtwert.min/max: Bandbreite; nur min = Untergrenze (bzw. Obergrenze bei direction lower: max)",
+    "Werte als Dezimalzahl (0.628 = 62.8 %)",
+    "negativeIsWorst: negativer Wert = negatives Eigenkapital, zählt als schlechtester Rang und rote Ampel"
+  ]
+}

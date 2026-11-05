@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>
+.wrap{padding:22px 28px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.head h1{font-family:Sora;font-size:26px;font-weight:600}
+.head p{color:var(--muted);margin-top:4px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.cc{padding:16px 18px;position:relative}
+.cc .top2{display:flex;justify-content:space-between;align-items:flex-start}
+.cc h3{font-family:Sora;font-size:17px}
+.cc .sub{color:var(--muted);font-size:12px;margin-top:2px}
+.cc .tot{font-family:Sora;font-size:26px;font-weight:700}
+.cc .tot small{display:block;font-family:Manrope;font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-align:right}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.three div{font-size:11px;font-weight:700;letter-spacing:.04em}
+.three b{font-family:JBM;font-size:16px;display:block;color:var(--text);margin-bottom:4px}
+.three .bar{width:100%}
+.grid{display:grid;grid-template-columns:580px 1fr;gap:16px}
+.radar{padding:18px 20px}
+.radar h2,.tbl h2{font-family:Sora;font-size:17px;font-weight:600}
+.tbl{padding:18px 0 8px}
+.tbl h2{padding:0 22px}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+th{text-align:right;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;padding:8px 14px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;padding-left:22px}
+td{padding:5px 14px;border-bottom:1px solid #EEF1F5;text-align:right;font-family:JBM;font-size:13.5px}
+td:first-child{font-family:Manrope;font-weight:700}
+td:first-child small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+td.rw{color:var(--muted);font-family:Manrope;font-size:12.5px}
+td.best{background:#F1F3FF;font-weight:600}
+td .amp{margin-left:7px}
+tr.grp td{font-family:Manrope;font-size:11px;font-weight:800;letter-spacing:.06em;padding-top:8px;text-align:left;border-bottom:0}
+.fazit{margin-top:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;background:var(--ink);color:#fff;border:0}
+.fazit b{font-family:Sora}
+.fazit p{color:#C7D0DF;line-height:1.55;margin-top:2px}
+body{height:1100px}</style></head><body>
+<div class="top">
+ <div class="brand"><img src="logo.svg"><div><b>KUBUS</b><small>Kennzahlen im Zieldreieck</small></div></div>
+ <div class="nav"><a>Explorer</a><a class="on">Vergleich<span class="badge">4</span></a><a>Watchlists</a><a>Methodik</a></div>
+ <div class="sp"></div>
+ <span class="stand">Daten: Yahoo Finance · Geschäftsjahr 2025 · Stand 05.11.2026</span>
+ <div class="user"><div class="av">LM</div>Lea Meier</div>
+</div>
+<div class="wrap">
+ <div class="head"><div><span class="tag">Watchlist · 4 Unternehmen</span><h1>Kunde Müller · konservativ</h1><p>Profil: Sicherheit vor Rendite · gespeichert in deinem Konto</p></div><div style="display:flex;gap:8px"><span class="pill">+ Unternehmen hinzufügen</span><span class="pill">Gewichtung: Sicherheit 50 % ▾</span></div></div>
+ <div class="cards" id="cards"></div>
+ <div class="grid">
+  <div class="card radar"><h2>Profil im Zieldreieck</h2><p style="color:var(--muted);font-size:13px;margin-top:4px">Je weiter aussen, desto besser</p><svg id="rad" width="540" height="560"></svg></div>
+  <div>
+   <div class="card tbl"><h2>Wichtigste Kennzahlen</h2>
+    <table id="t"></table>
+   </div>
+   <div class="card fazit"><span style="font-size:22px">◆</span><div><b>Kurzfazit</b><p>VAT ist in dieser Auswahl am sichersten (EK-Quote 62.8 %) und gleichzeitig sehr rentabel. Apple hat die höchste Eigenkapitalrendite, aber wegen der tiefen EK-Quote das grösste Risiko. Nestlé liegt bei der Liquidität unter allen Richtwerten.</p></div></div>
+  </div>
+ </div>
+</div>
+<div class="footnote">Mockup · VAT-Kennzahlen aus dem Geschäftsbericht 2025, übrige Werte Beispielwerte</div>
+<script>
+const co=[{n:'VAT Group',t:'VACN.SW · Industrie',c:'#3B5BA9',L:71,R:88,S:84},{n:'Geberit',t:'GEBN.SW · Industrie',c:'#0FA3A3',L:66,R:80,S:72},{n:'Apple',t:'AAPL · Technologie',c:'#6A5AE0',L:58,R:95,S:42},{n:'Nestlé',t:'NESN.SW · Konsum',c:'#D9822B',L:34,R:70,S:38}];
+document.getElementById('cards').innerHTML=co.map(c=>`<div class="card cc" style="border-top:4px solid ${c.c}"><div class="top2"><div><h3>${c.n}</h3><div class="sub">${c.t}</div></div><div class="tot">${Math.round(c.L*.25+c.R*.25+c.S*.5)}<small>GESAMT</small></div></div><div class="three"><div style="color:var(--L)"><b>${c.L}</b>LIQUIDITÄT<div class="bar"><i style="width:${c.L}%;background:var(--L)"></i></div></div><div style="color:#B07A00"><b>${c.R}</b>RENTABILITÄT<div class="bar"><i style="width:${c.R}%;background:var(--R)"></i></div></div><div style="color:var(--S)"><b>${c.S}</b>SICHERHEIT<div class="bar"><i style="width:${c.S}%;background:var(--S)"></i></div></div></div></div>`).join('');
+// radar
+const s=document.getElementById('rad'),NS='http://www.w3.org/2000/svg',cx=270,cy=290,R=175;
+const ang=[-90,30,150].map(a=>a*Math.PI/180);const pt=(i,v)=>[cx+Math.cos(ang[i])*R*v/100,cy+Math.sin(ang[i])*R*v/100];
+const el=(t,a,x)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;s.appendChild(e);return e};
+[25,50,75,100].forEach(v=>el('polygon',{points:[0,1,2].map(i=>pt(i,v).join(',')).join(' '),fill:v==100?'#F7F9FC':'none',stroke:'#E1E6EE'}));
+[0,1,2].forEach(i=>{const p=pt(i,100);el('line',{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:'#E1E6EE'})});
+const ax=[['RENTABILITÄT','#B07A00',0,-18],['SICHERHEIT','#1E9E6A',40,28],['LIQUIDITÄT','#2F80ED',-40,28]];
+[0,1,2].forEach(i=>{const p=pt(i,100);el('text',{x:p[0]+ax[i][2],y:p[1]+ax[i][3],'text-anchor':'middle','font-family':'Sora','font-weight':700,'font-size':13,fill:ax[i][1]},ax[i][0])});
+co.forEach(c=>{const v=[c.R,c.S,c.L];el('polygon',{points:v.map((x,i)=>pt(i,x).join(',')).join(' '),fill:c.c,'fill-opacity':.1,stroke:c.c,'stroke-width':2.5});v.forEach((x,i)=>{const p=pt(i,x);el('circle',{cx:p[0],cy:p[1],r:4,fill:c.c})})});
+co.forEach((c,i)=>{el('circle',{cx:80+(i%2)*200,cy:520+Math.floor(i/2)*24,r:6,fill:c.c});el('text',{x:94+(i%2)*200,y:525+Math.floor(i/2)*24,'font-size':13,'font-weight':700,fill:'#152033','font-family':'Manrope'},c.n)});
+// table
+const G='var(--good)',Y='var(--warn)',Rd='var(--bad)';
+const rows=[['LIQUIDITÄT','#2F80ED'],
+['Current Ratio','Umlaufvermögen / kurzfr. FK','150 %',[['131 %',Y],['118 %',Y],['87 %',Rd],['84 %',Rd]],0],
+['Cash Ratio','Flüssige Mittel / kurzfr. FK','80 %',[['39 %',Rd],['42 %',Rd],['21 %',Rd],['16 %',Rd]],1],
+['Free Cashflow','Op. CF + Inv. CF − Dividende','> 0',[['+43 Mio.',G],['+120 Mio.',G],['+12 Mrd.',G],['−1.1 Mrd.',Rd]],2],
+['RENTABILITÄT','#B07A00'],
+['Eigenkapitalrendite','Gewinn / Ø EK','10–15 %',[['27.7 %',G],['36.0 %',G],['150 %',G],['28.0 %',G]],2],
+['EBIT-Marge','EBIT / Nettoumsatz','–',[['25.4 %',G],['23.5 %',G],['31.5 %',G],['16.8 %',G]],2],
+['Umsatzrendite','Reingewinn / Nettoumsatz','1–10 %',[['20.0 %',G],['19.0 %',G],['24.0 %',G],['11.5 %',G]],2],
+['SICHERHEIT','#1E9E6A'],
+['Eigenkapitalquote','EK / Gesamtkapital','25–50 %',[['62.8 %',G],['38.0 %',G],['16.0 %',Rd],['27.0 %',G]],0],
+['Verschuldungsgrad','FK / EK','100–230 %',[['59 %',G],['163 %',G],['525 %',Rd],['270 %',Y]],0],
+['Anlagedeckungsgrad II','(EK + langfr. FK) / AV','> 100 %',[['152 %',G],['121 %',G],['118 %',G],['96 %',Y]],0]];
+document.getElementById('t').innerHTML='<tr><th>Kennzahl</th><th>Richtwert</th>'+co.map(c=>`<th style="color:${c.c}">${c.n}</th>`).join('')+'</tr>'+rows.map(r=>r.length==2?`<tr class="grp"><td colspan="6" style="color:${r[1]}">${r[0]}</td></tr>`:`<tr><td>${r[0]}<small>${r[1]}</small></td><td class="rw">${r[2]}</td>${r[3].map((v,i)=>`<td class="${i==r[4]?'best':''}">${v[0]}<i class="amp" style="background:${v[1]}"></i></td>`).join('')}</tr>`).join('');
+</script></body></html>
