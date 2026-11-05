@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { normalizeKpi } from './normalize';
 
 describe('normalizeKpi', () => {
-  it('fällt ohne ampelBranche auf die Buch-Ampel zurück (alte Daten, Supabase ohne Spalte)', () => {
-    expect(normalizeKpi({ value: 1, ampel: 'red', history: [] }).ampelBranche).toBe('red');
+  it('ohne ampelBranche (alte Daten, Supabase ohne Spalte) ist die Branchen-Ampel unbekannt', () => {
+    expect(normalizeKpi({ value: 1, ampel: 'red', history: [] }).ampelBranche).toBeNull();
   });
 
   it('behält eine vorhandene Branchen-Ampel', () => {
@@ -11,6 +11,6 @@ describe('normalizeKpi', () => {
   });
 
   it('setzt fehlende Felder auf neutrale Werte', () => {
-    expect(normalizeKpi({ value: null })).toEqual({ value: null, ampel: 'grey', ampelBranche: 'grey', history: [] });
+    expect(normalizeKpi({ value: null })).toEqual({ value: null, ampel: 'grey', ampelBranche: null, history: [] });
   });
 });

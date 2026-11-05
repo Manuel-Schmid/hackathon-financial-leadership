@@ -42,6 +42,17 @@ describe('richtwertFor', () => {
   });
 });
 
+describe('ohne Branchen-Ampel in den Daten (Supabase vor der Migration)', () => {
+  const ohne: CompanyKpi = { value: 0.05, ampel: 'red', ampelBranche: null, history: [] };
+  it('zeigt Buch-Richtwert und Buch-Ampel, damit Label und Ampel zusammenpassen', () => {
+    expect(richtwertFor(def('roic'), 'Utilities', 'branche', ohne)).toEqual({ label: '10 % (RONOA)', source: 'buch' });
+    expect(ampelFor(ohne, 'branche')).toBe('red');
+  });
+  it('mit Branchen-Ampel bleibt der Branchen-Richtwert', () => {
+    expect(richtwertFor(def('roic'), 'Utilities', 'branche', kpi('red', 'green'))?.source).toBe('branche');
+  });
+});
+
 describe('ampelFor', () => {
   it('wählt die Ampel nach Modus', () => {
     expect(ampelFor(kpi('red', 'green'), 'branche')).toBe('green');

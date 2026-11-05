@@ -3,7 +3,7 @@ import type { AxisId, Company } from '@/data/types';
 import { AXES, AXIS_STYLE, KPIS, type KpiDef } from '@/lib/config';
 import { formatKpi } from '@/lib/format';
 import { sectorMedian } from '@/lib/medians';
-import { richtwertFor } from '@/lib/richtwert';
+import { ampelFor, richtwertFor } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
 function Sparkline({ company, def }: { company: Company; def: KpiDef }) {
@@ -54,7 +54,7 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
           {kpis.map((def) => {
             const kpi = company.kpis[def.id];
             const med = sectorMedian(all, company.sector, def.id);
-            const branche = richtwertFor(def, company.sector, 'branche');
+            const branche = richtwertFor(def, company.sector, 'branche', kpi);
             // Beträge in verschiedenen Währungen haben keinen sinnvollen Median
             const showMedian = def.unit !== 'currency';
             return (
@@ -76,7 +76,7 @@ export function KpiSection({ axis, company, all }: { axis: AxisId; company: Comp
                 <td className="whitespace-nowrap px-3 py-2 text-right text-[12.5px] text-muted" title={def.richtwertBranche?.quelle}>
                   <span className="inline-flex items-center gap-2">
                     {branche ? (branche.source === 'buch' ? 'wie Buch' : branche.label) : '–'}
-                    <AmpelDot ampel={kpi?.ampelBranche ?? 'grey'} />
+                    <AmpelDot ampel={ampelFor(kpi, 'branche')} />
                   </span>
                 </td>
                 <td className="whitespace-nowrap px-3 py-2 text-right font-mono text-muted">

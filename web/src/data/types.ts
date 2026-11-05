@@ -13,8 +13,8 @@ export interface KpiPoint {
 export interface CompanyKpi {
   value: number | null;
   ampel: Ampel;
-  /** Ampel gegen den Branchen-Richtwert; ohne Branchen-Richtwert gleich ampel. */
-  ampelBranche: Ampel;
+  /** Ampel gegen den Branchen-Richtwert; ohne Branchen-Richtwert gleich ampel. null = nicht in den Daten (z. B. Supabase vor der Migration). */
+  ampelBranche: Ampel | null;
   history: KpiPoint[];
 }
 

@@ -41,7 +41,7 @@ export function CompareTable({ companies }: { companies: Company[] }) {
               </tr>
               {DEFS.filter((d) => d.axis === axis).map((def) => {
                 const best = bestIndex(companies, def);
-                const rw = richtwertFor(def, sector, modus);
+                const rw = richtwertFor(def, sector, modus, companies[0]?.kpis[def.id]);
                 return (
                   <tr key={def.id} className="border-b border-line-soft">
                     <td className="py-1.5 pl-[22px] font-bold" title={def.label}>

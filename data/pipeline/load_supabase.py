@@ -51,12 +51,27 @@ def stale_tickers(existing: list[str], data: dict) -> list[str]:
     return sorted(set(existing) - current)
 
 
+MIGRATION = (
+    "alter table public.kpis add column if not exists ampel_branche text "
+    "check (ampel_branche in ('green', 'yellow', 'red', 'grey'));"
+)
+
+
+def check_schema(client) -> None:
+    """Vor dem Laden prüfen, ob kpis.ampel_branche existiert; sonst bräche der Upsert nach companies/scores ab."""
+    try:
+        client.table("kpis").select("ampel_branche").limit(1).execute()
+    except Exception as exc:  # PostgREST meldet unbekannte Spalten als Fehler
+        raise SystemExit(f"Spalte kpis.ampel_branche fehlt ({exc}). Einmal im Supabase SQL-Editor ausführen:\n{MIGRATION}") from exc
+
+
 def main() -> None:
     from dotenv import load_dotenv
     from supabase import create_client
 
     load_dotenv(ROOT / ".env")
     client = create_client(os.environ["VITE_SUPABASE_URL"], os.environ["SUPABASE_SECRET_KEY"])
+    check_schema(client)
     data = json.loads(WEB_JSON.read_text(encoding="utf-8"))
     companies, kpis, scores = company_rows(data)
     for table, rows in (("companies", companies), ("scores", scores), ("kpis", kpis)):

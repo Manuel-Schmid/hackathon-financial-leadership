@@ -3,7 +3,7 @@ import type { Company } from '@/data/types';
 import { QUICK_KPIS } from '@/lib/compare';
 import { KPI_BY_ID } from '@/lib/config';
 import { formatKpi, formatMarketCap } from '@/lib/format';
-import { richtwertFor } from '@/lib/richtwert';
+import { ampelFor, richtwertFor } from '@/lib/richtwert';
 import { AmpelDot, FinancialNote, ScoreTiles } from '../ui/atoms';
 
 interface Props {
@@ -31,7 +31,7 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
           const def = KPI_BY_ID.get(id);
           const kpi = company.kpis[id];
           if (!def || !kpi) return null;
-          const rw = richtwertFor(def, company.sector, 'branche');
+          const rw = richtwertFor(def, company.sector, 'branche', kpi);
           return (
             <div key={id} className="flex items-center justify-between gap-2 border-t border-line py-1.5 text-[13px]">
               <span>
@@ -44,7 +44,7 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
               </span>
               <span className="flex items-center gap-2 whitespace-nowrap font-mono font-semibold">
                 {formatKpi(kpi.value, def.unit, company.currency)}
-                <AmpelDot ampel={kpi.ampelBranche} />
+                <AmpelDot ampel={ampelFor(kpi, 'branche')} />
               </span>
             </div>
           );

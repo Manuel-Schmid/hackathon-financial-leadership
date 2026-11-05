@@ -71,12 +71,12 @@ export class SupabaseSource implements DataSource {
     const kpis = new Map<string, Record<string, CompanyKpi>>();
     for (const row of kpiRows) {
       const byId = kpis.get(row.ticker) ?? {};
-      const kpi = (byId[row.kpi_id] ??= { value: null, ampel: 'grey', ampelBranche: 'grey', history: [] });
+      const kpi = (byId[row.kpi_id] ??= { value: null, ampel: 'grey', ampelBranche: null, history: [] });
       kpi.history.push({ year: row.year, value: row.value });
       if (row.ampel) {
         kpi.value = row.value;
         kpi.ampel = row.ampel;
-        kpi.ampelBranche = row.ampel_branche ?? row.ampel;
+        kpi.ampelBranche = row.ampel_branche ?? null;
       }
       kpis.set(row.ticker, byId);
     }
