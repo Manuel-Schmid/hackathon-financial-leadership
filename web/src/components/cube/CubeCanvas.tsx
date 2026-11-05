@@ -13,6 +13,8 @@ interface Props {
   visible: Set<string>;
   selected: string | null;
   highlighted: Set<string>;
+  /** Gesetzt: Alle anderen Punkte werden grau («Nur diese»). */
+  spotlight: Set<string> | null;
   onSelect(ticker: string): void;
   onDeselect(): void;
 }
@@ -42,10 +44,10 @@ function FitCamera({ userMoved }: { userMoved: MutableRefObject<boolean> }) {
   return null;
 }
 
-export function CubeCanvas({ companies, visible, selected, highlighted, onSelect, onDeselect }: Props) {
+export function CubeCanvas({ companies, visible, selected, highlighted, spotlight, onSelect, onDeselect }: Props) {
   const [hovered, setHovered] = useState<CubePoint | null>(null);
   const userMoved = useRef(false);
-  const points = useMemo(() => buildPoints(companies, visible, selected), [companies, visible, selected]);
+  const points = useMemo(() => buildPoints(companies, visible, selected, spotlight), [companies, visible, selected, spotlight]);
   const hasSelection = points.some((p) => p.company.ticker === selected);
   const labelled = useMemo(
     // Mit Auswahl zählt nur sie: Namen der Watchlist würden das Ausgrauen wieder aufheben.

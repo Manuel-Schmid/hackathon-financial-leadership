@@ -1,13 +1,13 @@
-import type { Company, InvestorProfile } from '@/data/types';
+import type { Company } from '@/data/types';
 import { AXES, AXIS_IDS, AXIS_STYLE } from '@/lib/config';
 import { formatScore } from '@/lib/format';
-import { totalScore } from '@/lib/weighting';
+import { totalScore, type ProfileRef } from '@/lib/weighting';
 import { Bar, CompanyLink, FinancialNote } from '../ui/atoms';
 
 interface Props {
   company: Company;
   color: string;
-  profile: InvestorProfile;
+  profile: ProfileRef;
   onRemove(): void;
 }
 

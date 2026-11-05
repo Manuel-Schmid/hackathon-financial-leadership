@@ -106,6 +106,30 @@ create policy "Items eigener Watchlists" on public.watchlist_items for all
   using (exists (select 1 from public.watchlists w where w.id = watchlist_id and w.user_id = auth.uid()))
   with check (exists (select 1 from public.watchlists w where w.id = watchlist_id and w.user_id = auth.uid()));
 
+-- Eigene Anlegerprofile: Gewichte der drei Achsen, zusammen 100 %. Die Vorlagen stehen in config/kpis.json.
+create table if not exists public.investor_profiles (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users on delete cascade,
+  name text not null,
+  liquiditaet double precision not null check (liquiditaet between 0 and 1),
+  rentabilitaet double precision not null check (rentabilitaet between 0 and 1),
+  sicherheit double precision not null check (sicherheit between 0 and 1),
+  created_at timestamptz not null default now(),
+  check (abs(liquiditaet + rentabilitaet + sicherheit - 1) < 0.001)
+);
+
+grant select, insert, update, delete on public.investor_profiles to authenticated;
+grant all on public.investor_profiles to service_role;
+alter table public.investor_profiles enable row level security;
+
+drop policy if exists "eigene Anlegerprofile" on public.investor_profiles;
+create policy "eigene Anlegerprofile" on public.investor_profiles for all
+  using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- Watchlist mit eigenem Anlegerprofil; leer = es gilt die Vorlage aus investor_profile. is_active wird nicht mehr genutzt.
+alter table public.watchlists
+  add column if not exists investor_profile_id uuid references public.investor_profiles on delete set null;
+
 -- Beim Registrieren: Profil und erste Watchlist anlegen.
 create or replace function public.handle_new_user()
 returns trigger

@@ -1,7 +1,7 @@
-import type { AxisId, Company, InvestorProfile } from '@/data/types';
+import type { AxisId, Company } from '@/data/types';
 import { SECTORS } from './config';
 import { formatCompact } from './format';
-import { totalScore } from './weighting';
+import { totalScore, type ProfileRef } from './weighting';
 
 export type Universe = 'SP500' | 'SWISS';
 
@@ -13,6 +13,8 @@ export interface Filters {
   capMax: number | null;
   search: string;
   includeFinancials: boolean;
+  /** id des Anlegerprofils für den Gesamt-Score; null = nichts gewählt, es gilt «ausgewogen». */
+  investorProfile: string | null;
 }
 
 export const DEFAULT_FILTERS: Filters = {
@@ -23,6 +25,7 @@ export const DEFAULT_FILTERS: Filters = {
   search: '',
   // Banken und Versicherungen sind nur eingeschränkt vergleichbar: beim Start aus, per Filter einschaltbar.
   includeFinancials: false,
+  investorProfile: null,
 };
 
 export function matchesSearch(company: Company, query: string): boolean {
@@ -75,8 +78,11 @@ export function formatCapRange(capMin: number | null, capMax: number | null): st
 }
 
 /** Gesetzte Filter als Chips; die Suche zählt nicht dazu, sie steht im Suchbalken. */
-export function activeFilters(filters: Filters): ActiveFilter[] {
+export function activeFilters(filters: Filters, profileName?: string): ActiveFilter[] {
   const active: ActiveFilter[] = [];
+  if (filters.investorProfile && profileName) {
+    active.push({ id: 'profile', label: `Profil ${profileName}`, clear: (f) => ({ ...f, investorProfile: null }) });
+  }
   if (filters.universes.length < DEFAULT_FILTERS.universes.length) {
     const only = filters.universes[0];
     active.push({
@@ -117,7 +123,7 @@ export const SORT_LABELS: Record<SortKey, string> = {
 };
 
 /** Sortiert absteigend (Name aufsteigend); fehlende Werte immer ans Ende. */
-export function sortCompanies(companies: Company[], key: SortKey, profile: InvestorProfile = 'ausgewogen'): Company[] {
+export function sortCompanies(companies: Company[], key: SortKey, profile: ProfileRef = 'ausgewogen'): Company[] {
   if (key === 'name') return [...companies].sort((a, b) => a.name.localeCompare(b.name, 'de'));
   const value = (c: Company): number | null => {
     if (key === 'total') return totalScore(c.scores, profile);

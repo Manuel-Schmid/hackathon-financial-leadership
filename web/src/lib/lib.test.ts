@@ -99,6 +99,22 @@ describe('Filter', () => {
     expect(activeFilters(chips[1].clear(filters))).toHaveLength(3);
     expect(activeFilters(DEFAULT_FILTERS)).toEqual([]);
   });
+  it('das Anlegerprofil bestimmt die Reihenfolge, auch ein eigenes', () => {
+    const safe = company({ ticker: 'SAFE', scores: { liquiditaet: 50, rentabilitaet: 20, sicherheit: 95 } });
+    const yieldy = company({ ticker: 'YIELD', scores: { liquiditaet: 50, rentabilitaet: 95, sicherheit: 20 } });
+    expect(sortCompanies([yieldy, safe], 'total', 'konservativ')[0].ticker).toBe('SAFE');
+    expect(sortCompanies([safe, yieldy], 'total', 'renditeorientiert')[0].ticker).toBe('YIELD');
+    const own = { liquiditaet: 0, rentabilitaet: 0, sicherheit: 1 };
+    expect(sortCompanies([yieldy, safe], 'total', own)[0].ticker).toBe('SAFE');
+  });
+  it('das Anlegerprofil ist ein Filter-Chip und lässt sich entfernen', () => {
+    const filters = { ...DEFAULT_FILTERS, investorProfile: 'konservativ' };
+    const [chip] = activeFilters(filters, 'Konservativ');
+    expect(chip.label).toBe('Profil Konservativ');
+    expect(chip.clear(filters).investorProfile).toBeNull();
+    // Gelöschtes Profil: kein Chip ohne Namen
+    expect(activeFilters(filters)).toEqual([]);
+  });
   it('sortiert fehlende Werte ans Ende', () => {
     const a = company({ ticker: 'A', scores: { liquiditaet: null, rentabilitaet: null, sicherheit: null } });
     const b = company({ ticker: 'B' });

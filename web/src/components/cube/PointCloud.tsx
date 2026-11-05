@@ -14,11 +14,16 @@ export interface CubePoint {
   position: Vec3;
   radius: number;
   visible: boolean;
-  /** Eine andere Firma ist ausgewählt: grau, bleibt aber anklickbar. */
+  /** Eine andere Firma ist ausgewählt oder eine Watchlist im Fokus: grau, bleibt aber anklickbar. */
   dimmed: boolean;
 }
 
-export function buildPoints(companies: Company[], visible: Set<string>, selected: string | null): CubePoint[] {
+export function buildPoints(
+  companies: Company[],
+  visible: Set<string>,
+  selected: string | null,
+  spotlight: Set<string> | null = null,
+): CubePoint[] {
   const points: CubePoint[] = [];
   for (const company of companies) {
     const position = companyPosition(company);
@@ -35,6 +40,8 @@ export function buildPoints(companies: Company[], visible: Set<string>, selected
   // Nur ausgrauen, wenn die ausgewählte Firma im Würfel liegt; sonst wäre alles grau ohne sichtbaren Grund.
   if (points.some((p) => p.company.ticker === selected)) {
     for (const p of points) p.dimmed = p.company.ticker !== selected;
+  } else if (spotlight) {
+    for (const p of points) p.dimmed = !spotlight.has(p.company.ticker);
   }
   return points;
 }

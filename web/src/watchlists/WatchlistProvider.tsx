@@ -7,15 +7,25 @@ import type { NewWatchlist, Watchlist, WatchlistPatch, WatchlistStore } from './
 
 interface WatchlistState {
   lists: Watchlist[];
-  active: Watchlist | null;
-  activeTickers: Set<string>;
+  /** Alle Firmen, die in mindestens einer Watchlist sind. */
+  allTickers: Set<string>;
+  /** Firmen, die im Würfel mit Namen hervorgehoben sind. */
+  shownTickers: Set<string>;
+  /** «Nur diese»: gesetzt, wenn alle anderen Punkte grau sein sollen. */
+  spotlight: Set<string> | null;
+  focusId: string | null;
+  isShown(id: string): boolean;
+  setShown(id: string, shown: boolean): void;
+  setFocus(id: string | null): void;
+  /** Alle Watchlists wieder normal zeigen. */
+  resetShown(): void;
   error: string | null;
   isGuest: boolean;
-  toggle(ticker: string): void;
-  create(input: NewWatchlist): void;
+  addItem(id: string, ticker: string): void;
+  removeItem(id: string, ticker: string): void;
+  create(input: NewWatchlist): Promise<Watchlist>;
   update(id: string, patch: WatchlistPatch): void;
   remove(id: string): void;
-  setActive(id: string): void;
 }
 
 const Ctx = createContext<WatchlistState | null>(null);
@@ -27,6 +37,8 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     [user],
   );
   const [lists, setLists] = useState<Watchlist[]>([]);
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [focus, setFocusId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const run = useCallback(
@@ -45,23 +57,52 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
   useEffect(() => run(), [run]);
 
   const value = useMemo<WatchlistState>(() => {
-    const active = lists.find((l) => l.isActive) ?? lists[0] ?? null;
+    // Gelöschte Watchlist: «Nur diese» endet von selbst.
+    const focused = lists.find((l) => l.id === focus) ?? null;
+    const spotlight = focused ? new Set(focused.tickers) : null;
     return {
       lists,
-      active,
-      activeTickers: new Set(active?.tickers),
+      allTickers: new Set(lists.flatMap((l) => l.tickers)),
+      shownTickers: spotlight ?? new Set(lists.filter((l) => !hidden.has(l.id)).flatMap((l) => l.tickers)),
+      spotlight,
+      focusId: focused?.id ?? null,
+      isShown: (id) => !hidden.has(id),
+      setShown: (id, shown) => {
+        if (!shown && id === focus) setFocusId(null);
+        setHidden((current) => {
+          const next = new Set(current);
+          if (shown) next.delete(id);
+          else next.add(id);
+          return next;
+        });
+      },
+      setFocus: (id) => {
+        setFocusId(id);
+        if (id) {
+          setHidden((current) => {
+            const next = new Set(current);
+            next.delete(id);
+            return next;
+          });
+        }
+      },
+      resetShown: () => {
+        setFocusId(null);
+        setHidden(new Set());
+      },
       error,
       isGuest: !user,
-      toggle(ticker) {
-        if (!active) return;
-        run(() => (active.tickers.includes(ticker) ? store.removeItem(active.id, ticker) : store.addItem(active.id, ticker)));
+      addItem: (id, ticker) => run(() => store.addItem(id, ticker)),
+      removeItem: (id, ticker) => run(() => store.removeItem(id, ticker)),
+      create: async (input) => {
+        const created = await store.create(input);
+        setLists(await store.list());
+        return created;
       },
-      create: (input) => run(() => store.create(input)),
       update: (id, patch) => run(() => store.update(id, patch)),
       remove: (id) => run(() => store.remove(id)),
-      setActive: (id) => run(() => store.setActive(id)),
     };
-  }, [lists, error, user, run, store]);
+  }, [lists, hidden, focus, error, user, run, store]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

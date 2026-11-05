@@ -1,6 +1,10 @@
+import { Link } from 'react-router-dom';
 import type { Company } from '@/data/types';
 import { SECTORS } from '@/lib/config';
 import { DEFAULT_FILTERS, type Filters, type Universe } from '@/lib/filters';
+import { profileLabel } from '@/lib/weighting';
+import { useProfiles } from '@/profiles/ProfileProvider';
+import { TEMPLATES, type SavedProfile } from '@/profiles/ProfileStore';
 import { CapRangeFilter } from './CapRangeFilter';
 
 function toggled<T>(list: T[], item: T): T[] {
@@ -17,7 +21,16 @@ interface Props {
   onClose(): void;
 }
 
+function ProfileOption({ profile }: { profile: SavedProfile }) {
+  return (
+    <option value={profile.id}>
+      {profile.name} ({profileLabel(profile.weights)})
+    </option>
+  );
+}
+
 export function FilterPanel({ companies, filters, resultCount, onChange, onClose }: Props) {
+  const { own } = useProfiles();
   const universe = (id: Universe, label: string) => {
     const on = filters.universes.includes(id);
     return (
@@ -64,6 +77,29 @@ export function FilterPanel({ companies, filters, resultCount, onChange, onClose
           capMax={filters.capMax}
           onChange={(capMin, capMax) => onChange({ ...filters, capMin, capMax })}
         />
+      </div>
+      <div>
+        <div className="mb-1.5 flex items-baseline justify-between gap-2">
+          <label htmlFor="filter-profile" className="text-[13px] font-bold">Anlegerprofil</label>
+          <Link to="/profil" className="text-xs font-semibold text-muted underline hover:text-text">Profile verwalten</Link>
+        </div>
+        <select
+          id="filter-profile"
+          title="Gewichtet den Gesamt-Score in der Liste nach diesem Profil"
+          className="input h-9 w-full cursor-pointer py-0 font-medium"
+          value={filters.investorProfile ?? ''}
+          onChange={(e) => onChange({ ...filters, investorProfile: e.target.value || null })}
+        >
+          <option value="">Keines (ausgewogen)</option>
+          {own.length > 0 && (
+            <optgroup label="Eigene Profile">
+              {own.map((p) => <ProfileOption key={p.id} profile={p} />)}
+            </optgroup>
+          )}
+          <optgroup label="Vorlagen">
+            {TEMPLATES.filter((p) => p.id !== 'ausgewogen').map((p) => <ProfileOption key={p.id} profile={p} />)}
+          </optgroup>
+        </select>
       </div>
       <label
         className="flex cursor-pointer items-center gap-2 text-[13px] font-semibold"

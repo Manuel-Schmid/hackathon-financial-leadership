@@ -1,55 +1,64 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { CompareCard } from '@/components/compare/CompareCards';
 import { CompareRadar } from '@/components/compare/CompareRadar';
 import { CompareTable } from '@/components/compare/CompareTable';
+import { ProfileButton } from '@/components/profiles/ProfilePicker';
 import { EmptyState, PageTitle } from '@/components/ui/atoms';
 import { useCompanies, useData } from '@/data/DataProvider';
-import type { Company, InvestorProfile } from '@/data/types';
+import type { Company } from '@/data/types';
 import { COMPARE_COLORS, MAX_COMPARE } from '@/lib/compare';
-import { PROFILE_IDS } from '@/lib/config';
 import { buildFazit } from '@/lib/fazit';
 import { profileLabel } from '@/lib/weighting';
+import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
 function AddCompany({ onAdd }: { onAdd(ticker: string): void }) {
   const companies = useCompanies();
   const [value, setValue] = useState('');
-  const submit = () => {
-    const query = value.trim().toLowerCase();
+  /** Exakter Treffer (Vorschlag gewählt oder Ticker getippt) wird direkt hinzugefügt. */
+  const addIfExact = (text: string): boolean => {
+    const query = text.trim().toLowerCase();
     const match = companies.find((c) => c.ticker.toLowerCase() === query || c.name.toLowerCase() === query);
     if (match) {
       onAdd(match.ticker);
       setValue('');
     }
+    return Boolean(match);
   };
   return (
-    <form onSubmit={(e) => { e.preventDefault(); submit(); }} className="flex gap-2">
+    <form onSubmit={(e) => { e.preventDefault(); addIfExact(value); }}>
       <input
+        id="compare-add"
         list="kubus-companies"
-        className="input w-[220px] py-1.5"
-        placeholder="+ Unternehmen hinzufügen"
-        aria-label="Unternehmen hinzufügen"
+        className="input h-9 w-full py-0 font-medium"
+        placeholder="Name oder Ticker"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          if (!addIfExact(e.target.value)) setValue(e.target.value);
+        }}
       />
       <datalist id="kubus-companies">
         {companies.map((c) => <option key={c.ticker} value={c.name}>{c.ticker}</option>)}
       </datalist>
-      <button type="submit" className="btn py-1.5">Hinzufügen</button>
     </form>
   );
 }
 
+const FIELD_LABEL = 'mb-1.5 block text-[13px] font-bold';
+
 export function Compare() {
-  const { active, update, toggle } = useWatchlists();
+  const { lists, update, addItem, removeItem } = useWatchlists();
+  const { resolve } = useProfiles();
   const { byTicker } = useData();
-  if (!active) return <EmptyState title="Keine Watchlist vorhanden"><Link className="underline" to="/watchlists">Watchlist anlegen</Link></EmptyState>;
+  const [params, setParams] = useSearchParams();
+  const active = lists.find((l) => l.id === params.get('liste')) ?? lists[0];
+  if (!active) return <EmptyState title="Keine Watchlist vorhanden"><Link className="underline" to="/watchlists">Watchlist erstellen</Link></EmptyState>;
 
   const all = active.tickers.map((t) => byTicker.get(t)).filter((c): c is Company => Boolean(c));
   const companies = all.slice(0, MAX_COMPARE);
-  const profile = active.investorProfile;
-  const add = (ticker: string) => { if (!active.tickers.includes(ticker)) toggle(ticker); };
+  const profile = resolve(active.investorProfile);
+  const add = (ticker: string) => addItem(active.id, ticker);
 
   return (
     <main className="mx-auto w-full max-w-[1600px] space-y-4 p-4 lg:p-7">
@@ -57,20 +66,28 @@ export function Compare() {
         <PageTitle
           tag={`Watchlist · ${all.length} Unternehmen`}
           title={active.name}
-          sub={active.clientName ? `Kunde: ${active.clientName}` : `Gewichtung ${profileLabel(profile)}`}
+          sub={`${active.clientName ? `Kunde: ${active.clientName}. ` : ''}Gewichtung ${profileLabel(profile.weights)}`}
         />
-        <div className="flex flex-wrap items-center gap-2">
-          <AddCompany onAdd={add} />
-          <label className="flex items-center gap-2 text-[13px] font-semibold">
-            Gewichtung
+        <div className="grid w-full gap-3 sm:grid-cols-3 lg:w-[660px]">
+          <div className="min-w-0">
+            <label htmlFor="compare-list" className={FIELD_LABEL}>Watchlist</label>
             <select
-              className="pill cursor-pointer"
-              value={profile}
-              onChange={(e) => update(active.id, { investorProfile: e.target.value as InvestorProfile })}
+              id="compare-list"
+              className="input h-9 w-full cursor-pointer py-0 font-medium"
+              value={active.id}
+              onChange={(e) => setParams({ liste: e.target.value }, { replace: true })}
             >
-              {PROFILE_IDS.map((id) => <option key={id} value={id}>{id} ({profileLabel(id)})</option>)}
+              {lists.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
             </select>
-          </label>
+          </div>
+          <div className="min-w-0">
+            <label htmlFor="compare-profile" className={FIELD_LABEL}>Anlegerprofil</label>
+            <ProfileButton field id="compare-profile" value={active.investorProfile} listName={active.name} onChange={(investorProfile) => update(active.id, { investorProfile })} />
+          </div>
+          <div className="min-w-0">
+            <label htmlFor="compare-add" className={FIELD_LABEL}>Unternehmen hinzufügen</label>
+            <AddCompany onAdd={add} />
+          </div>
         </div>
       </div>
 
@@ -88,11 +105,11 @@ export function Compare() {
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {companies.map((c, i) => (
-              <CompareCard key={c.ticker} company={c} color={COMPARE_COLORS[i]} profile={profile} onRemove={() => toggle(c.ticker)} />
+              <CompareCard key={c.ticker} company={c} color={COMPARE_COLORS[i]} profile={profile.weights} onRemove={() => removeItem(active.id, c.ticker)} />
             ))}
           </div>
           <div className="grid gap-4 xl:grid-cols-[minmax(0,480px)_minmax(0,1fr)]">
-            <CompareRadar companies={companies} />
+            <CompareRadar companies={companies} profile={profile} />
             <div className="min-w-0 space-y-4">
               <CompareTable companies={companies} />
               <div className="flex items-start gap-3.5 rounded-[14px] bg-ink px-5 py-4 text-white">

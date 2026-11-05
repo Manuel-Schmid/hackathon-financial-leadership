@@ -1,19 +1,22 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useAuth } from '@/auth/useAuth';
 import { KpiSection } from '@/components/company/KpiSection';
 import { EmptyState } from '@/components/ui/atoms';
+import { WatchlistPicker } from '@/components/watchlists/WatchlistPicker';
 import { useCompanies, useData } from '@/data/DataProvider';
 import { AXIS_IDS, FINANCIAL, REAL_ESTATE } from '@/lib/config';
 import { formatMarketCap, formatScore } from '@/lib/format';
 import { totalScore } from '@/lib/weighting';
+import { useProfiles } from '@/profiles/ProfileProvider';
 import { useWatchlists } from '@/watchlists/WatchlistProvider';
 
 export function CompanyDetail() {
   const { ticker = '' } = useParams();
   const { byTicker } = useData();
   const all = useCompanies();
-  const { profile } = useAuth();
-  const { activeTickers, toggle, active } = useWatchlists();
+  const { selected } = useProfiles();
+  const { lists } = useWatchlists();
+  const [picking, setPicking] = useState(false);
   const company = byTicker.get(ticker);
 
   if (!company) {
@@ -23,7 +26,7 @@ export function CompanyDetail() {
       </EmptyState>
     );
   }
-  const starred = activeTickers.has(company.ticker);
+  const inLists = lists.filter((l) => l.tickers.includes(company.ticker)).length;
   const index = company.index === 'SP500' ? 'S&P 500' : company.index;
 
   return (
@@ -38,14 +41,14 @@ export function CompanyDetail() {
           </p>
         </div>
         <div className="flex items-center gap-5">
-          <button type="button" className="btn" disabled={!active} onClick={() => toggle(company.ticker)}>
-            {starred ? '★ Aus Watchlist entfernen' : `☆ Zu «${active?.name ?? 'Watchlist'}» hinzufügen`}
+          <button type="button" className="btn" onClick={() => setPicking(true)}>
+            {inLists > 0 ? `★ In ${inLists === 1 ? '1 Watchlist' : `${inLists} Watchlists`}` : '☆ Zu Watchlist hinzufügen'}
           </button>
           <div className="text-right text-accent" title="Gesamt-Score nach Anlegerprofil">
             <b className="block font-title text-[40px] font-bold leading-none">
-              {formatScore(totalScore(company.scores, profile.investorProfile))}
+              {formatScore(totalScore(company.scores, selected?.weights ?? 'ausgewogen'))}
             </b>
-            <span className="text-xs font-semibold">Gesamt-Score</span>
+            <span className="text-xs font-semibold">Gesamt-Score, {selected?.name ?? 'Ausgewogen'}</span>
           </div>
         </div>
       </div>
@@ -73,6 +76,7 @@ export function CompanyDetail() {
         «Allgemein» = Richtwerte aus dem Buch (S. 292–293), exemplarisch. «Branche» = Richtwert für {company.sectorDe}, nur wo die
         Branche einen eigenen Wert hat (Herleitung unter Methodik).
       </p>
+      {picking && <WatchlistPicker company={company} onClose={() => setPicking(false)} />}
     </main>
   );
 }
