@@ -24,9 +24,23 @@ def test_sektoren_existieren_und_finanzen_nur_rentabilitaet():
 
 def test_werte_aus_recherche():
     assert branchen_richtwert(KPI["roic"], "Utilities") == {"min": 0.04, "label": "≥ 4 %"}
-    assert branchen_richtwert(KPI["tilgungsdauer"], "Real Estate")["max"] == 11
+    assert branchen_richtwert(KPI["tilgungsdauer"], "Utilities")["max"] == 9.5
     assert branchen_richtwert(KPI["cash_ratio"], "Utilities") is None
     assert branchen_richtwert(KPI["equity_ratio"], "Financials") is None
+
+
+def test_ausnahmen_aus_plausibilitaets_check():
+    """Wo die Quelle nicht zu unseren Firmen passt, gilt der allgemeine Richtwert (docs/BRANCHEN_RICHTWERTE.md)."""
+    ausnahmen = {
+        "current_ratio": {"Utilities", "Consumer Staples", "Health Care"},
+        "adg2": {"Consumer Staples"},
+        "roa": {"Utilities", "Energy"},
+        "debt_equity": {"Health Care", "Materials"},
+        "tilgungsdauer": {"Energy", "Real Estate"},
+    }
+    for kid, sectors in ausnahmen.items():
+        for sector in sectors:
+            assert branchen_richtwert(KPI[kid], sector) is None, (kid, sector)
 
 
 # --- Task 2: Pipeline ---
