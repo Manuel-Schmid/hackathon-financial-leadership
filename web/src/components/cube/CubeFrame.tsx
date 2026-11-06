@@ -8,6 +8,11 @@ const EDGE = THEME.line.strong;
 const TICKS = [0, 50, 100];
 /** Endpunkte des Winkels an der Ideal-Ecke: je 20 Punkte entlang der drei Kanten. */
 const IDEAL_ARMS: [number, number, number][] = [[80, 100, 100], [100, 80, 100], [100, 100, 80]];
+/** 3D-Pfeilspitzen liegen innerhalb des Würfels (96.4–100), Spitze bündig bei 100. */
+const ARROW_HEIGHT = 0.36;
+const ARROW_RADIUS = 0.13;
+const AXIS_LINE_END = 96.8;
+const ARROW_CENTER = 98.2;
 
 function Label({ position, children, className }: { position: Vec3; children: React.ReactNode; className: string }) {
   return (
@@ -60,9 +65,22 @@ export function CubeFrame() {
         <Line key={i} points={points} color={EDGE} lineWidth={1} dashed dashSize={0.2} gapSize={0.2} />
       ))}
 
-      <Line points={[origin, toWorld(100, 0, 0)]} color={AXES.liquiditaet.color} lineWidth={3.5} />
-      <Line points={[origin, toWorld(0, 100, 0)]} color={AXES.rentabilitaet.color} lineWidth={3.5} />
-      <Line points={[origin, toWorld(0, 0, 100)]} color={AXES.sicherheit.color} lineWidth={3.5} />
+      <Line points={[origin, toWorld(AXIS_LINE_END, 0, 0)]} color={AXES.liquiditaet.color} lineWidth={3.5} />
+      <Line points={[origin, toWorld(0, AXIS_LINE_END, 0)]} color={AXES.rentabilitaet.color} lineWidth={3.5} />
+      <Line points={[origin, toWorld(0, 0, AXIS_LINE_END)]} color={AXES.sicherheit.color} lineWidth={3.5} />
+
+      <mesh position={toWorld(ARROW_CENTER, 0, 0)} rotation={[0, 0, -Math.PI / 2]}>
+        <coneGeometry args={[ARROW_RADIUS, ARROW_HEIGHT, 20]} />
+        <meshBasicMaterial color={AXES.liquiditaet.color} />
+      </mesh>
+      <mesh position={toWorld(0, ARROW_CENTER, 0)}>
+        <coneGeometry args={[ARROW_RADIUS, ARROW_HEIGHT, 20]} />
+        <meshBasicMaterial color={AXES.rentabilitaet.color} />
+      </mesh>
+      <mesh position={toWorld(0, 0, ARROW_CENTER)} rotation={[-Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[ARROW_RADIUS, ARROW_HEIGHT, 20]} />
+        <meshBasicMaterial color={AXES.sicherheit.color} />
+      </mesh>
 
       {/* Finanzsektor liegt fest auf Liquidität 50: gestrichelte Markierung am Boden */}
       <Line
