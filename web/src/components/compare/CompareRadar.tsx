@@ -2,12 +2,12 @@ import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, Responsi
 import type { AxisId, Company } from '@/data/types';
 import { AXES, THEME } from '@/lib/config';
 import { COMPARE_COLORS } from '@/lib/compare';
-import { weightsToPoint, type Point } from '@/lib/triangle';
+import { TRIANGLE_ORDER, weightsToPoint, type Point } from '@/lib/triangle';
 import { profileLabel, type Weights } from '@/lib/weighting';
 import type { SavedProfile } from '@/profiles/ProfileStore';
 
-// Rentabilität oben, wie im Mockup
-const ORDER: AxisId[] = ['rentabilitaet', 'sicherheit', 'liquiditaet'];
+// Gleiche Anordnung wie das Profil-Dreieck: Rentabilität oben
+const ORDER = TRIANGLE_ORDER;
 const TEXT_COLOR: Record<AxisId, string> = {
   rentabilitaet: THEME.R.text,
   sicherheit: AXES.sicherheit.color,
