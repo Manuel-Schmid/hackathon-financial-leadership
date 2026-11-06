@@ -89,14 +89,14 @@ function KpiRow({ def, company, all, years }: { def: KpiDef; company: Company; a
   return (
     <div className="grid grid-cols-[132px_minmax(0,1fr)] items-center gap-2 border-t border-line-soft py-2.5">
       <div className="min-w-0">
-        <h3 className="text-[13.5px] font-bold leading-tight" title={`${def.label}: ${def.formula} (${def.source}).${usage(def)}`}>
+        <h3 className="text-[13.5px] font-bold leading-tight" title={`${def.label}: ${def.formula}.${usage(def)}`}>
           {def.short}
         </h3>
         <p className="mt-0.5 whitespace-nowrap font-mono text-[15px] font-semibold leading-snug">
           {formatKpi(kpi?.value, def.unit, company.currency)}
         </p>
         {def.richtwert ? (
-          <RichtwertLine label="Allgemein" value={def.richtwert.label} ampel={kpi?.ampel ?? 'grey'} title={`Allgemeiner Richtwert ${def.richtwert.label} (Buch S. 292–293)`} />
+          <RichtwertLine label="Allgemein" value={def.richtwert.label} ampel={kpi?.ampel ?? 'grey'} title={`Allgemeiner Richtwert ${def.richtwert.label}`} />
         ) : (
           <p className="mt-0.5 text-xs leading-snug text-muted">Kein Richtwert</p>
         )}
