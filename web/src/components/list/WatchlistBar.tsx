@@ -32,7 +32,7 @@ function Tooltip({ text, children }: { text: string; children: ReactNode }) {
 }
 
 function Row({ list, onSelect, onReveal }: { list: Watchlist; onSelect(ticker: string): void; onReveal(): void }) {
-  const { isShown, setShown, focusId, setFocus } = useWatchlists();
+  const { isShown, setShown, focusId, setFocus, removeItem } = useWatchlists();
   const { resolve } = useProfiles();
   const { byTicker } = useData();
   const shown = isShown(list.id);
@@ -52,19 +52,30 @@ function Row({ list, onSelect, onReveal }: { list: Watchlist; onSelect(ticker: s
       </div>
       <div className={`flex min-w-0 flex-wrap gap-1.5 ${shown ? '' : 'opacity-50'}`}>
         {companies.map((c) => (
-          <button
-            key={c.ticker}
-            type="button"
-            title={`${c.name} im Würfel zeigen`}
-            className="flex items-center gap-1.5 rounded-lg border border-line px-2 py-1 text-xs font-semibold hover:bg-paper"
-            onClick={() => {
-              onSelect(c.ticker);
-              onReveal();
-            }}
-          >
-            <SectorDot company={c} />
-            {c.name}
-          </button>
+          <span key={c.ticker} className="flex items-center rounded-lg border border-line text-xs font-semibold">
+            <button
+              type="button"
+              title={`${c.name} im Würfel zeigen`}
+              className="flex items-center gap-1.5 rounded-l-lg py-1 pl-2 pr-1 hover:bg-paper"
+              onClick={() => {
+                onSelect(c.ticker);
+                onReveal();
+              }}
+            >
+              <SectorDot company={c} />
+              {c.name}
+            </button>
+            {/* Wie auf der Watchlist-Seite: × entfernt die Firma aus dieser Liste */}
+            <button
+              type="button"
+              aria-label={`${c.name} aus ${list.name} entfernen`}
+              title="Aus der Watchlist entfernen"
+              className="self-stretch rounded-r-lg pl-1 pr-2 text-[15px] font-normal leading-none text-muted hover:bg-paper hover:text-bad"
+              onClick={() => removeItem(list.id, c.ticker)}
+            >
+              ×
+            </button>
+          </span>
         ))}
         {companies.length === 0 && <span className="text-xs text-muted">Noch leer: In der Firmenliste oben mit dem Stern hinzufügen.</span>}
       </div>
