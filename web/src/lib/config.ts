@@ -20,6 +20,8 @@ export interface KpiDef {
   negativeIsWorst?: boolean;
   /** Bei negativem Eigenkapital schlechtester Rang (wie scoring.py). */
   requiresPositiveEquity?: boolean;
+  /** Mindest-EK-Quote (aktuelles und Vorjahr), sonst bleibt die Kennzahl leer (ROE, wie kpis.py). */
+  minEquityRatio?: number;
   inScore: boolean | string;
   richtwert: Richtwert | null;
   /** Branchen-Richtwerte (docs/BRANCHEN_RICHTWERTE.md), Schlüssel = Sektor englisch */

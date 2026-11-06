@@ -3,6 +3,7 @@ import type { Company } from '@/data/types';
 import { bestIndex, COMPARE_COLORS } from '@/lib/compare';
 import { AXES, AXIS_IDS, AXIS_STYLE, KPIS } from '@/lib/config';
 import { formatKpi } from '@/lib/format';
+import { missingReason } from '@/lib/missingReason';
 import { ampelFor, compareMode, richtwertFor } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
@@ -51,7 +52,11 @@ export function CompareTable({ companies }: { companies: Company[] }) {
                     </td>
                     <td className="whitespace-nowrap px-3 text-right text-[12.5px] text-muted">{rw ? `${rw.label}${modus === 'branche' && rw.source === 'buch' ? ' (allgemein)' : ''}` : '–'}</td>
                     {companies.map((c, i) => (
-                      <td key={c.ticker} className={`whitespace-nowrap px-3 text-right font-mono ${i === best ? 'bg-accent-soft font-semibold' : ''}`}>
+                      <td
+                        key={c.ticker}
+                        title={missingReason(c, def) ?? undefined}
+                        className={`whitespace-nowrap px-3 text-right font-mono ${i === best ? 'bg-accent-soft font-semibold' : ''}`}
+                      >
                         <span className="inline-flex items-center gap-2">
                           {formatKpi(c.kpis[def.id]?.value, def.unit, def.unit === 'currency' ? c.currency : '')}
                           <AmpelDot ampel={ampelFor(c.kpis[def.id], modus)} />

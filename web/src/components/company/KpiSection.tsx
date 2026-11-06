@@ -5,6 +5,7 @@ import { axisTicks, companyYears, formatAxisTick, historyForYears } from '@/lib/
 import { AXES, AXIS_STYLE, KPIS, THEME, type KpiDef } from '@/lib/config';
 import { formatKpi, formatScore } from '@/lib/format';
 import { sectorMedian } from '@/lib/medians';
+import { missingReason } from '@/lib/missingReason';
 import { ampelFor, eigenerBranchenwert } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
@@ -86,6 +87,7 @@ function KpiRow({ def, company, all, years }: { def: KpiDef; company: Company; a
   const median = def.unit === 'currency' ? null : sectorMedian(all, company.sector, def.id);
   // Branchen-Zeile nur, wenn die Branche einen eigenen, vom allgemeinen abweichenden Richtwert hat
   const branche = eigenerBranchenwert(def, company.sector, kpi);
+  const reason = missingReason(company, def);
   return (
     <div className="grid grid-cols-[132px_minmax(0,1fr)] items-center gap-2 border-t border-line-soft py-2.5">
       <div className="min-w-0">
@@ -95,6 +97,7 @@ function KpiRow({ def, company, all, years }: { def: KpiDef; company: Company; a
         <p className="mt-0.5 whitespace-nowrap font-mono text-[15px] font-semibold leading-snug">
           {formatKpi(kpi?.value, def.unit, company.currency)}
         </p>
+        {reason && <p className="mt-0.5 text-xs leading-snug text-note-text">{reason}</p>}
         {def.richtwert ? (
           <RichtwertLine label="Allgemein" value={def.richtwert.label} ampel={kpi?.ampel ?? 'grey'} title={`Allgemeiner Richtwert ${def.richtwert.label}`} />
         ) : (
