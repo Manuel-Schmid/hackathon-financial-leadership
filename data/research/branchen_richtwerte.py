@@ -37,6 +37,17 @@ KPI_SOURCE = {
 }
 
 
+# Plausibilitäts-Check 06.11.2026: Hier passt die Quelle nicht zu unseren (meist US-)Firmen, der
+# Branchenwert machte die Ampel schlechter als das Buch. Für diese Fälle gilt der allgemeine Richtwert.
+AUSNAHMEN: dict[str, set[str]] = {
+    "current_ratio": {"Utilities", "Consumer Staples", "Health Care"},  # BACH-Einzelabschlüsse viel liquider als US-Konzerne
+    "adg2": {"Consumer Staples"},
+    "roa": {"Utilities", "Energy"},  # BACH 2024: Gewinne durch hohe Energiepreise
+    "debt_equity": {"Health Care", "Materials"},  # US-Pharma und -Werkstoffe stärker verschuldet
+    "tilgungsdauer": {"Energy", "Real Estate"},  # Debt/EBITDA passt nicht zu Nettoschulden/FCF bei hohen Investitionen
+}
+
+
 def nice(v: float, unit: str) -> float:
     if unit == "years":
         return round(v * 2) / 2
@@ -65,7 +76,7 @@ def compute(config: dict) -> dict[str, dict]:
         werte = {}
         for sector, vals in by_sector.items():
             value, total = vals.get(kpi["id"]), overall[kpi["id"]]
-            if value is None or not total or value <= 0:
+            if value is None or not total or value <= 0 or sector in AUSNAHMEN.get(kpi["id"], set()):
                 continue
             rw = {k: nice(v * value / total, kpi["unit"]) for k, v in base.items()}
             werte[sector] = {**rw, "label": label(rw, kpi["unit"])}

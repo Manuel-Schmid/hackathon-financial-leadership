@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { PROFILES } from './config';
-import { CORNERS, pointToWeights, setAxisPercent, toPercents, weightsToPoint } from './triangle';
+import { CORNERS, pointToWeights, setAxisPercent, toPercents, TRIANGLE_ORDER, weightsToPoint } from './triangle';
 import type { Weights } from './weighting';
 
 const sum = (w: Weights) => w.liquiditaet + w.rentabilitaet + w.sicherheit;
 
 describe('Zieldreieck', () => {
+  it('Anordnung überall gleich: Rentabilität oben, Sicherheit unten rechts, Liquidität unten links', () => {
+    const [top, bottomRight, bottomLeft] = TRIANGLE_ORDER.map((axis) => CORNERS[axis]);
+    expect(TRIANGLE_ORDER[0]).toBe('rentabilitaet');
+    expect(top.y).toBeLessThan(bottomRight.y);
+    expect(bottomRight.y).toBe(bottomLeft.y);
+    expect(bottomRight.x).toBeGreaterThan(bottomLeft.x);
+  });
   it('die Ecken stehen für 100 % einer Achse', () => {
     expect(pointToWeights(CORNERS.sicherheit)).toEqual({ liquiditaet: 0, rentabilitaet: 0, sicherheit: 1 });
     expect(pointToWeights(CORNERS.liquiditaet)).toEqual({ liquiditaet: 1, rentabilitaet: 0, sicherheit: 0 });

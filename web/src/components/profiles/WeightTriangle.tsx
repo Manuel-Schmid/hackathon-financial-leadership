@@ -79,7 +79,7 @@ export function WeightTriangle({ weights, onChange }: Props) {
   const svg = useRef<SVGSVGElement>(null);
   const point = weightsToPoint(weights);
   const percents = toPercents(weights);
-  const { sicherheit: top, liquiditaet: left, rentabilitaet: right } = CORNERS;
+  const { rentabilitaet: top, liquiditaet: left, sicherheit: right } = CORNERS;
 
   const moveTo = (e: PointerEvent<SVGSVGElement>) => {
     const rect = svg.current?.getBoundingClientRect();
@@ -122,9 +122,9 @@ export function WeightTriangle({ weights, onChange }: Props) {
         className="text-ink"
       />
       <polygon points={OUTLINE} fill="none" stroke="currentColor" strokeOpacity=".28" strokeWidth="1.5" strokeLinejoin="round" className="text-ink" />
-      <CornerLabel axis="sicherheit" percent={percents.sicherheit} x={top.x} y={18} anchor="middle" />
+      <CornerLabel axis="rentabilitaet" percent={percents.rentabilitaet} x={top.x} y={18} anchor="middle" />
       <CornerLabel axis="liquiditaet" percent={percents.liquiditaet} x={4} y={277} anchor="start" />
-      <CornerLabel axis="rentabilitaet" percent={percents.rentabilitaet} x={316} y={277} anchor="end" />
+      <CornerLabel axis="sicherheit" percent={percents.sicherheit} x={316} y={277} anchor="end" />
       <circle
         role="slider"
         tabIndex={0}

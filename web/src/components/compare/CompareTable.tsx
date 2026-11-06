@@ -1,19 +1,21 @@
 import { Fragment } from 'react';
 import type { Company } from '@/data/types';
-import { bestIndex, COMPARE_COLORS, COMPARE_KPIS } from '@/lib/compare';
-import { AXES, AXIS_IDS, AXIS_STYLE, KPI_BY_ID, type KpiDef } from '@/lib/config';
+import { bestIndex, COMPARE_COLORS } from '@/lib/compare';
+import { AXES, AXIS_IDS, AXIS_STYLE, KPIS } from '@/lib/config';
 import { formatKpi } from '@/lib/format';
+import { missingReason } from '@/lib/missingReason';
 import { ampelFor, compareMode, richtwertFor } from '@/lib/richtwert';
 import { AmpelDot } from '../ui/atoms';
 
-const DEFS = COMPARE_KPIS.map((id) => KPI_BY_ID.get(id)).filter((d): d is KpiDef => Boolean(d));
+/** Alle Kennzahlen aus config/kpis.json, in derselben Reihenfolge wie auf der Detailseite. */
+const DEFS = KPIS;
 
 export function CompareTable({ companies }: { companies: Company[] }) {
   const modus = compareMode(companies);
   const sector = companies[0]?.sector ?? '';
   return (
     <div className="card overflow-x-auto pb-2 pt-[18px] print:overflow-visible">
-      <h2 className="px-[22px] font-title text-[17px] font-semibold">Wichtigste Kennzahlen</h2>
+      <h2 className="px-[22px] font-title text-[17px] font-semibold">Alle Kennzahlen</h2>
       <p className="px-[22px] text-[12.5px] text-muted">
         {modus === 'branche'
           ? `Richtwerte der Branche ${companies[0]?.sectorDe ?? ''} (Quellen: Methodik)`
@@ -50,7 +52,11 @@ export function CompareTable({ companies }: { companies: Company[] }) {
                     </td>
                     <td className="whitespace-nowrap px-3 text-right text-[12.5px] text-muted">{rw ? `${rw.label}${modus === 'branche' && rw.source === 'buch' ? ' (allgemein)' : ''}` : '–'}</td>
                     {companies.map((c, i) => (
-                      <td key={c.ticker} className={`whitespace-nowrap px-3 text-right font-mono ${i === best ? 'bg-accent-soft font-semibold' : ''}`}>
+                      <td
+                        key={c.ticker}
+                        title={missingReason(c, def) ?? undefined}
+                        className={`whitespace-nowrap px-3 text-right font-mono ${i === best ? 'bg-accent-soft font-semibold' : ''}`}
+                      >
                         <span className="inline-flex items-center gap-2">
                           {formatKpi(c.kpis[def.id]?.value, def.unit, def.unit === 'currency' ? c.currency : '')}
                           <AmpelDot ampel={ampelFor(c.kpis[def.id], modus)} />

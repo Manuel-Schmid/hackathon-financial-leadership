@@ -83,10 +83,6 @@
             "min": 1.6,
             "label": "≥ 160 %"
           },
-          "Health Care": {
-            "min": 1.85,
-            "label": "≥ 185 %"
-          },
           "Industrials": {
             "min": 1.35,
             "label": "≥ 135 %"
@@ -95,17 +91,9 @@
             "min": 1.4,
             "label": "≥ 140 %"
           },
-          "Consumer Staples": {
-            "min": 1.6,
-            "label": "≥ 160 %"
-          },
           "Energy": {
             "min": 1.35,
             "label": "≥ 135 %"
-          },
-          "Utilities": {
-            "min": 1.4,
-            "label": "≥ 140 %"
           },
           "Materials": {
             "min": 1.75,
@@ -192,11 +180,6 @@
             "max": 4.5,
             "label": "2–4.5 Jahre"
           },
-          "Energy": {
-            "min": 1.0,
-            "max": 2.5,
-            "label": "1–2.5 Jahre"
-          },
           "Utilities": {
             "min": 3.5,
             "max": 9.5,
@@ -211,11 +194,6 @@
             "min": 2.0,
             "max": 5.5,
             "label": "2–5.5 Jahre"
-          },
-          "Real Estate": {
-            "min": 4.5,
-            "max": 11.0,
-            "label": "4.5–11 Jahre"
           },
           "Financials": {
             "min": 3.0,
@@ -336,14 +314,6 @@
             "label": "≥ 7 %"
           },
           "Consumer Staples": {
-            "min": 0.08,
-            "label": "≥ 8 %"
-          },
-          "Energy": {
-            "min": 0.08,
-            "label": "≥ 8 %"
-          },
-          "Utilities": {
             "min": 0.08,
             "label": "≥ 8 %"
           },
@@ -621,11 +591,6 @@
             "max": 2.6,
             "label": "115–260 %"
           },
-          "Health Care": {
-            "min": 0.5,
-            "max": 1.15,
-            "label": "50–115 %"
-          },
           "Industrials": {
             "min": 1.1,
             "max": 2.5,
@@ -650,11 +615,6 @@
             "min": 1.05,
             "max": 2.4,
             "label": "105–240 %"
-          },
-          "Materials": {
-            "min": 0.6,
-            "max": 1.4,
-            "label": "60–140 %"
           },
           "Communication Services": {
             "min": 1.0,
@@ -703,10 +663,6 @@
           "Consumer Discretionary": {
             "min": 1.0,
             "label": "≥ 100 %"
-          },
-          "Consumer Staples": {
-            "min": 1.2,
-            "label": "≥ 120 %"
           },
           "Energy": {
             "min": 0.9,

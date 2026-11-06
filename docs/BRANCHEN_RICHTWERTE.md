@@ -64,18 +64,19 @@ Ausnahmen sind die Cash Ratio (Buch 80 %, BACH 15 %) und die Quick Ratio (Buch 1
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | **Buch** | 80 % | > 100 % | 150 % | 2–5 Jahre | 10–15 % | > 7 % | 1–10 % | 10 % (RONOA) | 25–50 % | 100–230 % | > 100 % |
 | Technologie | ≥ 85 % | ≥ 110 % | ≥ 160 % | 1.5–3.5 J. | 13–20 % | ≥ 8 % | 1.5–16 % | ≥ 18 % | 25–45 % | 115–260 % | ≥ 105 % |
-| Gesundheit | ≥ 115 % | ≥ 115 % | ≥ 185 % | 2–5 J. | 8–13 % | ≥ 6 % | 1–9 % | ≥ 12 % | 35–75 % | 50–115 % | ≥ 105 % |
+| Gesundheit | ≥ 115 % | ≥ 115 % | Buch* | 2–5 J. | 8–13 % | ≥ 6 % | 1–9 % | ≥ 12 % | 35–75 % | Buch* | ≥ 105 % |
 | Industrie | ≥ 70 % | ≥ 90 % | ≥ 135 % | 1.5–4 J. | 13–19 % | ≥ 6 % | 1–10 % | ≥ 11 % | 25–45 % | 110–250 % | ≥ 90 % |
 | Zyklischer Konsum | ≥ 80 % | ≥ 75 % | ≥ 140 % | 2–5 J. | 10–15 % | ≥ 7 % | 0.5–7 % | ≥ 10 % | 20–45 % | 120–275 % | ≥ 100 % |
-| Basiskonsum | ≥ 75 % | ≥ 120 % | ≥ 160 % | 2–4.5 J. | 10–15 % | ≥ 8 % | 0.5–5 % | ≥ 12 % | 30–60 % | 75–170 % | ≥ 120 % |
+| Basiskonsum | ≥ 75 % | ≥ 120 % | Buch* | 2–4.5 J. | 10–15 % | ≥ 8 % | 0.5–5 % | ≥ 12 % | 30–60 % | 75–170 % | Buch* |
 | Finanzen | Buch | Buch | Buch | 3–7.5 J. | 13–19 % | Buch | 2–20 % | ≥ 10 % | Buch | Buch | Buch |
-| Energie | ≥ 60 % | ≥ 85 % | ≥ 135 % | 1–2.5 J. | 8–12 % | ≥ 8 % | 1–11 % | ≥ 8 % | 25–50 % | 100–225 % | ≥ 90 % |
-| Versorger | ≥ 75 % | ≥ 110 % | ≥ 140 % | 3.5–9.5 J. | 8–12 % | ≥ 8 % | 2–19 % | ≥ 4 % | 25–50 % | 105–240 % | ≥ 95 % |
-| Werkstoffe | ≥ 85 % | ≥ 105 % | ≥ 175 % | 1.5–3.5 J. | 6–8 % | ≥ 8 % | 0.5–5 % | ≥ 8 % | 35–65 % | 60–140 % | ≥ 110 % |
+| Energie | ≥ 60 % | ≥ 85 % | ≥ 135 % | Buch* | 8–12 % | Buch* | 1–11 % | ≥ 8 % | 25–50 % | 100–225 % | ≥ 90 % |
+| Versorger | ≥ 75 % | ≥ 110 % | Buch* | 3.5–9.5 J. | 8–12 % | Buch* | 2–19 % | ≥ 4 % | 25–50 % | 105–240 % | ≥ 95 % |
+| Werkstoffe | ≥ 85 % | ≥ 105 % | ≥ 175 % | 1.5–3.5 J. | 6–8 % | ≥ 8 % | 0.5–5 % | ≥ 8 % | 35–65 % | Buch* | ≥ 110 % |
 | Kommunikation | ≥ 55 % | ≥ 85 % | ≥ 125 % | 2–5.5 J. | 10–15 % | ≥ 3 % | 1–11 % | ≥ 9 % | 25–50 % | 100–230 % | ≥ 85 % |
-| Immobilien | ≥ 160 % | ≥ 85 % | ≥ 130 % | 4.5–11 J. | 4–6 % | ≥ 4 % | 2–18 % | ≥ 4 % | 20–45 % | 120–275 % | ≥ 90 % |
+| Immobilien | ≥ 160 % | ≥ 85 % | ≥ 130 % | Buch* | 4–6 % | ≥ 4 % | 2–18 % | ≥ 4 % | 20–45 % | 120–275 % | ≥ 90 % |
 
 «Buch» heisst: Die Quelle deckt die Kennzahl für diese Branche nicht ab. BACH enthält keine Finanzunternehmen.
+«Buch*» heisst: Nach dem Plausibilitäts-Check vom 06.11.2026 gestrichen (siehe unten), es gilt der allgemeine Richtwert.
 
 ## Prüfung gegen unsere Daten (Anteil grün: Buch → Branche)
 Wo die Quelle passt, wird die Ampel deutlich aussagekräftiger:
@@ -100,6 +101,24 @@ Wo die Quelle nicht passt, bleibt die Ampel einseitig:
 - **Region:** BACH umfasst Europa, Damodaran die USA; unser Universum besteht zu rund 90 % aus US-Firmen.
 - **Finanzen:** Für Bankbilanzen gibt es keine vergleichbare Quelle. Basel III verlangt eine Leverage Ratio von mindestens 3 %, das misst aber Kernkapital / Engagement und nicht die EK-Quote nach Buch.
 - **Branchengliederung:** Die Zuordnung von NACE- bzw. Damodaran-Industrien zu GICS-Branchen ist ein eigener Entscheid (Anhang).
+
+## Plausibilitäts-Check (06.11.2026)
+Alle Branchen-Richtwerte gegen unsere 548 Firmen geprüft (Anteil grün mit Buch- und mit Branchen-Richtwert). Bei 10 Werten machte der Branchenwert die Ampel schlechter als das Buch, weil die Quelle nicht zu kotierten US-Konzernen passt. Diese Werte sind gestrichen (`AUSNAHMEN` in `data/research/branchen_richtwerte.py`), es gilt der allgemeine Richtwert:
+
+| Branche | Kennzahl | gestrichener Wert | Median unserer Firmen | grün Branche → jetzt | Grund |
+|---|---|---|---|---|---|
+| Versorger | ROA | ≥ 8 % | 5 % | 0 % → 3 % | BACH 2024: Gewinne durch hohe Energiepreise |
+| Versorger | Current Ratio | ≥ 140 % | 77 % | 12 % → 12 % | europäische Einzelabschlüsse viel liquider |
+| Basiskonsum | Current Ratio | ≥ 160 % | 98 % | 17 % → 19 % | US-Detailhandel mit wenig Umlaufvermögen |
+| Basiskonsum | Anlagedeckung II | ≥ 120 % | 99 % | 19 % → 47 % | wie oben |
+| Energie | ROA | ≥ 8 % | 7 % | 24 % → 57 % | BACH 2024: Gewinne durch hohe Energiepreise |
+| Energie | Tilgungsdauer | 1–2.5 Jahre | 4.2 J. | 21 % → 57 % | Debt/EBITDA passt nicht zu Nettoschulden/FCF bei hohen Investitionen |
+| Gesundheit | Current Ratio | ≥ 185 % | 158 % | 41 % → 54 % | QFR: US-Pharma 133 % statt BACH 181 % |
+| Gesundheit | Verschuldungsgrad | 50–115 % | 109 % | 48 % → 77 % | US-Pharma stärker verschuldet |
+| Werkstoffe | Verschuldungsgrad | 60–140 % | 137 % | 52 % → 84 % | US-Werkstoffe stärker verschuldet |
+| Immobilien | Tilgungsdauer | 4.5–11 Jahre | 72 J. | 0 % → 0 % | Kennzahl bei Immobilien kaum aussagekräftig |
+
+Offen bleibt: Bei Versorgern (Current Ratio, ROA), Basiskonsum (Current Ratio) und Immobilien (Tilgungsdauer) passt auch das Buch nicht; dort ist die Ampel weiterhin meist rot. Nicht geändert, weil nicht kritisch: Umsatzrendite (Untergrenze fast überall erfüllt), Versorger ROIC ≥ 4 %, Darstellung der Bereiche (nur eine Grenze wird geprüft).
 
 ## Entscheide (05.11.2026)
 1. Branchen-Richtwerte gibt es für 9 Kennzahlen, alle ausser Cash Ratio und Quick Ratio (Quelle zu schwach).

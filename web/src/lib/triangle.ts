@@ -7,11 +7,18 @@ export interface Point {
   y: number;
 }
 
+/**
+ * Anordnung des Zieldreiecks, überall gleich (Profile und Vergleich):
+ * Rentabilität oben, Sicherheit unten rechts, Liquidität unten links.
+ * Reihenfolge im Uhrzeigersinn ab oben, so wie Recharts das Radar zeichnet.
+ */
+export const TRIANGLE_ORDER: AxisId[] = ['rentabilitaet', 'sicherheit', 'liquiditaet'];
+
 /** Ecken des Zieldreiecks in SVG-Koordinaten: Je näher der Punkt an einer Ecke, desto mehr zählt diese Achse. */
 export const CORNERS: Record<AxisId, Point> = {
-  sicherheit: { x: 160, y: 30 },
+  rentabilitaet: { x: 160, y: 30 },
+  sicherheit: { x: 290, y: 255 },
   liquiditaet: { x: 30, y: 255 },
-  rentabilitaet: { x: 290, y: 255 },
 };
 
 /** Ecken frei wählbar: Auch das Dreieck im Vergleich hat eigene Ecken und eine andere Anordnung. */

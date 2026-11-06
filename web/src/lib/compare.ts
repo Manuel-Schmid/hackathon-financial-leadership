@@ -25,17 +25,4 @@ export function bestIndex(companies: Company[], kpi: KpiDef): number | null {
 export const COMPARE_COLORS = THEME.compare;
 export const MAX_COMPARE = COMPARE_COLORS.length;
 
-/** Reihenfolge wie im Mockup, gruppiert nach Achse. */
-export const COMPARE_KPIS = [
-  'current_ratio',
-  'cash_ratio',
-  'fcf',
-  'roe',
-  'ebit_margin',
-  'ros',
-  'equity_ratio',
-  'debt_equity',
-  'adg2',
-];
-
 export const QUICK_KPIS = ['current_ratio', 'roe', 'ebit_margin', 'equity_ratio', 'fcf'];

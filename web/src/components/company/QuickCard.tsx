@@ -4,6 +4,7 @@ import type { Company } from '@/data/types';
 import { QUICK_KPIS } from '@/lib/compare';
 import { KPI_BY_ID } from '@/lib/config';
 import { formatKpi, formatMarketCap } from '@/lib/format';
+import { missingReason } from '@/lib/missingReason';
 import { ampelFor, richtwertFor } from '@/lib/richtwert';
 import { useDragOffset } from '@/lib/useDragOffset';
 import { AmpelDot, FinancialNote, ScoreTiles } from '../ui/atoms';
@@ -59,10 +60,12 @@ export function QuickCard({ company, starred, onToggle, onClose }: Props) {
           const kpi = company.kpis[id];
           if (!def || !kpi) return null;
           const rw = richtwertFor(def, company.sector, 'branche', kpi);
+          const reason = missingReason(company, def);
           return (
             <div key={id} className="flex items-center justify-between gap-2 border-t border-line py-1.5 text-[13px]">
               <span>
                 {def.short}
+                {reason && <em className="block text-[11.5px] not-italic text-note-text">{reason}</em>}
                 {rw && (
                   <em className="block text-[11.5px] not-italic text-muted">
                     Richtwert {rw.source === 'branche' ? 'Branche' : 'allgemein'} {rw.label}
